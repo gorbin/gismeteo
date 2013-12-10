@@ -15,8 +15,7 @@ import android.widget.ListView;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
+//TestTask
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private ListView list;
