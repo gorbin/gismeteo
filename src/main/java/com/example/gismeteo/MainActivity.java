@@ -16,7 +16,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-
+//Master
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private ListView list;
