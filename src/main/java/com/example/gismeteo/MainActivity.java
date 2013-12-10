@@ -67,10 +67,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-//        Intent intent = new Intent(this,DetailActivity.class);
-//        intent.putExtra("weatherData", forecast.get(position));
-//        startActivity(intent);
-
+        Intent intent = new Intent(this,DetailActivity.class);
+        intent.putExtra("weatherData", forecast.get(position));
+        startActivity(intent);
     }
 
     class LoadTask extends AsyncTask<Void, Void, ArrayList<Weather>> {
