@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">gismeteo</string>
+    <string name="action_settings">Settings</string>
+    <string name="pd_title">Обновление</string>
+    <string name="pd_message">Подождите немного, происходит обновление</string>
+    <string name="error">Что-то пошло не так, попробуйте снова</string>
+    <string name="close">Закрыть</string>
+    <string name="pressure">Давление: %s мм. рт.ст.</string>
+    <string name="wind">Ветер: %s м/с</string>
+    <string name="relwet">Относительная влажность: </string>
+    <string name="heat">Комфортная температура: </string>
+    <string-array name="time_day">
+        <item>Утро</item>
+        <item>День</item>
+        <item>Вечер</item>
+        <item>Ночь</item>
+    </string-array>
+    <string-array name="week_day">
+        <item>Error!</item>
+        <item>Вс</item>
+        <item>Пн</item>
+        <item>Вт</item>
+        <item>Ср</item>
+        <item>Чт</item>
+        <item>Пт</item>
+        <item>Сб</item>
+    </string-array>
+    <string-array name="сloudiness">
+        <item>Ясно</item>
+        <item>Малооблачно</item>
+        <item>Облачно</item>
+        <item>Пасмурно</item>
+        <item>Дождь</item>
+        <item>Ливень</item>
+        <item>Небольшой снег</item>
+        <item>Снег</item>
+        <item>Гроза</item>
+        <item>Туман</item>
+        <item>Без осадков</item>
+    </string-array>
+    <string-array name="wind_direction">
+        <item>Cеверный</item>
+        <item>Северо-Восточный</item>
+        <item>Восточный</item>
+        <item>Юго-Восточный</item>
+        <item>Южный</item>
+        <item>Юго-Занадный</item>
+        <item>Западный</item>
+        <item>Северо-Западный</item>
+    </string-array>
+</resources>
