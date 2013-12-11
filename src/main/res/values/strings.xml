@@ -11,10 +11,10 @@
     <string name="relwet">Относительная влажность: </string>
     <string name="heat">Комфортная температура: </string>
     <string-array name="temp_color">
-        <item>DF711F</item>
-        <item>EFC12F</item>
-        <item>599BBC</item>
-        <item>2B48BC</item>
+        <item>#DF711F</item>
+        <item>#EFC12F</item>
+        <item>#599BBC</item>
+        <item>#2B48BC</item>
     </string-array>
     <string-array name="time_day">
         <item>Утро</item>

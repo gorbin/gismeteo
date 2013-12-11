@@ -8,29 +8,45 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 //Master
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener {
 
     private ListView list;
+    private ExpandableListView listView;
+    private WeatherListAdapter adapter;
     private LoadTask lt;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
+    private Button refresh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        refresh = (Button) findViewById(R.id.refresh);
         // list = (ListView) findViewById(R.id.listView);
 		// Находим наш list 
-        ExpandableListView listView = (ExpandableListView)findViewById(R.id.exListView);
+        listView = (ExpandableListView)findViewById(R.id.exListView);
         // list.setOnItemClickListener(this);
 		listView.setOnGroupExpandListener(this);
+        listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
+            public boolean onGroupClick(ExpandableListView arg0, View itemView, int itemPosition, long itemId)
+            {
+                listView.expandGroup(itemPosition);
+                return true;
+            }
+        });
+
     }
 
 
@@ -40,8 +56,10 @@ public class MainActivity extends Activity {
         return false;
     }
     public void onRefresh(View view) {
+        refresh.setEnabled(false);
+        refresh.setVisibility(View.GONE);
         lt = new LoadTask(this);
-        lt.execute();   
+        lt.execute();
     }
     public void alert(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -58,9 +76,10 @@ public class MainActivity extends Activity {
 
         // WeatherListAdapter adapter = new WeatherListAdapter(this, forecast);
         // list.setAdapter(adapter);
-		WeatherListAdapter adapter = new WeatherListAdapter(getApplicationContext(), forecast);
+		adapter = new WeatherListAdapter(getApplicationContext(), forecast);
         listView.setAdapter(adapter);
-		listView.setDivider(null);
+		listView.setChildDivider(getResources().getDrawable(android.R.color.transparent));
+        listView.setDividerHeight(0);
 		listView.expandGroup(0);
     }
 
@@ -72,14 +91,17 @@ public class MainActivity extends Activity {
 
     // }
 	public void onGroupExpand(int groupPosition) {
-		int lenght = expListAdapter.getGroupCount();
+		int lenght = adapter.getGroupCount();
 
 		for (int i = 0; i < lenght; i++) {
 			if (i != groupPosition) {
 				listView.collapseGroup(i);
 			}
 		}
+        Log.e("group", "--->" + groupPosition);
+
 	}
+
 
     class LoadTask extends AsyncTask<Void, Void, ArrayList<Weather>> {
         private Context thisContext;
@@ -88,7 +110,7 @@ public class MainActivity extends Activity {
 
         public LoadTask(Context context) {
             thisContext = context;
-            progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_message), true);
+//            progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_message), true);
         }
         @Override
         protected void onPreExecute() {
@@ -123,6 +145,7 @@ public class MainActivity extends Activity {
 				listItems(forecast);
 			
 			}
-			progressDialog.dismiss();
+//			progressDialog.dismiss();
+        }
     }
 }

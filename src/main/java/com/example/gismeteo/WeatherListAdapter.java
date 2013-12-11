@@ -1,10 +1,12 @@
 package com.example.gismeteo;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import java.util.ArrayList;
 public class WeatherListAdapter extends BaseExpandableListAdapter {
@@ -12,36 +14,36 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private final ArrayList<Weather> forecast;
 	private String[] tempColorArray = new String[4];
-
+//    private ViewHolder holder;
     public WeatherListAdapter(Context context, ArrayList<Weather> forecast)
     {
-        super(context, R.layout.list_item, forecast);
         this.context = context;
         this.forecast = forecast;
 		tempColorArray = context.getResources().getStringArray(R.array.temp_color);
-
+//        holder = new ViewHolder();
     }
     static class ViewHolder {
         public TextView date, tod, weather, pressure, wind, relwet, heat;
     }
 	private void WeatherColor(int position, View rowView)
 	{
-		if (forecast.get(position).getTemperatureMax()>WARM)
+		if (forecast.get(position).getTemperatureMax()>=WARM)
 		{
-			rowView.setBackgroundColor(Color.parseColor(tempColorArray[0];));
+			rowView.setBackgroundColor(Color.parseColor(tempColorArray[0]));
 		}
-		if ((forecast.get(position).getTemperatureMax()<WARM)&&(forecast.get(position).getTemperatureMax()>ZERO))
+		if ((forecast.get(position).getTemperatureMax()<WARM)&&(forecast.get(position).getTemperatureMax()>=ZERO))
 		{
-			rowView.setBackgroundColor(Color.parseColor(tempColorArray[1];));
+			rowView.setBackgroundColor(Color.parseColor(tempColorArray[1]));
 		}
-		if ((forecast.get(position).getTemperatureMax()<ZERO)&&(forecast.get(position).getTemperatureMax()>COLD))
+		if ((forecast.get(position).getTemperatureMax()<ZERO)&&(forecast.get(position).getTemperatureMax()>=COLD))
 		{
-			rowView.setBackgroundColor(Color.parseColor(tempColorArray[2];));
+			rowView.setBackgroundColor(Color.parseColor(tempColorArray[2]));
 		}
 		if (forecast.get(position).getTemperatureMax()<COLD)
 		{
-			rowView.setBackgroundColor(Color.parseColor(tempColorArray[3];));
+			rowView.setBackgroundColor(Color.parseColor(tempColorArray[3]));
 		}
+
 	}
 	@Override
     public int getGroupCount() {
@@ -50,7 +52,7 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return forecast.get(groupPosition).size();
+        return 1;
     }
 
     @Override
@@ -60,7 +62,7 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return forecast.get(groupPosition).get(childPosition);
+        return forecast.get(groupPosition);
     }
 
     @Override
@@ -70,7 +72,7 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return childPosition;
+        return 0;
     }
 
     @Override
@@ -81,19 +83,20 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView,
                              ViewGroup parent) {
-		ViewHolder holder;
         View rowView = convertView;
         if (rowView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             rowView = inflater.inflate(R.layout.list_item, null, true);
-            holder = new ViewHolder();
+            ViewHolder holder = new ViewHolder();
             holder.date = (TextView) rowView.findViewById(R.id.date);
             holder.tod = (TextView) rowView.findViewById(R.id.tod);
             holder.weather = (TextView) rowView.findViewById(R.id.weather);
             rowView.setTag(holder);
-        } else {
-            holder = (ViewHolder) rowView.getTag();
         }
+//        else {
+            ViewHolder holder = (ViewHolder) rowView.getTag();
+//        }
+        holder.date.setTextColor(Color.BLACK);
         holder.date.setText(forecast.get(groupPosition).dateString());
         holder.tod.setText(forecast.get(groupPosition).getTimeOfDay());
         holder.weather.setText(forecast.get(groupPosition).weatherString());
@@ -111,22 +114,24 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
                              View convertView, ViewGroup parent) {
-        ViewHolder holder;
         View childView = convertView;
 		if (childView == null) {
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            childView = inflater.inflate(R.layout.child_view, null);
-			holder = new ViewHolder();
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            childView = inflater.inflate(R.layout.child_view, null, true);
+            ViewHolder holder = new ViewHolder();
 			holder.pressure = (TextView) childView.findViewById(R.id.pressure);
 			holder.wind = (TextView) childView.findViewById(R.id.wind);
 			holder.relwet = (TextView) childView.findViewById(R.id.relwet);
 			holder.heat = (TextView) childView.findViewById(R.id.heat);
 			childView.setTag(holder);
         }
-		holder.pressure.setText(String.format(this.getString(R.string.pressure),forecast.get(groupPosition).getPressure()));
-        holder.wind.setText(String.format(this.getString(R.string.wind) ,forecast.get(groupPosition).windString()));
-        holder.relwet.setText(this.getString(R.string.relwet)+forecast.get(groupPosition).getWetMin()+"% - "+forecast.get(groupPosition).getWetMax()+"%");
-        holder.heat.setText(this.getString(R.string.heat)+forecast.get(groupPosition).getHeatMin()+"..."+forecast.get(groupPosition).getHeatMax());
+//        else {
+        ViewHolder holder = (ViewHolder) childView.getTag();
+//         }
+		holder.pressure.setText(String.format(context.getString(R.string.pressure),forecast.get(groupPosition).getPressure()));
+        holder.wind.setText(String.format(context.getString(R.string.wind) ,forecast.get(groupPosition).windString()));
+        holder.relwet.setText(context.getString(R.string.relwet)+forecast.get(groupPosition).getWetMin()+"% - "+forecast.get(groupPosition).getWetMax()+"%");
+        holder.heat.setText(context.getString(R.string.heat)+forecast.get(groupPosition).getHeatMin()+"..."+forecast.get(groupPosition).getHeatMax());
 		WeatherColor(groupPosition, childView);
         return childView;
     }
@@ -135,5 +140,4 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
     }
-}
 }
