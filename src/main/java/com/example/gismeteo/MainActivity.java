@@ -39,14 +39,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         lt = new LoadTask(this);
         lt.execute();
-        if(forecast == null)
-        {
-            alert();
-        }
-        else
-        {
-            listItems(forecast);
-        }
+       
     }
     public void alert(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -104,8 +97,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         @Override
         protected void onPostExecute(ArrayList<Weather> result) {
             super.onPostExecute(result);
-            progressDialog.dismiss();
             forecast = result;
+             if(forecast == null)
+            {
+                alert();
+            }
+            else
+            {
+                listItems(forecast);
+            }   
+            progressDialog.dismiss();
         }
     }
 }
