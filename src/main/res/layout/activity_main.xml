@@ -17,10 +17,16 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"/>
 
-    <ListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/listView"
-            android:choiceMode="singleChoice"/>
+    <!--<ListView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:id="@+id/listView"-->
+    <!--        android:choiceMode="singleChoice"/>-->
+    <ExpandableListView
+        android:id="@+id/exListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+		android:groupIndicator="@null"
+    />
 
 </RelativeLayout>
