@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 //Master
-public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
+public class MainActivity extends Activity {
 
     private ListView list;
     private LoadTask lt;
@@ -26,8 +26,11 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        list = (ListView) findViewById(R.id.listView);
-        list.setOnItemClickListener(this);
+        // list = (ListView) findViewById(R.id.listView);
+		// Находим наш list 
+        ExpandableListView listView = (ExpandableListView)findViewById(R.id.exListView);
+        // list.setOnItemClickListener(this);
+		listView.setOnGroupExpandListener(this);
     }
 
 
@@ -37,17 +40,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         return false;
     }
     public void onRefresh(View view) {
-
         lt = new LoadTask(this);
-        lt.execute();
-        if(forecast == null)
-        {
-            alert();
-        }
-        else
-        {
-            listItems(forecast);
-        }
+        lt.execute();   
     }
     public void alert(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -62,17 +56,30 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     }
     public void listItems(ArrayList<Weather> forecast){
 
-        WeatherListAdapter adapter = new WeatherListAdapter(this, forecast);
-        list.setAdapter(adapter);
+        // WeatherListAdapter adapter = new WeatherListAdapter(this, forecast);
+        // list.setAdapter(adapter);
+		WeatherListAdapter adapter = new WeatherListAdapter(getApplicationContext(), forecast);
+        listView.setAdapter(adapter);
+		listView.setDivider(null);
+		listView.expandGroup(0);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+    // @Override
+    // public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 //        Intent intent = new Intent(this,DetailActivity.class);
 //        intent.putExtra("weatherData", forecast.get(position));
 //        startActivity(intent);
 
-    }
+    // }
+	public void onGroupExpand(int groupPosition) {
+		int lenght = expListAdapter.getGroupCount();
+
+		for (int i = 0; i < lenght; i++) {
+			if (i != groupPosition) {
+				listView.collapseGroup(i);
+			}
+		}
+	}
 
     class LoadTask extends AsyncTask<Void, Void, ArrayList<Weather>> {
         private Context thisContext;
@@ -106,8 +113,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         @Override
         protected void onPostExecute(ArrayList<Weather> result) {
             super.onPostExecute(result);
-            progressDialog.dismiss();
             forecast = result;
-        }
+			if(forecast == null)
+			{
+				alert();
+			}
+			else
+			{
+				listItems(forecast);
+			
+			}
+			progressDialog.dismiss();
     }
 }
