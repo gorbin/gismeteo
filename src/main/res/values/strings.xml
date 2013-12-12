@@ -6,10 +6,10 @@
     <string name="pd_message">Подождите немного, происходит обновление</string>
     <string name="error">Что-то пошло не так, попробуйте снова</string>
     <string name="close">Закрыть</string>
-    <string name="pressure">Давление: %s мм. рт.ст.</string>
-    <string name="wind">Ветер: %s м/с</string>
-    <string name="relwet">Относительная влажность: </string>
-    <string name="heat">Комфортная температура: </string>
+    <string name="pressure">%s мм. рт.ст.</string>
+    <string name="wind">%s м/с</string>
+    <string name="relwet"></string>
+    <string name="heat"></string>
     <string-array name="temp_color">
         <item>#DF711F</item>
         <item>#EFC12F</item>

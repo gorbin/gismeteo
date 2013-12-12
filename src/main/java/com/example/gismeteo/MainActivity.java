@@ -22,7 +22,6 @@ import java.util.concurrent.ExecutionException;
 //Master
 public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener {
 
-    private ListView list;
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
     private LoadTask lt;
@@ -33,10 +32,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         refresh = (Button) findViewById(R.id.refresh);
-        // list = (ListView) findViewById(R.id.listView);
-		// Находим наш list 
         listView = (ExpandableListView)findViewById(R.id.exListView);
-        // list.setOnItemClickListener(this);
 		listView.setOnGroupExpandListener(this);
         listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
         {
@@ -74,8 +70,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     }
     public void listItems(ArrayList<Weather> forecast){
 
-        // WeatherListAdapter adapter = new WeatherListAdapter(this, forecast);
-        // list.setAdapter(adapter);
 		adapter = new WeatherListAdapter(getApplicationContext(), forecast);
         listView.setAdapter(adapter);
 		listView.setChildDivider(getResources().getDrawable(android.R.color.transparent));
@@ -83,13 +77,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		listView.expandGroup(0);
     }
 
-    // @Override
-    // public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-//        Intent intent = new Intent(this,DetailActivity.class);
-//        intent.putExtra("weatherData", forecast.get(position));
-//        startActivity(intent);
-
-    // }
 	public void onGroupExpand(int groupPosition) {
 		int lenght = adapter.getGroupCount();
 
@@ -102,7 +89,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 
 	}
 
-
     class LoadTask extends AsyncTask<Void, Void, ArrayList<Weather>> {
         private Context thisContext;
         private ProgressDialog progressDialog;
@@ -110,7 +96,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 
         public LoadTask(Context context) {
             thisContext = context;
-//            progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_message), true);
+           progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_message), true);
         }
         @Override
         protected void onPreExecute() {
@@ -145,7 +131,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 				listItems(forecast);
 			
 			}
-//			progressDialog.dismiss();
+			progressDialog.dismiss();
         }
     }
 }

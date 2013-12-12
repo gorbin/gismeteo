@@ -14,13 +14,11 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private final ArrayList<Weather> forecast;
 	private String[] tempColorArray = new String[4];
-//    private ViewHolder holder;
     public WeatherListAdapter(Context context, ArrayList<Weather> forecast)
     {
         this.context = context;
         this.forecast = forecast;
 		tempColorArray = context.getResources().getStringArray(R.array.temp_color);
-//        holder = new ViewHolder();
     }
     static class ViewHolder {
         public TextView date, tod, weather, pressure, wind, relwet, heat;
@@ -93,9 +91,7 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
             holder.weather = (TextView) rowView.findViewById(R.id.weather);
             rowView.setTag(holder);
         }
-//        else {
-            ViewHolder holder = (ViewHolder) rowView.getTag();
-//        }
+        ViewHolder holder = (ViewHolder) rowView.getTag();
         holder.date.setTextColor(Color.BLACK);
         holder.date.setText(forecast.get(groupPosition).dateString());
         holder.tod.setText(forecast.get(groupPosition).getTimeOfDay());
@@ -125,9 +121,7 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
 			holder.heat = (TextView) childView.findViewById(R.id.heat);
 			childView.setTag(holder);
         }
-//        else {
         ViewHolder holder = (ViewHolder) childView.getTag();
-//         }
 		holder.pressure.setText(String.format(context.getString(R.string.pressure),forecast.get(groupPosition).getPressure()));
         holder.wind.setText(String.format(context.getString(R.string.wind) ,forecast.get(groupPosition).windString()));
         holder.relwet.setText(context.getString(R.string.relwet)+forecast.get(groupPosition).getWetMin()+"% - "+forecast.get(groupPosition).getWetMax()+"%");
