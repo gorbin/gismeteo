@@ -42,24 +42,62 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
                 return true;
             }
         });
+		
+		// locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
-    }
+		// Criteria criteria = new Criteria();
+		// criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+		// List<String> lProviders = locationManager.getProviders(false);
+		// for(int i=0; i<lProviders.size(); i++){
+			// Log.d("LocationActivity", lProviders.get(i));
+		// }
+		// String provider = locationManager.getBestProvider(criteria, true); // null
 
+		// long minTime = 60000;
+		// float minDistance = 5;
 
+		// locationManager.requestLocationUpdates(provider, minTime, minDistance, this);
+		Double[] location = getGPS();
+		refresh.setText(""+location[0]+"/"+location[1]);
+		
+	}
+	private double[] getGPS() {
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);  
+        List<String> providers = lm.getProviders(true);
+
+        /* Loop over the array backwards, and if you get an accurate location, then break out the loop*/
+        Location l = null;
+		//Criteria criteria = new Criteria();
+		// provider = locationManager.getBestProvider(criteria, false);
+        // requestSingleUpdate
+        for (int i=providers.size()-1; i>=0; i--) {
+                l = lm.getLastKnownLocation(providers.get(i));
+                if (l != null) break;
+        }
+        
+        double[] gps = new double[2];
+        if (l != null) {
+                gps[0] = l.getLatitude();
+                gps[1] = l.getLongitude();
+        }
+        return gps;
+}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return false;
     }
     public void onRefresh(View view) {
-        refresh.setEnabled(false);
-        refresh.setVisibility(View.GONE);
-        lt = new LoadTask(this);
-        lt.execute();
+        // refresh.setEnabled(false);
+        // refresh.setVisibility(View.GONE);
+        // lt = new LoadTask(this);
+        // lt.execute();
+		XmlParseCity wat = new XmlParseCity(this, "54");
+		refresh.setText(wat.getGisCode());
     }
-    public void alert(){
+    public void alert(String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(this.getString(R.string.error));
+        builder.setMessage(message);
         builder.setCancelable(true);
         builder.setPositiveButton(this.getString(R.string.close),
                 new DialogInterface.OnClickListener() {
@@ -96,7 +134,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 
         public LoadTask(Context context) {
             thisContext = context;
-           progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_message), true);
+			progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_message), true);
         }
         @Override
         protected void onPreExecute() {
@@ -109,11 +147,11 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
                 return gismeteo.getForecast();
             } catch (IOException e) {
                 progressDialog.dismiss();
-                alert();
+                alert(thisContext.getString(R.string.error));
                 e.printStackTrace();
             } catch (XmlPullParserException e) {
                 progressDialog.dismiss();
-                alert();
+                alert(thisContext.getString(R.string.error));
                 e.printStackTrace();
             }
             return null;
@@ -124,7 +162,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             forecast = result;
 			if(forecast == null)
 			{
-				alert();
+				alert(thisContext.getString(R.string.error));
 			}
 			else
 			{

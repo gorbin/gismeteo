@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<gismeteo_codes>
+    <item>
+        <gismeteo_code>37021</gismeteo_code>
+        <city_name>Майкоп</city_name>
+        <region_code>1</region_code>
+        <region_name>Адыгея респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>28722</gismeteo_code>
+        <city_name>Уфа</city_name>
+        <region_code>2</region_code>
+        <region_name>Башкортостан респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>30823</gismeteo_code>
+        <city_name>Улан удэ</city_name>
+        <region_code>3</region_code>
+        <region_name>Бурятия респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>36052</gismeteo_code>
+        <city_name>Горноалтайск</city_name>
+        <region_code>4</region_code>
+        <region_name>Алтай респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>37472</gismeteo_code>
+        <city_name>Махачкала</city_name>
+        <region_code>5</region_code>
+        <region_name>Дагестан респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>99946</gismeteo_code>
+        <city_name>Назрань</city_name>
+        <region_code>6</region_code>
+        <region_name>Ингушетия респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>37212</gismeteo_code>
+        <city_name>Нальчик</city_name>
+        <region_code>7</region_code>
+        <region_name>Кабардино-Балкарская респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>34861</gismeteo_code>
+        <city_name>Элиста</city_name>
+        <region_code>8</region_code>
+        <region_name>Калмыкия респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>37116</gismeteo_code>
+        <city_name>Карачаевск</city_name>
+        <region_code>9</region_code>
+        <region_name>Карачаево-Черкессия респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>22820</gismeteo_code>
+        <city_name>Петрозаводск</city_name>
+        <region_code>10</region_code>
+        <region_name>Карелия респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>23804</gismeteo_code>
+        <city_name>Сыктывкар</city_name>
+        <region_code>11</region_code>
+        <region_name>Коми респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>99990</gismeteo_code>
+        <city_name>Йошкар-Ола</city_name>
+        <region_code>12</region_code>
+        <region_name>Марий Эл респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27760</gismeteo_code>
+        <city_name>Саранск</city_name>
+        <region_code>13</region_code>
+        <region_name>Мордовия респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>24959</gismeteo_code>
+        <city_name>Якутск</city_name>
+        <region_code>14</region_code>
+        <region_name>Саха (Якутия)</region_name>
+    </item>
+    <item>
+        <gismeteo_code>37228</gismeteo_code>
+        <city_name>Владикавказ</city_name>
+        <region_code>15</region_code>
+        <region_name>Сев. Осетия-Алания респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27595</gismeteo_code>
+        <city_name>Казань</city_name>
+        <region_code>16</region_code>
+        <region_name>Татарстан респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>36096</gismeteo_code>
+        <city_name>Кызыл</city_name>
+        <region_code>17</region_code>
+        <region_name>Тыва респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>28411</gismeteo_code>
+        <city_name>Ижевск</city_name>
+        <region_code>18</region_code>
+        <region_name>Удмуртская респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>29865</gismeteo_code>
+        <city_name>Абакан</city_name>
+        <region_code>19</region_code>
+        <region_name>Хакасия респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>37235</gismeteo_code>
+        <city_name>Грозный</city_name>
+        <region_code>20</region_code>
+        <region_name>Чеченская респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27581</gismeteo_code>
+        <city_name>Чебоксары</city_name>
+        <region_code>21</region_code>
+        <region_name>Чувашская респ.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>29838</gismeteo_code>
+        <city_name>Барнаул</city_name>
+        <region_code>22</region_code>
+        <region_name>Алтайский край</region_name>
+    </item>
+    <item>
+        <gismeteo_code>34929</gismeteo_code>
+        <city_name>Краснодар</city_name>
+        <region_code>23</region_code>
+        <region_name>Краснодарский край</region_name>
+    </item>
+    <item>
+        <gismeteo_code>29574</gismeteo_code>
+        <city_name>Красноярск</city_name>
+        <region_code>24</region_code>
+        <region_name>Красноярский край</region_name>
+    </item>
+    <item>
+        <gismeteo_code>31960</gismeteo_code>
+        <city_name>Владивосток</city_name>
+        <region_code>25</region_code>
+        <region_name>Приморский край</region_name>
+    </item>
+    <item>
+        <gismeteo_code>34949</gismeteo_code>
+        <city_name>Ставрополь</city_name>
+        <region_code>26</region_code>
+        <region_name>Ставропольский край</region_name>
+    </item>
+    <item>
+        <gismeteo_code>31735</gismeteo_code>
+        <city_name>Хабаровск</city_name>
+        <region_code>27</region_code>
+        <region_name>Хабаровский край</region_name>
+    </item>
+    <item>
+        <gismeteo_code>31510</gismeteo_code>
+        <city_name>Благовещенск</city_name>
+        <region_code>28</region_code>
+        <region_name>Амурская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>22550</gismeteo_code>
+        <city_name>Архангельск</city_name>
+        <region_code>29</region_code>
+        <region_name>Архангельская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>34880</gismeteo_code>
+        <city_name>Астрахань</city_name>
+        <region_code>30</region_code>
+        <region_name>Астраханская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>34214</gismeteo_code>
+        <city_name>Белгород</city_name>
+        <region_code>31</region_code>
+        <region_name>Белгородская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>26898</gismeteo_code>
+        <city_name>Брянск</city_name>
+        <region_code>32</region_code>
+        <region_name>Брянская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27532</gismeteo_code>
+        <city_name>Владимир</city_name>
+        <region_code>33</region_code>
+        <region_name>Владимирская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>34560</gismeteo_code>
+        <city_name>Волгоград</city_name>
+        <region_code>34</region_code>
+        <region_name>Волгоградская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27037</gismeteo_code>
+        <city_name>Вологда</city_name>
+        <region_code>35</region_code>
+        <region_name>Вологодская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>34122</gismeteo_code>
+        <city_name>Воронеж</city_name>
+        <region_code>36</region_code>
+        <region_name>Воронежская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27347</gismeteo_code>
+        <city_name>Иваново</city_name>
+        <region_code>37</region_code>
+        <region_name>Ивановская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>30710</gismeteo_code>
+        <city_name>Иркутск</city_name>
+        <region_code>38</region_code>
+        <region_name>Иркутская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>26702</gismeteo_code>
+        <city_name>Калининград</city_name>
+        <region_code>39</region_code>
+        <region_name>Калининградская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27703</gismeteo_code>
+        <city_name>Калуга</city_name>
+        <region_code>40</region_code>
+        <region_name>Калужская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>32540</gismeteo_code>
+        <city_name>Петропавловск камчатский</city_name>
+        <region_code>41</region_code>
+        <region_name>Камчатская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>29642</gismeteo_code>
+        <city_name>Кемерово</city_name>
+        <region_code>42</region_code>
+        <region_name>Кемеровская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27196</gismeteo_code>
+        <city_name>Киров</city_name>
+        <region_code>43</region_code>
+        <region_name>Кировская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27333</gismeteo_code>
+        <city_name>Кострома</city_name>
+        <region_code>44</region_code>
+        <region_name>Костромская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>28661</gismeteo_code>
+        <city_name>Курган</city_name>
+        <region_code>45</region_code>
+        <region_name>Курганская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>34009</gismeteo_code>
+        <city_name>Курск</city_name>
+        <region_code>46</region_code>
+        <region_name>Курская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>26063</gismeteo_code>
+        <city_name>Санкт-Петербург</city_name>
+        <region_code>47</region_code>
+        <region_name>Ленинградская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27930</gismeteo_code>
+        <city_name>Липецк</city_name>
+        <region_code>48</region_code>
+        <region_name>Липецкая обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>25913</gismeteo_code>
+        <city_name>Магадан</city_name>
+        <region_code>49</region_code>
+        <region_name>Магаданская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27612</gismeteo_code>
+        <city_name>Москва</city_name>
+        <region_code>50</region_code>
+        <region_name>Московская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>22113</gismeteo_code>
+        <city_name>Мурманск</city_name>
+        <region_code>51</region_code>
+        <region_name>Мурманская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27553</gismeteo_code>
+        <city_name>Нижний Новгород</city_name>
+        <region_code>52</region_code>
+        <region_name>Нижегородская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>26179</gismeteo_code>
+        <city_name>Новгород</city_name>
+        <region_code>53</region_code>
+        <region_name>Новгородская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>29634</gismeteo_code>
+        <city_name>Новосибирск</city_name>
+        <region_code>54</region_code>
+        <region_name>Новосибирская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>28698</gismeteo_code>
+        <city_name>Омск</city_name>
+        <region_code>55</region_code>
+        <region_name>Омская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>35121</gismeteo_code>
+        <city_name>Оренбург</city_name>
+        <region_code>56</region_code>
+        <region_name>Оренбургская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27906</gismeteo_code>
+        <city_name>Орел</city_name>
+        <region_code>57</region_code>
+        <region_name>Орловская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27962</gismeteo_code>
+        <city_name>Пенза</city_name>
+        <region_code>58</region_code>
+        <region_name>Пензенская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>28225</gismeteo_code>
+        <city_name>Пермь</city_name>
+        <region_code>59</region_code>
+        <region_name>Пермская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>26258</gismeteo_code>
+        <city_name>Псков</city_name>
+        <region_code>60</region_code>
+        <region_name>Псковская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>34731</gismeteo_code>
+        <city_name>Ростов-на-Дону</city_name>
+        <region_code>61</region_code>
+        <region_name>Ростовская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27731</gismeteo_code>
+        <city_name>Рязань</city_name>
+        <region_code>62</region_code>
+        <region_name>Рязанская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>28900</gismeteo_code>
+        <city_name>Самара</city_name>
+        <region_code>63</region_code>
+        <region_name>Самарская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>34172</gismeteo_code>
+        <city_name>Саратов</city_name>
+        <region_code>64</region_code>
+        <region_name>Саратовская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>32150</gismeteo_code>
+        <city_name>Южносахалинск</city_name>
+        <region_code>65</region_code>
+        <region_name>Сахалинская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>28440</gismeteo_code>
+        <city_name>Екатеринбург</city_name>
+        <region_code>66</region_code>
+        <region_name>Свердловская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>26781</gismeteo_code>
+        <city_name>Смоленск</city_name>
+        <region_code>67</region_code>
+        <region_name>Смоленская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27947</gismeteo_code>
+        <city_name>Тамбов</city_name>
+        <region_code>68</region_code>
+        <region_name>Тамбовская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27402</gismeteo_code>
+        <city_name>Тверь</city_name>
+        <region_code>69</region_code>
+        <region_name>Тверская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>29430</gismeteo_code>
+        <city_name>Томск</city_name>
+        <region_code>70</region_code>
+        <region_name>Томская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27719</gismeteo_code>
+        <city_name>Тула</city_name>
+        <region_code>71</region_code>
+        <region_name>Тульская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>28367</gismeteo_code>
+        <city_name>Тюмень</city_name>
+        <region_code>72</region_code>
+        <region_name>Тюменская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27786</gismeteo_code>
+        <city_name>Ульяновск</city_name>
+        <region_code>73</region_code>
+        <region_name>Ульяновская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>28642</gismeteo_code>
+        <city_name>Челябинск</city_name>
+        <region_code>74</region_code>
+        <region_name>Челябинская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>30758</gismeteo_code>
+        <city_name>Чита</city_name>
+        <region_code>75</region_code>
+        <region_name>Читинская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27331</gismeteo_code>
+        <city_name>Ярославль</city_name>
+        <region_code>76</region_code>
+        <region_name>Ярославская обл.</region_name>
+    </item>
+    <item>
+        <gismeteo_code>27612</gismeteo_code>
+        <city_name>Москва</city_name>
+        <region_code>77</region_code>
+        <region_name>Москва</region_name>
+    </item>
+    <item>
+        <gismeteo_code>26063</gismeteo_code>
+        <city_name>Санкт-Петербург</city_name>
+        <region_code>78</region_code>
+        <region_name>Санкт-Петербург</region_name>
+    </item>
+    <item>
+        <gismeteo_code>31713</gismeteo_code>
+        <city_name>Биробиджан</city_name>
+        <region_code>79</region_code>
+        <region_name>Еврейская АО</region_name>
+    </item>
+    <item>
+        <gismeteo_code>30859</gismeteo_code>
+        <city_name>Агинское</city_name>
+        <region_code>80</region_code>
+        <region_name>Агинский Бурятский АО</region_name>
+    </item>
+    <item>
+        <gismeteo_code>28116</gismeteo_code>
+        <city_name>Кудымкар</city_name>
+        <region_code>81</region_code>
+        <region_name>Коми-Пермяцкий АО</region_name>
+    </item>
+    <item>
+        <gismeteo_code>32227</gismeteo_code>
+        <city_name>Палана</city_name>
+        <region_code>82</region_code>
+        <region_name>Корякский АО</region_name>
+    </item>
+    <item>
+        <gismeteo_code>23205</gismeteo_code>
+        <city_name>Нарьян-Мар</city_name>
+        <region_code>83</region_code>
+        <region_name>Ненецкий АО</region_name>
+    </item>
+    <item>
+        <gismeteo_code>23074</gismeteo_code>
+        <city_name>Дудинка</city_name>
+        <region_code>84</region_code>
+        <region_name>Таймырский АО</region_name>
+    </item>
+    <item>
+        <gismeteo_code>30713</gismeteo_code>
+        <city_name>Усть-Ордынский</city_name>
+        <region_code>85</region_code>
+        <region_name>Усть-Ордынский АО</region_name>
+    </item>
+    <item>
+        <gismeteo_code>23933</gismeteo_code>
+        <city_name>Ханты-Мансийск</city_name>
+        <region_code>86</region_code>
+        <region_name>Ханты-Мансийский АО</region_name>
+    </item>
+    <item>
+        <gismeteo_code>25563</gismeteo_code>
+        <city_name>Анадырь</city_name>
+        <region_code>87</region_code>
+        <region_name>Чукотский АО</region_name>
+    </item>
+    <item>
+        <gismeteo_code>24507</gismeteo_code>
+        <city_name>Тура</city_name>
+        <region_code>88</region_code>
+        <region_name>Эвенкийский АО</region_name>
+    </item>
+    <item>
+        <gismeteo_code>23330</gismeteo_code>
+        <city_name>Салехард</city_name>
+        <region_code>89</region_code>
+        <region_name>Ямало-Ненецкий АО</region_name>
+    </item>
+</gismeteo_codes>

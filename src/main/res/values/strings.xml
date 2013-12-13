@@ -5,6 +5,7 @@
     <string name="pd_title">Обновление</string>
     <string name="pd_message">Подождите немного, происходит обновление</string>
     <string name="error">Что-то пошло не так, попробуйте снова</string>
+	<string name="noLocation">Не можем определить ваше расположение</string>
     <string name="close">Закрыть</string>
     <string name="pressure">%s мм. рт.ст.</string>
     <string name="wind">%s м/с</string>

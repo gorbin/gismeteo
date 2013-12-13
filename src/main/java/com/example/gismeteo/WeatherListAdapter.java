@@ -10,7 +10,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import java.util.ArrayList;
 public class WeatherListAdapter extends BaseExpandableListAdapter {
-	public final static int COLD = -5, ZERO = 0, WARM = 2;
+	private final static int COLD = -5, ZERO = 0, WARM = 2;
     private final Context context;
     private final ArrayList<Weather> forecast;
 	private String[] tempColorArray = new String[4];
