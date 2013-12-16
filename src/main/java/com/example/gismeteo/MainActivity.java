@@ -5,6 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -15,9 +19,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 //Master
 public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener {
@@ -42,58 +49,58 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
                 return true;
             }
         });
-		
-		// locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-
-		// Criteria criteria = new Criteria();
-		// criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-		// List<String> lProviders = locationManager.getProviders(false);
-		// for(int i=0; i<lProviders.size(); i++){
-			// Log.d("LocationActivity", lProviders.get(i));
-		// }
-		// String provider = locationManager.getBestProvider(criteria, true); // null
-
-		// long minTime = 60000;
-		// float minDistance = 5;
-
-		// locationManager.requestLocationUpdates(provider, minTime, minDistance, this);
-		Double[] location = getGPS();
-		refresh.setText(""+location[0]+"/"+location[1]);
-		
+        GetLocation gl = new GetLocation(this);
+        Location loc = gl.getCurrentLocation();
+        if(loc!=null){
+//            refresh.setText("" + loc.getLatitude() + "/" + loc.getLongitude());
+            refresh.setText(""+gl.getAddress(loc.getLatitude(), loc.getLongitude()));
+        }
+        else
+        {
+            refresh.setText("looser");
+        }
 	}
-	private double[] getGPS() {
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);  
-        List<String> providers = lm.getProviders(true);
+    protected void alertbox(String title, String mymessage) {
+        final Context context = this;
+        AlertDialog.Builder ad;
+        ad = new AlertDialog.Builder(this);
+        ad.setTitle(title);
+        ad.setMessage(mymessage);
+        ad.setPositiveButton("Включить GPS", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 
-        /* Loop over the array backwards, and if you get an accurate location, then break out the loop*/
-        Location l = null;
-		//Criteria criteria = new Criteria();
-		// provider = locationManager.getBestProvider(criteria, false);
-        // requestSingleUpdate
-        for (int i=providers.size()-1; i>=0; i--) {
-                l = lm.getLastKnownLocation(providers.get(i));
-                if (l != null) break;
-        }
-        
-        double[] gps = new double[2];
-        if (l != null) {
-                gps[0] = l.getLatitude();
-                gps[1] = l.getLongitude();
-        }
-        return gps;
-}
+            }
+        });
+        ad.setNegativeButton("Не сейчас", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                Toast.makeText(context, "Маршрут не будет построен, для постройки маршрута включите GPS", Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+        ad.setCancelable(true);
+        ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            public void onCancel(DialogInterface dialog) {
+                Toast.makeText(context, "Маршрут не будет построен, для постройки маршрута включите GPS", Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+        ad.show();
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return false;
     }
-    public void onRefresh(View view) {
+    public void onRefresh(View view) throws IOException, XmlPullParserException {
         // refresh.setEnabled(false);
         // refresh.setVisibility(View.GONE);
         // lt = new LoadTask(this);
         // lt.execute();
-		XmlParseCity wat = new XmlParseCity(this, "54");
-		refresh.setText(wat.getGisCode());
+		XmlParse wat = new XmlParse(this);
+		refresh.setText(wat.getGisCode(this,"54"));
     }
     public void alert(String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

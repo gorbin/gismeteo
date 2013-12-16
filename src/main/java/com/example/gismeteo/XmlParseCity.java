@@ -13,29 +13,26 @@ import java.util.ArrayList;
 public class XmlParseCity {
 
 	private final static String GIS_CODE = "gismeteo_code", REG_CODE = "region_code"; 
-	private Strring gisCode;
+	private String gisCode;
     public XmlParseCity(Context context, String region) throws IOException, XmlPullParserException
     {
 		XmlPullParser xpp = context.getResources().getXml(R.xml.gismeteo_city);
-		
+        String tagName = new String();
         while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
             if(xpp.getEventType() == XmlPullParser.START_TAG) {
-				if (xpp.getName().equals(GIS_CODE)){	
-					if(xpp.getEventType() == XmlPullParser.TEXT) {
-						giscode = xpp.getText()
-					}
-				}
-				if (xpp.getName().equals(REG_CODE)) {
-					if(xpp.getEventType() == XmlPullParser.TEXT) {
-						if(xpp.getText().equals(region))
-						{
+			    tagName = xpp.getName();
+			}
+			if(xpp.getEventType() == XmlPullParser.TEXT) {
+                if (tagName.equals(REG_CODE))
+                    if(xpp.getText().equals(region)) {
 							return;
 						}
-					}
+                if(tagName.equals(GIS_CODE)) {
+                    gisCode = xpp.getText();
 				}
-			}		
-        }
+			}
             xpp.next();
+        }
     }
 
     public String getGisCode()

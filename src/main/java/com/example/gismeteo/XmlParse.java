@@ -12,26 +12,27 @@ import java.util.ArrayList;
 
 public class XmlParse {
 
-	private final static String FORECAST = "FORECAST", DAY = "day", MONTH = "month", YEAR = "year", TOD = "tod";
+	private final static String FORECAST = "FORECAST", DAY = "day", MONTH = "month", YEAR = "year", TOD = "tod", TEMPERATURE = "TEMPERATURE";
 	private final static String WEEKDAY = "weekday", CLOUDINESS = "cloudiness", PRECIPITATION = "precipitation", PHENOMENA = "PHENOMENA";
-	private final static String MAX = "max", MIM = "min", PRESSURE = "PRESSURE", WIND = "WIND", DIRECTION = "direction";
+	private final static String MAX = "max", MIN = "min", PRESSURE = "PRESSURE", WIND = "WIND", DIRECTION = "direction";
 	private final static String	RELWET = "RELWET", HEAT = "HEAT";
 	private final static String START = "gismeteo_codes", GIS_CODE = "gismeteo_code", REG_CODE = "region_code", ITEM = "item"; 
-	private Strring gisCode;
+	private String gisCode;
     private ArrayList<Weather> forecastList = new ArrayList<Weather>();
-    private String url = new String(); 
+    private String url = new String();
+    private Context context;
 	
     public XmlParse(Context context) throws IOException, XmlPullParserException
     {
-		
+		this.context = context;
 		// String gisCode = getGisCode(context, "54");
 		// if(gisCode.isEmpty()){
 			// MainActivity.alert(context.getString(R.string.noLocation));
 		// }
 		// else{
 		// url = "http://informer.gismeteo.ru/xml/" + gisCode + "_1.xml";
-		url = "http://informer.gismeteo.ru/xml/29634_1.xml";
-		parseUrl();
+//		url = "http://informer.gismeteo.ru/xml/29634_1.xml";
+//		parseUrl();
 		// }
 
 
@@ -102,25 +103,22 @@ public class XmlParse {
     {
 		String gisCode = new String();
 		XmlPullParser xpp= context.getResources().getXml(R.xml.gismeteo_city);
-		
+        String tagName = new String();
         while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
             if(xpp.getEventType() == XmlPullParser.START_TAG) {
-				if (xpp.getName().equals(GIS_CODE)){	
-					if(xpp.getEventType() == XmlPullParser.TEXT) {
-						gisCode = xpp.getText()
-					}
-				}
-				if (xpp.getName().equals(REG_CODE)) {
-					if(xpp.getEventType() == XmlPullParser.TEXT) {
-						if(xpp.getText().equals(region))
-						{
-							return gisCode;
-						}
-					}
-				}
-			}		
+                tagName = xpp.getName();
+            }
+            if(xpp.getEventType() == XmlPullParser.TEXT) {
+                if (tagName.equals(REG_CODE))
+                    if(xpp.getText().equals(region)) {
+                        return gisCode;
+                    }
+                if(tagName.equals(GIS_CODE)) {
+                    gisCode = xpp.getText();
+                }
+            }
             xpp.next();
-		}
+        }
 		return null;
     }
     public ArrayList<Weather> getForecast()
