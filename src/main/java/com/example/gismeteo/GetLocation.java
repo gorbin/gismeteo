@@ -23,6 +23,7 @@ public class GetLocation {
     public Location currentLocation;
     private LocationManager locationManager;
     private Context context;
+	private String region = new String();
     public GetLocation(Context context){
         this.context = context;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -36,7 +37,12 @@ public class GetLocation {
         }
         if(currentLocation == null){
             getGeo(LocationManager.GPS_PROVIDER, 6000, 1000);
-        }
+        } 
+		if(currentLocation != null){
+			region = setRegion(currentLocation.getLatitude(), currentLocation.getLongitude());
+		} else{
+			region = null;
+		}
     }
     private void getGeo(String provider, int minTime, int minM){
         LocationListener locationListener = new LocationListener() {
@@ -60,28 +66,33 @@ public class GetLocation {
         };
         locationManager.requestLocationUpdates(provider, minTime, minM, locationListener);
     }
-    public String getAddress(double lat, double lng) {
-        String countryName = new String();
-        Geocoder gcd = new Geocoder(context, Locale.ENGLISH);
-        List<Address> addresses = null;
-
-
-            String wat = "wat";
-        try {
-            addresses = gcd.getFromLocation(
-                    43.020714, -75.940933, 1);
-            if (addresses.size() > 0)
-                countryName = addresses.get(0).getCountryName();
-
-        } catch (IOException e) {
+    private String setRegion(double lat, double lng) {
+        String regionName = new String();
+		try {
+            JSONObject jsonObj = parser_Json.getJSONfromURL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&sensor=true");
+            String Status = jsonObj.getString("status");
+            if (Status.equalsIgnoreCase("OK")) {
+                JSONArray Results = jsonObj.getJSONArray("results").getJSONObject(0).getJSONArray("address_components");
+				for(int j=0;j<addrComp.length();j++){
+					String adminArea = ((JSONArray)((JSONObject)addrComp.get(j)).get("types")).getString(0);
+					if (adminArea.compareTo("administrative_area_level_1") == 0) {
+						regionName = ((JSONObject)addrComp.get(j)).getString("long_name");
+					}
+				}
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
-        return countryName;
+		catch (JSONException e) {
+                alert();
+                e.printStackTrace();
+            }
+        return regionName;
     }
     public Location getCurrentLocation(){
         return currentLocation;
+    }
+	public String getRegion(){
+        return region;
     }
 }

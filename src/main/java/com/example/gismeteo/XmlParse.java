@@ -16,26 +16,25 @@ public class XmlParse {
 	private final static String WEEKDAY = "weekday", CLOUDINESS = "cloudiness", PRECIPITATION = "precipitation", PHENOMENA = "PHENOMENA";
 	private final static String MAX = "max", MIN = "min", PRESSURE = "PRESSURE", WIND = "WIND", DIRECTION = "direction";
 	private final static String	RELWET = "RELWET", HEAT = "HEAT";
-	private final static String START = "gismeteo_codes", GIS_CODE = "gismeteo_code", REG_CODE = "region_code", ITEM = "item"; 
+	private final static String START = "gismeteo_codes", GIS_CODE = "gismeteo_code", REG_NAME = "region_name";
 	private String gisCode;
     private ArrayList<Weather> forecastList = new ArrayList<Weather>();
     private String url = new String();
     private Context context;
 	
-    public XmlParse(Context context) throws IOException, XmlPullParserException
+    public XmlParse(Context context, String region) throws IOException, XmlPullParserException
     {
 		this.context = context;
-		// String gisCode = getGisCode(context, "54");
-		// if(gisCode.isEmpty()){
-			// MainActivity.alert(context.getString(R.string.noLocation));
-		// }
-		// else{
-		// url = "http://informer.gismeteo.ru/xml/" + gisCode + "_1.xml";
+		
+		gisCode = getGisCode(context, region);
+		if(gisCode.isEmpty()){
+			MainActivity.gpsAlertBox(context.getString(R.string.noLocation));
+		}
+		else{
+		url = "http://informer.gismeteo.ru/xml/" + gisCode + "_1.xml";
 //		url = "http://informer.gismeteo.ru/xml/29634_1.xml";
-//		parseUrl();
-		// }
-
-
+		parseUrl();
+		}
     }
 	public void parseUrl() throws IOException, XmlPullParserException
 	{
@@ -109,7 +108,7 @@ public class XmlParse {
                 tagName = xpp.getName();
             }
             if(xpp.getEventType() == XmlPullParser.TEXT) {
-                if (tagName.equals(REG_CODE))
+                if (tagName.equals(REG_NAME))
                     if(xpp.getText().equals(region)) {
                         return gisCode;
                     }

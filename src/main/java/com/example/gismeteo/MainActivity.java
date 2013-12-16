@@ -34,10 +34,15 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     private LoadTask lt;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
     private Button refresh;
+	private String region = new String();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+		Intent intent = getIntent();
+		if(intent != null) {
+			region = intent.getString("region");
+		}
         refresh = (Button) findViewById(R.id.refresh);
         listView = (ExpandableListView)findViewById(R.id.exListView);
 		listView.setOnGroupExpandListener(this);
@@ -49,40 +54,37 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
                 return true;
             }
         });
-        GetLocation gl = new GetLocation(this);
-        Location loc = gl.getCurrentLocation();
+
+		refresh.setText(""+region);
         if(loc!=null){
 //            refresh.setText("" + loc.getLatitude() + "/" + loc.getLongitude());
-            refresh.setText(""+gl.getAddress(loc.getLatitude(), loc.getLongitude()));
         }
         else
         {
-            refresh.setText("looser");
+            // refresh.setText("looser");
         }
 	}
-    protected void alertbox(String title, String mymessage) {
+    protected void gpsAlertBox(String mymessage) {
         final Context context = this;
         AlertDialog.Builder ad;
-        ad = new AlertDialog.Builder(this);
-        ad.setTitle(title);
+        ad = new AlertDialog.Builder(this);	
+        // ad.setTitle(title);
         ad.setMessage(mymessage);
-        ad.setPositiveButton("Включить GPS", new DialogInterface.OnClickListener() {
+        ad.setPositiveButton(this.getString(R.string.GPS_button), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
                 startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-
             }
         });
-        ad.setNegativeButton("Не сейчас", new DialogInterface.OnClickListener() {
+        ad.setNegativeButton(this.getString(R.string.listreg_button), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
-                Toast.makeText(context, "Маршрут не будет построен, для постройки маршрута включите GPS", Toast.LENGTH_LONG)
-                        .show();
+				startActivity(new Intent(this,RegionList.class));
+				
             }
         });
         ad.setCancelable(true);
         ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
             public void onCancel(DialogInterface dialog) {
-                Toast.makeText(context, "Маршрут не будет построен, для постройки маршрута включите GPS", Toast.LENGTH_LONG)
-                        .show();
+               startActivity(new Intent(this,RegionList.class));
             }
         });
         ad.show();
@@ -95,12 +97,12 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         return false;
     }
     public void onRefresh(View view) throws IOException, XmlPullParserException {
-        // refresh.setEnabled(false);
-        // refresh.setVisibility(View.GONE);
-        // lt = new LoadTask(this);
-        // lt.execute();
-		XmlParse wat = new XmlParse(this);
-		refresh.setText(wat.getGisCode(this,"54"));
+        refresh.setEnabled(false);
+        refresh.setVisibility(View.GONE);
+        lt = new LoadTask(this, region);
+        lt.execute();
+		// XmlParse wat = new XmlParse(this);
+		// refresh.setText(wat.getGisCode(this,"54"));
     }
     public void alert(String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -130,17 +132,17 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 				listView.collapseGroup(i);
 			}
 		}
-        Log.e("group", "--->" + groupPosition);
-
 	}
 
-    class LoadTask extends AsyncTask<Void, Void, ArrayList<Weather>> {
+    class LoadTask extends AsyncTask<Void, String, ArrayList<Weather>> {
         private Context thisContext;
+		private String region;
         private ProgressDialog progressDialog;
         private XmlParse gismeteo;
-
-        public LoadTask(Context context) {
+		private GetLocation gl;
+        public LoadTask(Context context, String region) {
             thisContext = context;
+			this.region = region;
 			progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_message), true);
         }
         @Override
@@ -150,7 +152,15 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         @Override
         protected ArrayList<Weather> doInBackground(Void... params) {
             try {
-                gismeteo = new XmlParse(thisContext);
+				gl = new GetLocation(thisContext);
+				if(region.isEmpty()) {
+					region = gl.getRegion();
+					if (region.isEmpty()) {
+						return null;
+					}
+				}
+				publishProgress(thisContext.getString(R.strings.pd_forecast));
+                gismeteo = new XmlParse(thisContext, region);
                 return gismeteo.getForecast();
             } catch (IOException e) {
                 progressDialog.dismiss();
@@ -163,19 +173,24 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             }
             return null;
         }
+		@Override
+		protected void onProgressUpdate(String... values) {
+			super.onProgressUpdate(values);
+			progressDialog.setMessage(values[0]);
+		}
         @Override
         protected void onPostExecute(ArrayList<Weather> result) {
             super.onPostExecute(result);
             forecast = result;
-			if(forecast == null)
-			{
+			if(region.isEmpty()) {
+				thisContext.gpsAlertBox(context.getString(R.string.GPS_error));
+			} else if(forecast == null) {
 				alert(thisContext.getString(R.string.error));
 			}
-			else
-			{
-				listItems(forecast);
-			
-			}
+				else
+				{
+					listItems(forecast);
+				}
 			progressDialog.dismiss();
         }
     }
