@@ -24,7 +24,7 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
 	public void onCreate(Bundle savedInstanceState) {
  
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.regions);
 		regionListView = (ListView)findViewById(R.id.region_list);
 		regionListView.setOnItemClickListener(this);
