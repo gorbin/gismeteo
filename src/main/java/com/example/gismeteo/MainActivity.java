@@ -59,6 +59,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 
         listView = (ExpandableListView)findViewById(R.id.exListView);
 		listView.setOnGroupExpandListener(this);
+        listView.setVerticalFadingEdgeEnabled(false);
         listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             public boolean onGroupClick(ExpandableListView arg0, View itemView, int itemPosition, long itemId) {
                 listView.expandGroup(itemPosition);
