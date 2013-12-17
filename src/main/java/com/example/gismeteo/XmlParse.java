@@ -27,8 +27,8 @@ public class XmlParse {
 		this.context = context;
 		
 		gisCode = getGisCode(context, region);
-		if(gisCode.isEmpty()){
-			MainActivity.gpsAlertBox(context.getString(R.string.noLocation));
+		if(gisCode == null){
+		//	MainActivity.gpsAlertBox(context.getString(R.string.noLocation));
 		}
 		else{
 		url = "http://informer.gismeteo.ru/xml/" + gisCode + "_1.xml";

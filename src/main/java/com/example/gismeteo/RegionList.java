@@ -1,10 +1,22 @@
+package com.example.gismeteo;
+
 import android.app.Activity;
- 
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
- 
-public class RegionList extends Activity {
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class RegionList extends Activity implements AdapterView.OnItemClickListener {
 	private final static String REG_NAME = "region_name";
     private ListView regionListView;
     private ArrayList<String> regionList = new ArrayList<String>();
@@ -15,22 +27,29 @@ public class RegionList extends Activity {
 
 		setContentView(R.layout.regions);
 		regionListView = (ListView)findViewById(R.id.region_list);
-		
-		XmlPullParser xpp = context.getResources().getXml(R.xml.gismeteo_city);
+		regionListView.setOnItemClickListener(this);
+		XmlPullParser xpp = this.getResources().getXml(R.xml.gismeteo_city);
 		String tagName = new String();
-		while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
-			if(xpp.getEventType() == XmlPullParser.START_TAG) {
-				tagName = xpp.getName();
-			}
-			if(xpp.getEventType() == XmlPullParser.TEXT) {
-				if (tagName.equals(REG_NAME)){
-					regionList.add(xpp.getText());
-				}	
-			}
-			xpp.next();
-		}
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,regionList);
+
+        try {
+            while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+                if(xpp.getEventType() == XmlPullParser.START_TAG) {
+                    tagName = xpp.getName();
+                }
+                if(xpp.getEventType() == XmlPullParser.TEXT) {
+                    if (tagName.equals(REG_NAME)){
+                        regionList.add(xpp.getText());
+                    }
+                }
+                xpp.next();
+            }
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,regionList);
 		regionListView.setAdapter(adapter);
 	}
 	@Override
@@ -41,7 +60,7 @@ public class RegionList extends Activity {
 	@Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent(this,MainActivity.class);
-        intent.putString("region", regionList.get(position));
+        intent.putExtra("region", regionList.get(position).toString());
         startActivity(intent);
     }
 }

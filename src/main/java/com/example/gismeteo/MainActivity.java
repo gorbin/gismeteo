@@ -1,6 +1,7 @@
 package com.example.gismeteo;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,7 +42,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         setContentView(R.layout.activity_main);
 		Intent intent = getIntent();
 		if(intent != null) {
-			region = intent.getString("region");
+			region = intent.getStringExtra("region");
 		}
         refresh = (Button) findViewById(R.id.refresh);
         listView = (ExpandableListView)findViewById(R.id.exListView);
@@ -56,13 +57,13 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         });
 
 		refresh.setText(""+region);
-        if(loc!=null){
+//        if(loc!=null){
 //            refresh.setText("" + loc.getLatitude() + "/" + loc.getLongitude());
-        }
-        else
-        {
+//        }
+//        else
+//        {
             // refresh.setText("looser");
-        }
+//        }
 	}
     protected void gpsAlertBox(String mymessage) {
         final Context context = this;
@@ -77,14 +78,15 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         });
         ad.setNegativeButton(this.getString(R.string.listreg_button), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
-				startActivity(new Intent(this,RegionList.class));
-				
+				startActivity(new Intent(((Dialog) dialog).getContext(),RegionList.class));
+				return;
             }
         });
         ad.setCancelable(true);
         ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
             public void onCancel(DialogInterface dialog) {
-               startActivity(new Intent(this,RegionList.class));
+                startActivity(new Intent(((Dialog) dialog).getContext(),RegionList.class));
+                return;
             }
         });
         ad.show();
@@ -144,6 +146,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             thisContext = context;
 			this.region = region;
 			progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_message), true);
+            gl = new GetLocation(thisContext);
         }
         @Override
         protected void onPreExecute() {
@@ -152,14 +155,14 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         @Override
         protected ArrayList<Weather> doInBackground(Void... params) {
             try {
-				gl = new GetLocation(thisContext);
-				if(region.isEmpty()) {
+                gl.checkRegion();
+				if(region == null) {
 					region = gl.getRegion();
-					if (region.isEmpty()) {
+					if (region == null) {
 						return null;
 					}
 				}
-				publishProgress(thisContext.getString(R.strings.pd_forecast));
+				publishProgress(thisContext.getString(R.string.pd_forecast));
                 gismeteo = new XmlParse(thisContext, region);
                 return gismeteo.getForecast();
             } catch (IOException e) {
@@ -182,8 +185,8 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         protected void onPostExecute(ArrayList<Weather> result) {
             super.onPostExecute(result);
             forecast = result;
-			if(region.isEmpty()) {
-				thisContext.gpsAlertBox(context.getString(R.string.GPS_error));
+			if(region == null) {
+				gpsAlertBox(thisContext.getString(R.string.GPS_error));
 			} else if(forecast == null) {
 				alert(thisContext.getString(R.string.error));
 			}
