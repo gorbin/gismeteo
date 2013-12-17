@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -59,8 +60,9 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
 	}
 	@Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Intent intent = new Intent(this,MainActivity.class);
+        Intent intent = new Intent();
         intent.putExtra("region", regionList.get(position).toString());
-        startActivity(intent);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/RL"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -16,15 +17,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:textColor="#000000"
-            android:groupIndicator="@null"/>
-
-    <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Обновить"
-            android:onClick="onRefresh"
-            android:id="@+id/refresh"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
+            android:groupIndicator="@null"
+            android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

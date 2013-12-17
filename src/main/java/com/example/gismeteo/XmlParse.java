@@ -100,6 +100,7 @@ public class XmlParse {
 	}
 	public String getGisCode(Context context, String region) throws IOException, XmlPullParserException
     {
+        if(region != null){
 		String gisCode = new String();
 		XmlPullParser xpp= context.getResources().getXml(R.xml.gismeteo_city);
         String tagName = new String();
@@ -117,6 +118,7 @@ public class XmlParse {
                 }
             }
             xpp.next();
+        }
         }
 		return null;
     }

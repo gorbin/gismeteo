@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 public class WeatherListAdapter extends BaseExpandableListAdapter {
@@ -14,10 +15,12 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private final ArrayList<Weather> forecast;
 	private String[] tempColorArray = new String[4];
-    public WeatherListAdapter(Context context, ArrayList<Weather> forecast)
+    private int height;
+    public WeatherListAdapter(Context context, ArrayList<Weather> forecast, int height)
     {
         this.context = context;
         this.forecast = forecast;
+        this.height = height;
 		tempColorArray = context.getResources().getStringArray(R.array.temp_color);
     }
     static class ViewHolder {
@@ -85,6 +88,7 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
         if (rowView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             rowView = inflater.inflate(R.layout.list_item, null, true);
+            rowView.setMinimumHeight(height/5);
             ViewHolder holder = new ViewHolder();
             holder.date = (TextView) rowView.findViewById(R.id.date);
             holder.tod = (TextView) rowView.findViewById(R.id.tod);
@@ -114,7 +118,16 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
 		if (childView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             childView = inflater.inflate(R.layout.child_view, null, true);
+//            childView.setMinimumHeight(height/5);
+//            childView.getLayoutParams().height = 160;
+//            LayoutParams params1 = parent.getLayoutParams();
+//            params1.height = height/5;
+//            childView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 160));
+//            RelativeLayout rl = (RelativeLayout) childView.findViewById(R.id.child);
+//            rl.getLayoutParams().height = 300;
+//            childView.setLayoutParams(lp);
             ViewHolder holder = new ViewHolder();
+//            childView.setLayoutParams(parent.getLayoutParams());
 			holder.pressure = (TextView) childView.findViewById(R.id.pressure);
 			holder.wind = (TextView) childView.findViewById(R.id.wind);
 			holder.relwet = (TextView) childView.findViewById(R.id.relwet);
