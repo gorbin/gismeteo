@@ -65,4 +65,11 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
         setResult(RESULT_OK, intent);
         finish();
     }
+	@Override
+	public void onBackPressed() {
+		Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		intent.putExtra("EXIT", true);
+		startActivity(intent);
+	}
 }

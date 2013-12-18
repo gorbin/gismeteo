@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 public class WeatherListAdapter extends BaseExpandableListAdapter {
-	private final static int COLD = -5, ZERO = 0, WARM = 2;
+	// private final static String YTRO = "", DAY = 0, EVENING = 2, NIGHT;
     private final Context context;
     private final ArrayList<Weather> forecast;
 	private String[] tempColorArray = new String[4];
@@ -22,28 +22,35 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
         this.forecast = forecast;
         this.height = height;
 		tempColorArray = context.getResources().getStringArray(R.array.temp_color);
+		todArray = context.getResources().getStringArray(R.array.time_day);
     }
     static class ViewHolder {
         public TextView date, tod, weather, pressure, wind, relwet, heat;
     }
 	private void WeatherColor(int position, View rowView)
 	{
-		if (forecast.get(position).getTemperatureMax()>=WARM)
+		for(int i = 0; i < todArray.lenght(); i++)
 		{
-			rowView.setBackgroundColor(Color.parseColor(tempColorArray[0]));
+			if(forecast.get(position).getTimeOfDay().equals(todArray[i])){
+				rowView.setBackgroundColor(Color.parseColor(tempColorArray[i]));
+			}
 		}
-		if ((forecast.get(position).getTemperatureMax()<WARM)&&(forecast.get(position).getTemperatureMax()>=ZERO))
-		{
-			rowView.setBackgroundColor(Color.parseColor(tempColorArray[1]));
-		}
-		if ((forecast.get(position).getTemperatureMax()<ZERO)&&(forecast.get(position).getTemperatureMax()>=COLD))
-		{
-			rowView.setBackgroundColor(Color.parseColor(tempColorArray[2]));
-		}
-		if (forecast.get(position).getTemperatureMax()<COLD)
-		{
-			rowView.setBackgroundColor(Color.parseColor(tempColorArray[3]));
-		}
+		// if (forecast.get(position).getTimeOfDay().equals(YTRO))
+		// {
+			// rowView.setBackgroundColor(Color.parseColor(tempColorArray[0]));
+		// }
+		// if (forecast.get(position).getTimeOfDay().equals(DAY))
+		// {
+			// rowView.setBackgroundColor(Color.parseColor(tempColorArray[1]));
+		// }
+		// if (forecast.get(position).getTimeOfDay().equals(EVENING))
+		// {
+			// rowView.setBackgroundColor(Color.parseColor(tempColorArray[2]));
+		// }
+		// if (forecast.get(position).getTimeOfDay().equals(NIGHT))
+		// {
+			// rowView.setBackgroundColor(Color.parseColor(tempColorArray[3]));
+		// }
 
 	}
 	@Override
@@ -96,7 +103,6 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
             rowView.setTag(holder);
         }
         ViewHolder holder = (ViewHolder) rowView.getTag();
-        holder.date.setTextColor(Color.BLACK);
         holder.date.setText(forecast.get(groupPosition).dateString());
         holder.tod.setText(forecast.get(groupPosition).getTimeOfDay());
         holder.weather.setText(forecast.get(groupPosition).weatherString());
@@ -118,16 +124,8 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
 		if (childView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             childView = inflater.inflate(R.layout.child_view, null, true);
-//            childView.setMinimumHeight(height/5);
-//            childView.getLayoutParams().height = 160;
-//            LayoutParams params1 = parent.getLayoutParams();
-//            params1.height = height/5;
-//            childView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 160));
-//            RelativeLayout rl = (RelativeLayout) childView.findViewById(R.id.child);
-//            rl.getLayoutParams().height = 300;
-//            childView.setLayoutParams(lp);
+			childView.setMinimumHeight(height/5);
             ViewHolder holder = new ViewHolder();
-//            childView.setLayoutParams(parent.getLayoutParams());
 			holder.pressure = (TextView) childView.findViewById(R.id.pressure);
 			holder.wind = (TextView) childView.findViewById(R.id.wind);
 			holder.relwet = (TextView) childView.findViewById(R.id.relwet);

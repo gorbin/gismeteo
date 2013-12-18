@@ -13,7 +13,7 @@
             android:text=""
             android:id="@+id/pressure"
             android:layout_gravity="center_horizontal|top"
-            android:textColor="#FF0000"/>
+            android:textColor="@color/white"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -23,7 +23,8 @@
             android:id="@+id/wind"
             android:layout_gravity="left|center_vertical"
             android:layout_below="@+id/pressure"
-            android:layout_alignParentLeft="true"/>
+            android:layout_alignParentLeft="true"
+			android:textColor="@color/white"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -33,7 +34,8 @@
             android:id="@+id/relwet"
             android:layout_gravity="left|center_vertical"
             android:layout_below="@+id/wind"
-            android:layout_alignParentLeft="true"/>
+            android:layout_alignParentLeft="true"
+			android:textColor="@color/white"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -43,5 +45,6 @@
             android:id="@+id/heat"
             android:layout_gravity="left|center_vertical"
             android:layout_below="@+id/relwet"
-            android:layout_alignParentLeft="true"/>
+            android:layout_alignParentLeft="true"
+			android:textColor="@color/white"/>
 </RelativeLayout>
