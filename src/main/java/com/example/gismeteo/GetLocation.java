@@ -6,11 +6,14 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GetLocation {
     private Location currentLocation;
@@ -26,7 +29,7 @@ public class GetLocation {
         criteria.setCostAllowed(false);
         String provider = locationManager.getBestProvider(criteria, true);
         if(provider !=null){
-            currentLocation = locationManager.getLastKnownLocation(provider);
+//            currentLocation = locationManager.getLastKnownLocation(provider);
         }
         if(currentLocation == null){
             getGeo(LocationManager.NETWORK_PROVIDER, 10000, 0);
@@ -34,13 +37,16 @@ public class GetLocation {
         if(currentLocation == null){
             getGeo(LocationManager.GPS_PROVIDER, 10000, 0);
         }
-		Timer timer = new Timer();
-		timer.schedule(new UpdateTimeTask(), 0, 20000); 
-		class UpdateTimeTask extends TimerTask {
-			public void run() {
-					noLocation = false;
-					} 
-		}
+//		Timer timer = new Timer();
+//		timer.schedule(new UpdateTimeTask(), 0, 20000);
+
+    }
+    Timer timer = new Timer();
+    class UpdateTimeTask extends TimerTask {
+        public void run() {
+            noLocation = false;
+            timer.cancel();
+        }
     }
     private Runnable locationRun = new Runnable() {
 
@@ -50,8 +56,7 @@ public class GetLocation {
 
         }
     };
-    public void checkRegion() {
-
+    public void checkRegion() throws JSONException {
         if(currentLocation != null){
             region = setRegion(currentLocation.getLatitude(), currentLocation.getLongitude());
         } else{
@@ -65,8 +70,12 @@ public class GetLocation {
                     currentLocation = loc;
                     Log.e("Coord", "" + loc.getLatitude() + "/" + loc.getLongitude());
                     locationManager.removeUpdates(this);
-					// "getLoc".notify();
-					noLocation = false;
+                    synchronized ("getLoc") {
+
+                            "getLoc".notify();
+                       }
+
+//					noLocation = false;
                 }
                 else
                 {
@@ -83,9 +92,9 @@ public class GetLocation {
         };
         locationManager.requestLocationUpdates(provider, minTime, minM, locationListener, Looper.getMainLooper());
     }
-    private String setRegion(double lat, double lng) {
+    private String setRegion(double lat, double lng) throws JSONException {
         String regionName = new String();
-		try {
+
             JSONObject jsonObj = JSONFromURL.getJSON("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&sensor=true");
             String Status = jsonObj.getString("status");
             if (Status.equalsIgnoreCase("OK")) {
@@ -98,13 +107,7 @@ public class GetLocation {
                     }
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return regionName;
-    }
-    public Location getCurrentLocation(){
-        return currentLocation;
     }
 	public String getRegion(){
         return region;

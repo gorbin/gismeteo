@@ -3,16 +3,16 @@ package com.example.gismeteo;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
+import org.json.JSONException;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class SplashScreen extends Activity {
 			finish();
 		}
 		noty = (TextView) findViewById(R.id.noty);
-		noty.setText(this.getString(R.string.pd_message);
+		noty.setText(this.getString(R.string.pd_message));
 		progress = (ProgressBar) findViewById(R.id.progress);
 
     }
@@ -48,6 +48,9 @@ public class SplashScreen extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(!CheckInternet(this)){
+
+        }
         showForecast();
     }
 
@@ -81,15 +84,23 @@ public class SplashScreen extends Activity {
         });
         ad.show();
     }
-	
-	public void alert(String message){
+
+    public boolean CheckInternet(Context ctx) {
+        ConnectivityManager connec = (ConnectivityManager) ctx
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = connec.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobile = connec.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        return wifi.isConnected() || mobile.isConnected();
+    }
+	public void alert(String message, Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message);
         builder.setCancelable(true);
-        builder.setPositiveButton(this.getString(R.string.close),
+        builder.setPositiveButton(context.getString(R.string.close),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
+                        finish();
                     }
                 }).create().show();
     }
@@ -97,9 +108,9 @@ public class SplashScreen extends Activity {
     class LoadTask extends AsyncTask<Void, String, ArrayList<Weather>> {
         private Context thisContext;
 		private String region;
-        private ProgressDialog progressDialog;
         private XmlParse gismeteo;
 		private GetLocation gl;
+        private boolean error = false;
         
 		public LoadTask(Context context, String region) {
             thisContext = context;
@@ -117,11 +128,10 @@ public class SplashScreen extends Activity {
             try {
 				
                 if(region.length() == 0){
-					while(gl.getNoLocation()){}
-					// synchronized ("getLoc") {
-					// try {
-						// "getLoc".wait();
-					// } catch (InterruptedException e) {e.printStackTrace();}
+					synchronized ("getLoc") {
+					try {
+						"getLoc".wait(20000);
+					} catch (InterruptedException e) {e.printStackTrace();}}
 					gl.checkRegion();
 					region = gl.getRegion();
 					if (region == null) {
@@ -132,12 +142,13 @@ public class SplashScreen extends Activity {
                 gismeteo = new XmlParse(thisContext, region);
                 return gismeteo.getForecast();
             } catch (IOException e) {
-                progressDialog.dismiss();
-                alert(thisContext.getString(R.string.error));
+                error = true;
                 e.printStackTrace();
             } catch (XmlPullParserException e) {
-                progressDialog.dismiss();
-                alert(thisContext.getString(R.string.error));
+                error = true;
+                e.printStackTrace();
+            } catch (Exception e) {
+                error = true;
                 e.printStackTrace();
             }
             return null;
@@ -152,18 +163,21 @@ public class SplashScreen extends Activity {
         @Override
         protected void onPostExecute(ArrayList<Weather> result) {
             super.onPostExecute(result);
-            forecast = result;
-			if(region == null) {
-				gpsAlertBox(thisContext.getString(R.string.GPS_error));
-			} else if(forecast == null) {
-				alert(thisContext.getString(R.string.error));
-			} else {
-				Intent intent = new Intent(thisContext,MainActivity.class);
-				intent.putExtra("forecast",forecast);
-				startActivity(intent);
-                finish();
-			}
-
+            if (error){
+                alert(thisContext.getString(R.string.error), thisContext);
+            } else{
+                forecast = result;
+                if(region == null) {
+                    gpsAlertBox(thisContext.getString(R.string.GPS_error));
+                } else if(forecast == null) {
+                    alert(thisContext.getString(R.string.error), thisContext);
+                } else {
+                    Intent intent = new Intent(thisContext,MainActivity.class);
+                    intent.putExtra("forecast",forecast);
+                    startActivity(intent);
+                    finish();
+                }
+            }
         }
     }
 }

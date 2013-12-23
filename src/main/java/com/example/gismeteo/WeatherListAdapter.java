@@ -5,9 +5,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 public class WeatherListAdapter extends BaseExpandableListAdapter {

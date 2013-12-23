@@ -1,30 +1,21 @@
 package com.example.gismeteo;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
@@ -83,7 +74,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     }
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-      startActivityForResult(new Intent(((Dialog) dialog).getContext(),RegionList.class),1);
+      startActivityForResult(new Intent(this,RegionList.class),1);
       return super.onOptionsItemSelected(item);
     }
 	@Override
@@ -149,8 +140,9 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		
         @Override
         protected ArrayList<Weather> doInBackground(Void... params) {
+            try {
                 gismeteo = new XmlParse(thisContext, region);
-                return gismeteo.getForecast();
+            return gismeteo.getForecast();
             } catch (IOException e) {
                 progressDialog.dismiss();
                 alert(thisContext.getString(R.string.error));
