@@ -34,6 +34,7 @@ public class SplashScreen extends Activity {
 			finish();
 		}
 		noty = (TextView) findViewById(R.id.noty);
+		noty.setText(this.getString(R.string.pd_message);
 		progress = (ProgressBar) findViewById(R.id.progress);
 
     }
@@ -114,8 +115,14 @@ public class SplashScreen extends Activity {
         @Override
         protected ArrayList<Weather> doInBackground(Void... params) {
             try {
-                gl.checkRegion();
+				
                 if(region.length() == 0){
+					while(gl.getNoLocation()){}
+					// synchronized ("getLoc") {
+					// try {
+						// "getLoc".wait();
+					// } catch (InterruptedException e) {e.printStackTrace();}
+					gl.checkRegion();
 					region = gl.getRegion();
 					if (region == null) {
 						return null;

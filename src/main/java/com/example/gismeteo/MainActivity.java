@@ -36,7 +36,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
-  //  private LoadTask lt;
+   private LoadTask lt;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
 	private String region = new String();
     private int height;
@@ -73,52 +73,30 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		} else{
 			alert(this.getString(R.string.error));
 		}
-        // showForecast();
 	}
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        return false;
+		menu.add(this.getString(R.string.listreg_button));
+        return super.onCreateOptionsMenu(menu);
+    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+      startActivityForResult(new Intent(((Dialog) dialog).getContext(),RegionList.class),1);
+      return super.onOptionsItemSelected(item);
+    }
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {return;}
+        region = data.getStringExtra("region");
+        showForecast();
     }
 
-    // @Override
-    // protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // if (data == null) {return;}
-        // region = data.getStringExtra("region");
-        // showForecast();
-    // }
-
-	// private void showForecast(){
-	    // lt = new LoadTask(this, region);
-        // lt.execute();
-	// }
-	
-	// protected void gpsAlertBox(String mymessage) {
-        // final Context context = this;
-        // AlertDialog.Builder ad;
-        // ad = new AlertDialog.Builder(this);	
-        // ad.setMessage(mymessage);
-        // ad.setPositiveButton(this.getString(R.string.GPS_button), new DialogInterface.OnClickListener() {
-            // public void onClick(DialogInterface dialog, int arg1) {
-                // startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            // }
-        // });
-        // ad.setNegativeButton(this.getString(R.string.listreg_button), new DialogInterface.OnClickListener() {
-            // public void onClick(DialogInterface dialog, int arg1) {
-				// startActivityForResult(new Intent(((Dialog) dialog).getContext(),RegionList.class),1);
-				// return;
-            // }
-        // });
-        // ad.setCancelable(true);
-        // ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            // public void onCancel(DialogInterface dialog) {
-                // startActivityForResult(new Intent(((Dialog) dialog).getContext(),RegionList.class),1);
-                // return;
-            // }
-        // });
-        // ad.show();
-    // }
+	private void showForecast(){
+	    lt = new LoadTask(this, region);
+        lt.execute();
+	}
 	
     public void alert(String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -151,70 +129,50 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		}
 	}
 
-    // class LoadTask extends AsyncTask<Void, String, ArrayList<Weather>> {
-        // private Context thisContext;
-		// private String region;
-        // private ProgressDialog progressDialog;
-        // private XmlParse gismeteo;
-		// private GetLocation gl;
+    class LoadTask extends AsyncTask<Void, String, ArrayList<Weather>> {
+        private Context thisContext;
+		private String region;
+        private ProgressDialog progressDialog;
+        private XmlParse gismeteo;
+		private GetLocation gl;
         
-		// public LoadTask(Context context, String region) {
-            // thisContext = context;
-			// this.region = region;
-			// progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_message), true);
-            // gl = new GetLocation(thisContext);
-        // }
+		public LoadTask(Context context, String region) {
+            thisContext = context;
+			this.region = region;
+			progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_forecast), true);
+        }
 		
-        // @Override
-        // protected void onPreExecute() {
-            // super.onPreExecute();
-        // }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 		
-        // @Override
-        // protected ArrayList<Weather> doInBackground(Void... params) {
-            // try {
-                // gl.checkRegion();
-                // if(region != null && "".equals(region.trim())){
-					// region = gl.getRegion();
-					// if (region == null) {
-						// return null;
-					// }
-				// }
-				// publishProgress(thisContext.getString(R.string.pd_forecast));
-                // gismeteo = new XmlParse(thisContext, region);
-                // return gismeteo.getForecast();
-            // } catch (IOException e) {
-                // progressDialog.dismiss();
-                // alert(thisContext.getString(R.string.error));
-                // e.printStackTrace();
-            // } catch (XmlPullParserException e) {
-                // progressDialog.dismiss();
-                // alert(thisContext.getString(R.string.error));
-                // e.printStackTrace();
-            // }
-            // return null;
-        // }
+        @Override
+        protected ArrayList<Weather> doInBackground(Void... params) {
+                gismeteo = new XmlParse(thisContext, region);
+                return gismeteo.getForecast();
+            } catch (IOException e) {
+                progressDialog.dismiss();
+                alert(thisContext.getString(R.string.error));
+                e.printStackTrace();
+            } catch (XmlPullParserException e) {
+                progressDialog.dismiss();
+                alert(thisContext.getString(R.string.error));
+                e.printStackTrace();
+            }
+            return null;
+        }
 		
-		// @Override
-		// protected void onProgressUpdate(String... values) {
-			// super.onProgressUpdate(values);
-			// progressDialog.setMessage(values[0]);
-		// }
-		
-        // @Override
-        // protected void onPostExecute(ArrayList<Weather> result) {
-            // super.onPostExecute(result);
-            // forecast = result;
-			// if(region == null) {
-				// gpsAlertBox(thisContext.getString(R.string.GPS_error));
-			// } else if(forecast == null) {
-				// alert(thisContext.getString(R.string.error));
-			// }
-				// else
-				// {
-					// listItems(forecast);
-				// }
-			// progressDialog.dismiss();
-        // }
-    // }
+        @Override
+        protected void onPostExecute(ArrayList<Weather> result) {
+            super.onPostExecute(result);
+            forecast = result;
+			if(forecast == null) {
+				alert(thisContext.getString(R.string.error));
+			} else {
+				listItems(forecast);
+			}
+			progressDialog.dismiss();
+        }
+    }
 }

@@ -13,7 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class GetLocation {
-    public Location currentLocation;
+    private Location currentLocation;
+	private boolean noLocation = true;
     private LocationManager locationManager;
     private Context context;
 	private String region = new String();
@@ -33,15 +34,13 @@ public class GetLocation {
         if(currentLocation == null){
             getGeo(LocationManager.GPS_PROVIDER, 10000, 0);
         }
-        if(currentLocation == null){
-//            handler = new Handler();
-//            handler.postDelayed(locationRun,30000);
-//            try {
-//                Thread.sleep(30000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-        }
+		Timer timer = new Timer();
+		timer.schedule(new UpdateTimeTask(), 0, 20000); 
+		class UpdateTimeTask extends TimerTask {
+			public void run() {
+					noLocation = false;
+					} 
+		}
     }
     private Runnable locationRun = new Runnable() {
 
@@ -51,7 +50,6 @@ public class GetLocation {
 
         }
     };
-    private Handler handler;
     public void checkRegion() {
 
         if(currentLocation != null){
@@ -67,8 +65,8 @@ public class GetLocation {
                     currentLocation = loc;
                     Log.e("Coord", "" + loc.getLatitude() + "/" + loc.getLongitude());
                     locationManager.removeUpdates(this);
-//                    handler.removeCallbacks(locationRun);
-//                    Thread.interrupted();
+					// "getLoc".notify();
+					noLocation = false;
                 }
                 else
                 {
@@ -110,5 +108,8 @@ public class GetLocation {
     }
 	public String getRegion(){
         return region;
+    }
+	public boolean getNoLocation(){
+        return noLocation;
     }
 }
