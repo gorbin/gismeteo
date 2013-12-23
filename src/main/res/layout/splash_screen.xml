@@ -20,7 +20,7 @@
 		android:layout_marginBottom="5dip"/>
     <TextView
 		android:id="@+id/noty"
-        android:layout_width="wrap_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12dp"
         android:textColor="@color/white"

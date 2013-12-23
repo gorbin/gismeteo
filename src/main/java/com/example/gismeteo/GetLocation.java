@@ -6,6 +6,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,16 +24,36 @@ public class GetLocation {
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setCostAllowed(false);
         String provider = locationManager.getBestProvider(criteria, true);
-        currentLocation = locationManager.getLastKnownLocation(provider);
-        if(currentLocation == null){
-            getGeo(provider, 0, 0);
+        if(provider !=null){
+            currentLocation = locationManager.getLastKnownLocation(provider);
         }
         if(currentLocation == null){
-            getGeo(LocationManager.GPS_PROVIDER, 6000, 1000);
-        } 
-
+            getGeo(LocationManager.NETWORK_PROVIDER, 10000, 0);
+        }
+        if(currentLocation == null){
+            getGeo(LocationManager.GPS_PROVIDER, 10000, 0);
+        }
+        if(currentLocation == null){
+//            handler = new Handler();
+//            handler.postDelayed(locationRun,30000);
+//            try {
+//                Thread.sleep(30000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+        }
     }
+    private Runnable locationRun = new Runnable() {
+
+        @Override
+        public void run() {
+        currentLocation = null;
+
+        }
+    };
+    private Handler handler;
     public void checkRegion() {
+
         if(currentLocation != null){
             region = setRegion(currentLocation.getLatitude(), currentLocation.getLongitude());
         } else{
@@ -45,11 +67,14 @@ public class GetLocation {
                     currentLocation = loc;
                     Log.e("Coord", "" + loc.getLatitude() + "/" + loc.getLongitude());
                     locationManager.removeUpdates(this);
+//                    handler.removeCallbacks(locationRun);
+//                    Thread.interrupted();
                 }
                 else
                 {
                     Log.e("Coord","looser");
                 }
+
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -58,7 +83,7 @@ public class GetLocation {
 
             public void onProviderDisabled(String provider) {}
         };
-        locationManager.requestLocationUpdates(provider, minTime, minM, locationListener);
+        locationManager.requestLocationUpdates(provider, minTime, minM, locationListener, Looper.getMainLooper());
     }
     private String setRegion(double lat, double lng) {
         String regionName = new String();

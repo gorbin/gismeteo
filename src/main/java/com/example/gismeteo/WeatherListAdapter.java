@@ -15,6 +15,7 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private final ArrayList<Weather> forecast;
 	private String[] tempColorArray = new String[4];
+    private String[] todArray = new String[4];
     private int height;
     public WeatherListAdapter(Context context, ArrayList<Weather> forecast, int height)
     {
@@ -29,7 +30,7 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
     }
 	private void WeatherColor(int position, View rowView)
 	{
-		for(int i = 0; i < todArray.lenght(); i++)
+		for(int i = 0; i < todArray.length; i++)
 		{
 			if(forecast.get(position).getTimeOfDay().equals(todArray[i])){
 				rowView.setBackgroundColor(Color.parseColor(tempColorArray[i]));

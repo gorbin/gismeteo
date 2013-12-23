@@ -1,15 +1,30 @@
 package com.example.gismeteo;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
- 
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class SplashScreen extends Activity {
 	
 	private ProgressBar progress;
 	private TextView noty;
+    private String region = new String();
+    private LoadTask lt;
+    private ArrayList<Weather> forecast = new ArrayList<Weather>();
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +35,7 @@ public class SplashScreen extends Activity {
 		}
 		noty = (TextView) findViewById(R.id.noty);
 		progress = (ProgressBar) findViewById(R.id.progress);
-        showForecast();
+
     }
 	
 	@Override
@@ -29,7 +44,12 @@ public class SplashScreen extends Activity {
         region = data.getStringExtra("region");
         showForecast();
     }
-	
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showForecast();
+    }
+
 	private void showForecast(){
 	    lt = new LoadTask(this, region);
         lt.execute();
@@ -54,7 +74,7 @@ public class SplashScreen extends Activity {
         ad.setCancelable(true);
         ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
             public void onCancel(DialogInterface dialog) {
-                startActivityForResult(new Intent(((Dialog) dialog).getContext(),RegionList.class),1);
+                finish();
                 return;
             }
         });
@@ -83,7 +103,6 @@ public class SplashScreen extends Activity {
 		public LoadTask(Context context, String region) {
             thisContext = context;
 			this.region = region;
-			progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_message), true);
             gl = new GetLocation(thisContext);
         }
 		
@@ -96,7 +115,7 @@ public class SplashScreen extends Activity {
         protected ArrayList<Weather> doInBackground(Void... params) {
             try {
                 gl.checkRegion();
-                if(region != null && "".equals(region.trim())){
+                if(region.length() == 0){
 					region = gl.getRegion();
 					if (region == null) {
 						return null;
@@ -132,11 +151,12 @@ public class SplashScreen extends Activity {
 			} else if(forecast == null) {
 				alert(thisContext.getString(R.string.error));
 			} else {
-				Intent intent = new Intent(this,MainActivity.class);
+				Intent intent = new Intent(thisContext,MainActivity.class);
 				intent.putExtra("forecast",forecast);
 				startActivity(intent);
+                finish();
 			}
-            finish();
+
         }
     }
 }

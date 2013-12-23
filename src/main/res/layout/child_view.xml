@@ -33,9 +33,9 @@
             android:text=""
             android:id="@+id/relwet"
             android:layout_gravity="left|center_vertical"
-            android:layout_below="@+id/wind"
-            android:layout_alignParentLeft="true"
-			android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
             android:padding="10dp"
             android:id="@+id/heat"
             android:layout_gravity="left|center_vertical"
+            android:textColor="@color/white"
             android:layout_below="@+id/relwet"
-            android:layout_alignParentLeft="true"
-			android:textColor="@color/white"/>
+            android:layout_alignLeft="@+id/relwet"/>
 </RelativeLayout>

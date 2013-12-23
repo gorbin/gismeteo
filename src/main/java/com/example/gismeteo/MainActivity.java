@@ -36,7 +36,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
-    private LoadTask lt;
+  //  private LoadTask lt;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
 	private String region = new String();
     private int height;
@@ -71,7 +71,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		if (forecast != null){
 			listItems(forecast);
 		} else{
-			alert(thisContext.getString(R.string.error));
+			alert(this.getString(R.string.error));
 		}
         // showForecast();
 	}
