@@ -152,7 +152,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
                 e.printStackTrace();
 				return null;
             }
-            return null;
         }
 		
         @Override

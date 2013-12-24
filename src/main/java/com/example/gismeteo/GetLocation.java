@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+
 public class GetLocation {
 	private final static String STATUS = "status", OK = "OK", RESULTS = "results", ADDRESS_COMPONENTS = "address_components", TYPES = "types", ADML1 = "administrative_area_level_1", SHORT_NAME = "short_name";
     private Location currentLocation;
@@ -73,8 +75,7 @@ public class GetLocation {
     }
     private String setRegion(double lat, double lng) throws JSONException {
 		String regionName = new String();
-		// JSONObject jsonObj = JSONFromURL.getJSON("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&sensor=true");
-		JSONObject jsonObj = JSONFromURL.getJSON(String.format(this.getString(R.string.gapi_region_url),lat,lng));
+	    JSONObject jsonObj = JSONFromURL.getJSON(String.format(context.getString(R.string.gapi_region_url), lat + "," + lng));
 		String Status = jsonObj.getString(STATUS);
 		if (Status.equalsIgnoreCase(OK)) {
 			JSONArray results = jsonObj.getJSONArray(RESULTS).getJSONObject(0).getJSONArray(ADDRESS_COMPONENTS);

@@ -28,8 +28,7 @@ public class XmlParse {
 
         gisCode = getGisCode(context, region);
         if(gisCode != null){
-            // url = "http://informer.gismeteo.ru/xml/" + gisCode + "_1.xml";
-			url = String.format(this.getString(R.string.gismeteo_url),gisCode)
+			url = String.format(context.getString(R.string.gismeteo_url),gisCode);
             parseUrl();
         }
     }
