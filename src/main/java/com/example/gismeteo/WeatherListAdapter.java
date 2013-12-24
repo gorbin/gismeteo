@@ -9,7 +9,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import java.util.ArrayList;
 public class WeatherListAdapter extends BaseExpandableListAdapter {
-	// private final static String YTRO = "", DAY = 0, EVENING = 2, NIGHT;
     private final Context context;
     private final ArrayList<Weather> forecast;
 	private String[] tempColorArray = new String[4];

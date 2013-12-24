@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import org.json.JSONException;
 import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -36,9 +35,7 @@ public class SplashScreen extends Activity {
 		noty = (TextView) findViewById(R.id.noty);
 		noty.setText(this.getString(R.string.pd_message));
 		progress = (ProgressBar) findViewById(R.id.progress);
-
     }
-	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
@@ -48,12 +45,8 @@ public class SplashScreen extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(!CheckInternet(this)){
-
-        }
         showForecast();
     }
-
 	private void showForecast(){
 	    lt = new LoadTask(this, region);
         lt.execute();
@@ -85,13 +78,6 @@ public class SplashScreen extends Activity {
         ad.show();
     }
 
-    public boolean CheckInternet(Context ctx) {
-        ConnectivityManager connec = (ConnectivityManager) ctx
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifi = connec.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        NetworkInfo mobile = connec.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        return wifi.isConnected() || mobile.isConnected();
-    }
 	public void alert(String message, Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message);

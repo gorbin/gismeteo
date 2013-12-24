@@ -29,7 +29,6 @@ public class JSONFromURL {
         } catch(Exception e) {
             return null;
         }
-
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is,"utf-8"),8);
             StringBuilder sb = new StringBuilder();
@@ -42,17 +41,12 @@ public class JSONFromURL {
         } catch(Exception e) {
             return null;
         }
-
-        // Convert string to object
         try {
             jsonObject = new JSONObject(result);
         } catch(JSONException e) {
             return null;
         }
-
         return jsonObject;
-
     }
-
-    }
+}
 

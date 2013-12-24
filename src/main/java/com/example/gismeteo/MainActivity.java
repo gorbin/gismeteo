@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
-
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
-   private LoadTask lt;
+	private LoadTask lt;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
 	private String region = new String();
     private int height;
@@ -102,7 +101,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     }
 	
     public void listItems(ArrayList<Weather> forecast){
-
 		adapter = new WeatherListAdapter(getApplicationContext(), forecast, height);
         listView.setAdapter(adapter);
 		listView.setChildDivider(getResources().getDrawable(android.R.color.transparent));
@@ -112,7 +110,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 
 	public void onGroupExpand(int groupPosition) {
 		int lenght = adapter.getGroupCount();
-
 		for (int i = 0; i < lenght; i++) {
 			if (i != groupPosition) {
 				listView.collapseGroup(i);
@@ -125,7 +122,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		private String region;
         private ProgressDialog progressDialog;
         private XmlParse gismeteo;
-		private GetLocation gl;
         
 		public LoadTask(Context context, String region) {
             thisContext = context;
@@ -145,12 +141,16 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             return gismeteo.getForecast();
             } catch (IOException e) {
                 progressDialog.dismiss();
-                alert(thisContext.getString(R.string.error));
                 e.printStackTrace();
+				return null;
             } catch (XmlPullParserException e) {
                 progressDialog.dismiss();
-                alert(thisContext.getString(R.string.error));
                 e.printStackTrace();
+				return null;
+            } catch (Exception e) {
+                progressDialog.dismiss();
+                e.printStackTrace();
+				return null;
             }
             return null;
         }
@@ -159,12 +159,12 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         protected void onPostExecute(ArrayList<Weather> result) {
             super.onPostExecute(result);
             forecast = result;
+			progressDialog.dismiss();
 			if(forecast == null) {
 				alert(thisContext.getString(R.string.error));
 			} else {
 				listItems(forecast);
 			}
-			progressDialog.dismiss();
         }
     }
 }
