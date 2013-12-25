@@ -1,5 +1,6 @@
 package com.example.gismeteo;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 //Master
 public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener {
-	private final String ON = "Включить", OFF = "Выключить";
+	private final String ON = "ON", OFF = "OFF";
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
 	private LoadTask lt;
@@ -70,9 +71,9 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         getMenuInflater().inflate(R.menu.main, menu);
 		MenuItem serviceBtn = menu.findItem(R.id.service_mbtn);
 		if(isServiceRunning()){
-			serviceBtn.setTitle(String.format(this.getString(R.string.service),OFF));
+			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),OFF));
 		} else {
-			serviceBtn.setTitle(String.format(this.getString(R.string.service),ON));
+			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),ON));
 		}
         return super.onCreateOptionsMenu(menu);
     }
@@ -84,7 +85,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			return true;
 		case R.id.service_mbtn:
 			if(isServiceRunning()){
-				stoptService(new Intent(this, WeatherService.class));
+				stopService(new Intent(this, WeatherService.class));
 			} else {
 				startService(new Intent(this, WeatherService.class));
 			}
@@ -95,7 +96,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     }
 	private boolean isServiceRunning() {
 		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+		for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 			if (WeatherService.class.getName().equals(service.service.getClassName())) {
 				return true;
 			}
@@ -122,6 +123,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
+                        finish();
                     }
                 }).create().show();
     }

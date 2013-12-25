@@ -35,12 +35,12 @@ public class SplashScreen extends Activity {
 		noty = (TextView) findViewById(R.id.noty);
 		noty.setText(this.getString(R.string.pd_message));
 		progress = (ProgressBar) findViewById(R.id.progress);
+
     }
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
         region = data.getStringExtra("region");
-        showForecast();
     }
     @Override
     protected void onResume() {
@@ -53,9 +53,7 @@ public class SplashScreen extends Activity {
 	}
 	
 	protected void gpsAlertBox(String mymessage) {
-        final Context context = this;
-        AlertDialog.Builder ad;
-        ad = new AlertDialog.Builder(this);	
+        AlertDialog.Builder ad = new AlertDialog.Builder(this);
         ad.setMessage(mymessage);
         ad.setPositiveButton(this.getString(R.string.GPS_button), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
@@ -155,6 +153,7 @@ public class SplashScreen extends Activity {
                 forecast = result;
                 if(region == null) {
                     gpsAlertBox(thisContext.getString(R.string.GPS_error));
+                    return;
                 } else if(forecast == null) {
                     alert(thisContext.getString(R.string.error), thisContext);
                 } else {
