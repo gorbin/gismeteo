@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 //Master
 public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener {
-
+	private final String ON = "Включить", OFF = "Выключить";
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
 	private LoadTask lt;
@@ -68,14 +68,40 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-		menu.add(this.getString(R.string.listreg_button));
+		MenuItem serviceBtn = menu.findItem(R.id.service_mbtn);
+		if(isServiceRunning()){
+			serviceBtn.setTitle(String.format(this.getString(R.string.service),OFF));
+		} else {
+			serviceBtn.setTitle(String.format(this.getString(R.string.service),ON));
+		}
         return super.onCreateOptionsMenu(menu);
     }
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-      startActivityForResult(new Intent(this,RegionList.class),1);
-      return super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+			case R.id.listregion:
+			startActivityForResult(new Intent(this,RegionList.class),1);
+			return true;
+		case R.id.service_mbtn:
+			if(isServiceRunning()){
+				stoptService(new Intent(this, WeatherService.class));
+			} else {
+				startService(new Intent(this, WeatherService.class));
+			}
+			return true;
+		default:
+            return super.onOptionsItemSelected(item);
+		}
     }
+	private boolean isServiceRunning() {
+		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+			if (WeatherService.class.getName().equals(service.service.getClassName())) {
+				return true;
+			}
+		}
+		return false;
+	}	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}

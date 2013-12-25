@@ -1,3 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+	<item android:id="@+id/listregion"
+          android:title="@string/listreg_button" />
+ 
+    <item android:id="@+id/service_mbtn"/>
+	<item android:id="@+id/service_mbtn2"/>
 </menu>

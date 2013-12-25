@@ -8,6 +8,7 @@
 	<string name="GPS_error">Не удается точно определить расположение, включите GPS или уточните регион</string>
 	<string name="GPS_button">Включить GPS</string>
 	<string name="listreg_button">Выбрать регион</string>
+	<string name="listreg_button">%s оповещения</string>
     <string name="error">Проблемы с интернет соединением, перезапустите приложение</string>
 	<string name="noLocation">Не можем определить ваше расположение</string>
     <string name="close">Закрыть</string>
