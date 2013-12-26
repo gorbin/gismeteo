@@ -30,7 +30,7 @@ public class GetLocation {
         String provider = locationManager.getBestProvider(criteria, true);
         if(provider !=null){
 			currentLocation = locationManager.getLastKnownLocation(provider);
-			if(currentLocation != null && currentLocation.getTime() > Calendar.getInstance().getTimeInMillis() - 60 * 60 * 1000) {
+			if(currentLocation != null && currentLocation.getTime() > Calendar.getInstance().getTimeInMillis() - 180 * 60 * 1000) {
 				currentLocation = null;
 			}
         }

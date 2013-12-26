@@ -24,7 +24,6 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	private ForecastForRegion task;
     private String region = new String();
     private RegionTask rt;
-	private ForecastTaskListener FTL = new ForecastTaskListener();
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
  
     @Override
@@ -53,22 +52,22 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		}
     }
 	private void showRegion(){
-	    rt = new RegionTask(this, region);
+	    rt = new RegionTask(this, region, this);
         rt.execute();
 	}
 	private void showForecast(){
-	    task = ForecastForRegion(this, region, false, this);
+	    task = new ForecastForRegion(this, region, false, this);
 		task.execute();
 	}
 	public void onTaskComplete(ArrayList<Weather> forecast){
-		Intent intent = new Intent(thisContext,MainActivity.class);
+		Intent intent = new Intent(this,MainActivity.class);
 		intent.putExtra("forecast",forecast);
 		startActivity(intent);
 		finish();
 	}
 	public void onRegionTaskComplete(String region){
 		noty.setText(this.getString(R.string.pd_forecast));
-		showForecast()
+		showForecast();
 	}
 	// protected void gpsAlertBox(String mymessage) {
         // final Context context = this;
@@ -116,14 +115,17 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         // ad.show();
     // }
 
-    class RegionTask extends AsyncTask<Void, String, ArrayList<Weather>> {
+    class RegionTask extends AsyncTask<Void, String, String> {
         private Context thisContext;
 		private String region;
 		private GetLocation gl;
+        private RegionTaskListener callback;
+        private AlertIt ad = new AlertIt();
         
-		public LoadTask(Context context, String region) {
+		public RegionTask(Context context, String region, RegionTaskListener callback) {
             thisContext = context;
 			this.region = region;
+            this.callback = callback;
             gl = new GetLocation(thisContext);
         }
 		
@@ -133,7 +135,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         }
 		
         @Override
-        protected ArrayList<Weather> doInBackground(Void... params) {
+        protected String doInBackground(Void... params) {
             try {
 				
                 if(region.length() == 0){
@@ -148,9 +150,6 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 					}
 				}               
                 return region;
-            } catch (IOException e) {
-                e.printStackTrace();
-				return null;
             } catch (Exception e) {
                 e.printStackTrace();
 				return null;
@@ -158,17 +157,14 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         }
 		
         @Override
-        protected void onPostExecute(ArrayList<Weather> result) {
+        protected void onPostExecute(String result) {
             super.onPostExecute(result);
 			if(result == null) {
-				AlertIt.gpsAlertBox(thisContext.getString(R.string.GPS_error),thisContext);
+				ad.gpsAlertBox(thisContext.getString(R.string.GPS_error),thisContext);
 			} else {
-			callback.onRegionTaskComplete(result);
+			    callback.onRegionTaskComplete(result);
 			}
 		} 
 		
     }
-}
-public interface FRegionTaskListener {
-    public void onRegionTaskComplete(String region);
 }

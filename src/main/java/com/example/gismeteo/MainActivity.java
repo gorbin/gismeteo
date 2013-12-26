@@ -1,5 +1,6 @@
 package com.example.gismeteo;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -26,12 +27,12 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	private final String ON = "ON", OFF = "OFF";
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
-	private LoadTask lt;
+//	private LoadTask lt;
 	private ForecastForRegion task;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
 	private String region = new String();
     private int height;
-	private ForecastTaskListener FTL = new ForecastTaskListener();
+    private AlertIt ad = new AlertIt();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +64,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		if (forecast != null){
 			listItems(forecast);
 		} else{
-			AlertIt.alert(this.getString(R.string.error),this);
+			ad.alert(this.getString(R.string.error),this);
 		}
 	}
 	
@@ -72,9 +73,9 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         getMenuInflater().inflate(R.menu.main, menu);
 		MenuItem serviceBtn = menu.findItem(R.id.service_mbtn);
 		if(isServiceRunning()){
-			serviceBtn.setTitle(String.format(this.getString(R.string.service),OFF));
+			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),OFF));
 		} else {
-			serviceBtn.setTitle(String.format(this.getString(R.string.service),ON));
+			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),ON));
 		}
         return super.onCreateOptionsMenu(menu);
     }
@@ -86,7 +87,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			return true;
 		case R.id.service_mbtn:
 			if(isServiceRunning()){
-				stoptService(new Intent(this, WeatherService.class));
+				stopService(new Intent(this, WeatherService.class));
 			} else {
 				startService(new Intent(this, WeatherService.class));
 			}
@@ -97,7 +98,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     }
 	private boolean isServiceRunning() {
 		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+		for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 			if (WeatherService.class.getName().equals(service.service.getClassName())) {
 				return true;
 			}
@@ -115,7 +116,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	private void showForecast(){
 	    // lt = new LoadTask(this, region);
         // lt.execute();
-		task = ForecastForRegion(this, region, true, this);
+		task = new ForecastForRegion(this, region, true, this);
 		task.execute();
 		
 	}

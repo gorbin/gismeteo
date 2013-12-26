@@ -1,5 +1,14 @@
 package com.example.gismeteo;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
 class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
         private Context thisContext;
 		private String region;
@@ -7,11 +16,13 @@ class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
         private XmlParse gismeteo;
 		private boolean progressDialogSet;
 		private ForecastTaskListener callback;
+        private AlertIt ad = new AlertIt();
         
 		public ForecastForRegion(Context context, String region, boolean progressDialogSet, ForecastTaskListener callback) {
             thisContext = context;
 			this.region = region;
-			if(progressDialog){
+            this.progressDialogSet = progressDialogSet;
+			if(progressDialogSet){
 				progressDialog = ProgressDialog.show(thisContext, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_forecast), true);
 			}
 			this.callback = callback;
@@ -46,7 +57,7 @@ class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
 			progressDialog.dismiss();
 			}
 			if(result == null) {
-				AlertIt.alert(thisContext.getString(R.string.error), thisContext);
+				ad.alert(thisContext.getString(R.string.error), thisContext);
 			} 
 			callback.onTaskComplete(result);
         }
