@@ -1,3 +1,5 @@
+package com.example.gismeteo;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -9,23 +11,23 @@ public class WeatherService extends Service {
 NotificationManager nm;
   public void onCreate() {
     super.onCreate();
-    Log.d(LOG_TAG, "onCreate");
+    Log.e(LOG_TAG, "onCreate");
 	nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
   }
   
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Log.d(LOG_TAG, "onStartCommand");
+    Log.e(LOG_TAG, "onStartCommand");
     someTask();
     return super.onStartCommand(intent, flags, startId);
   }
 
   public void onDestroy() {
     super.onDestroy();
-    Log.d(LOG_TAG, "onDestroy");
+    Log.e(LOG_TAG, "onDestroy");
   }
 
   public IBinder onBind(Intent intent) {
-    Log.d(LOG_TAG, "onBind");
+    Log.e(LOG_TAG, "onBind");
     return null;
   }
   
@@ -33,7 +35,7 @@ NotificationManager nm;
 	 new Thread(new Runnable() {
       public void run() {
         for (int i = 1; i<=5; i++) {
-          Log.d(LOG_TAG, "i = " + i);
+          Log.e(LOG_TAG, "i = " + i);
           try {
             TimeUnit.SECONDS.sleep(1);
           } catch (InterruptedException e) {
