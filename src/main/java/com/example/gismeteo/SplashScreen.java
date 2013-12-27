@@ -25,6 +25,8 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
     private String region = new String();
     private RegionTask rt;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
+	private SharedPreferences sPref;
+	private final String REGION = "region";
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +65,11 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		Intent intent = new Intent(this,MainActivity.class);
 		intent.putExtra("forecast",forecast);
 		startActivity(intent);
+		overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 		finish();
 	}
 	public void onRegionTaskComplete(String region){
+		this.region = region;
 		noty.setText(this.getString(R.string.pd_forecast));
 		showForecast();
 	}
@@ -155,7 +159,6 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 				return null;
             }
         }
-		
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);

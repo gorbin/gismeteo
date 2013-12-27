@@ -87,9 +87,11 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			return true;
 		case R.id.service_mbtn:
 			if(isServiceRunning()){
-				stopService(new Intent(this, WeatherService.class));
+				// stopService(new Intent(this, WeatherService.class));
+				serviceBtn.setTitle(String.format(this.getString(R.string.service_button), OFF));
 			} else {
-				startService(new Intent(this, WeatherService.class));
+				// startService(new Intent(this, WeatherService.class));
+				serviceBtn.setTitle(String.format(this.getString(R.string.service_button), ON));
 			}
 			return true;
 		default:
@@ -97,13 +99,17 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		}
     }
 	private boolean isServiceRunning() {
-		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-			if (WeatherService.class.getName().equals(service.service.getClassName())) {
-				return true;
-			}
-		}
-		return false;
+		// ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		// for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+			// if (WeatherService.class.getName().equals(service.service.getClassName())) {
+				// return true;
+			// }
+		// }
+		// return false;
+		boolean alarmUp = (PendingIntent.getBroadcast(context, 0, 
+        new Intent("com.my.package.MY_UNIQUE_ACTION"), 
+        PendingIntent.FLAG_NO_CREATE) != null);
+		return alarmUp; 
 	}	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -118,7 +124,27 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         // lt.execute();
 		task = new ForecastForRegion(this, region, true, this);
 		task.execute();
-		
+	}
+	public void listItems(ArrayList<Weather> forecast){
+		adapter = new WeatherListAdapter(getApplicationContext(), forecast, height);
+        listView.setAdapter(adapter);
+		listView.setChildDivider(getResources().getDrawable(android.R.color.transparent));
+        listView.setDividerHeight(0);
+		listView.expandGroup(0);
+    }
+	private void restartNotify() {
+		am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(this, WeatherNotification.class);
+		intent.putExtra("region", region);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
+		// На случай, если мы ранее запускали активити, а потом поменяли время,
+		// откажемся от уведомления
+		am.cancel(pendingIntent);
+		// Устанавливаем разовое напоминание
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.add(Calendar.SECONDS, 15);
+		am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , pendingIntent);
 	}
 	public void onTaskComplete(ArrayList<Weather> forecast){
 		listItems(forecast);
@@ -134,15 +160,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
                     // }
                 // }).create().show();
     // }
-	
-    public void listItems(ArrayList<Weather> forecast){
-		adapter = new WeatherListAdapter(getApplicationContext(), forecast, height);
-        listView.setAdapter(adapter);
-		listView.setChildDivider(getResources().getDrawable(android.R.color.transparent));
-        listView.setDividerHeight(0);
-		listView.expandGroup(0);
-    }
-
 	public void onGroupExpand(int groupPosition) {
 		int lenght = adapter.getGroupCount();
 		for (int i = 0; i < lenght; i++) {

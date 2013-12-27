@@ -35,11 +35,7 @@
 			android:windowSoftInputMode="stateHidden"
 			android:screenOrientation="portrait">
 		</activity>
-        <activity
-                android:name="AlertIt"
-                android:windowSoftInputMode="stateHidden"
-                android:screenOrientation="portrait">
-        </activity>
+		<receiver android:name="WeatherNotification" />
 		<service 
         android:enabled="true" 
         android:name="WeatherService"> 

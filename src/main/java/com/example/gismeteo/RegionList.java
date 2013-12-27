@@ -63,6 +63,7 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
         Intent intent = new Intent();
         intent.putExtra("region", regionList.get(position).toString());
         setResult(RESULT_OK, intent);
+		overridePendingTransition(android.R.anim.slide_in_right, android.R.anim.slide_out_left);
         finish();
     }
 	@Override

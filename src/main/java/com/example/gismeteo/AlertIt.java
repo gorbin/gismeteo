@@ -1,6 +1,5 @@
 package com.example.gismeteo;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -16,12 +15,14 @@ public class AlertIt {
         ad.setMessage(mymessage);
         ad.setPositiveButton(context.getString(R.string.GPS_button), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
-                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                context.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+				context.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             }
         });
         ad.setNegativeButton(context.getString(R.string.listreg_button), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
-				startActivityForResult(new Intent(((Dialog) dialog).getContext(),RegionList.class),1);
+				context.startActivityForResult(new Intent(((Dialog) dialog).getContext(),RegionList.class),1);
+				context.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 				return;
             }
         });
