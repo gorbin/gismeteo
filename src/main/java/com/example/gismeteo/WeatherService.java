@@ -22,7 +22,7 @@ public class WeatherService extends Service {
   
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.e(LOG_TAG, "onStartCommand");
-		GetLocation gl = new GetLocation(intent);
+		GetLocation gl = new GetLocation(this);
 		someTask();
 		return super.onStartCommand(intent, flags, startId);
 	}

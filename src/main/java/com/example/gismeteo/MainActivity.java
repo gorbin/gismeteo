@@ -1,7 +1,9 @@
 package com.example.gismeteo;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +22,7 @@ import android.widget.RelativeLayout;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 //Test
@@ -67,11 +70,11 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			ad.alert(this.getString(R.string.error),this);
 		}
 	}
-	
+    MenuItem serviceBtn;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-		MenuItem serviceBtn = menu.findItem(R.id.service_mbtn);
+		serviceBtn = menu.findItem(R.id.service_mbtn);
 		if(isServiceRunning()){
 			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),OFF));
 		} else {
@@ -86,6 +89,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			startActivityForResult(new Intent(this,RegionList.class),1);
 			return true;
 		case R.id.service_mbtn:
+            restartNotify();
 			if(isServiceRunning()){
 				// stopService(new Intent(this, WeatherService.class));
 				serviceBtn.setTitle(String.format(this.getString(R.string.service_button), OFF));
@@ -106,9 +110,9 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			// }
 		// }
 		// return false;
-		boolean alarmUp = (PendingIntent.getBroadcast(context, 0, 
-        new Intent("com.my.package.MY_UNIQUE_ACTION"), 
-        PendingIntent.FLAG_NO_CREATE) != null);
+		boolean alarmUp = (PendingIntent.getBroadcast(this, 0,
+                new Intent("com.my.package.MY_UNIQUE_ACTION"),
+                PendingIntent.FLAG_NO_CREATE) != null);
 		return alarmUp; 
 	}	
 	@Override
@@ -133,7 +137,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		listView.expandGroup(0);
     }
 	private void restartNotify() {
-		am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(this, WeatherNotification.class);
 		intent.putExtra("region", region);
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
@@ -143,7 +147,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		// Устанавливаем разовое напоминание
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
-		calendar.add(Calendar.SECONDS, 15);
+		calendar.add(Calendar.SECOND, 15);
 		am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , pendingIntent);
 	}
 	public void onTaskComplete(ArrayList<Weather> forecast){

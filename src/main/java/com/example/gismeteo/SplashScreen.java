@@ -25,7 +25,6 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
     private String region = new String();
     private RegionTask rt;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
-	private SharedPreferences sPref;
 	private final String REGION = "region";
  
     @Override
@@ -120,13 +119,13 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
     // }
 
     class RegionTask extends AsyncTask<Void, String, String> {
-        private Context thisContext;
+        private Activity thisContext;
 		private String region;
 		private GetLocation gl;
         private RegionTaskListener callback;
         private AlertIt ad = new AlertIt();
         
-		public RegionTask(Context context, String region, RegionTaskListener callback) {
+		public RegionTask(Activity context, String region, RegionTaskListener callback) {
             thisContext = context;
 			this.region = region;
             this.callback = callback;

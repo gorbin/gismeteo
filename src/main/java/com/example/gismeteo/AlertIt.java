@@ -1,5 +1,6 @@
 package com.example.gismeteo;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -9,7 +10,7 @@ import android.content.Intent;
 public class AlertIt {
     public AlertIt(){ }
 
-	public void gpsAlertBox(String mymessage, Context context) {
+	public void gpsAlertBox(String mymessage, final Activity context) {
         AlertDialog.Builder ad;
         ad = new AlertDialog.Builder(context);	
         ad.setMessage(mymessage);
@@ -29,13 +30,13 @@ public class AlertIt {
         ad.setCancelable(true);
         ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
             public void onCancel(DialogInterface dialog) {
-                finish();
+                context.finish();
                 return;
             }
         });
         ad.show();
     }
-	public void alert(String message, Context context){
+	public void alert(String message, final Activity context){
         AlertDialog.Builder ad = new AlertDialog.Builder(context);
         ad.setMessage(message);
         ad.setCancelable(true);
@@ -43,12 +44,12 @@ public class AlertIt {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
-                        finish();
+                        context.finish();
                     }
                 }).create().show();
 		ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
             public void onCancel(DialogInterface dialog) {
-                finish();
+                context.finish();
                 return;
             }
         });
