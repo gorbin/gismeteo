@@ -25,13 +25,13 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
     private String region = new String();
     private RegionTask rt;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
-	private final String REGION = "region";
+	private final String REGION = "region", FORECAST = "forecast", EXIT = "EXIT";
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
-		if (getIntent().getBooleanExtra("EXIT", false)) {
+		if (getIntent().getBooleanExtra(EXIT, false)) {
 			finish();
 		}
 		noty = (TextView) findViewById(R.id.noty);
@@ -41,7 +41,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
-        region = data.getStringExtra("region");
+        region = data.getStringExtra(REGION);
     }
     @Override
     protected void onResume() {
@@ -57,73 +57,36 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         rt.execute();
 	}
 	private void showForecast(){
-	    task = new ForecastForRegion(this, region, false, this);
+	    task = new ForecastForRegion(region, false, this);
 		task.execute();
 	}
 	public void onTaskComplete(ArrayList<Weather> forecast){
-		Intent intent = new Intent(this,MainActivity.class);
-		intent.putExtra("forecast",forecast);
-		startActivity(intent);
-		overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-		finish();
+		if(forecast != null) {
+			Intent intent = new Intent(this,MainActivity.class);
+			intent.putExtra(FORECAST, forecast);
+			startActivity(intent);
+			overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+			finish();
+		} else {
+			alert(this.getString(R.string.error), this);
+		}
 	}
 	public void onRegionTaskComplete(String region){
-		this.region = region;
-		noty.setText(this.getString(R.string.pd_forecast));
-		showForecast();
+		if(result == null) {
+			gpsAlertBox(this.getString(R.string.GPS_error), this);
+		} else {
+			this.region = region;
+			noty.setText(this.getString(R.string.pd_forecast));
+			showForecast();
+		}
 	}
-	// protected void gpsAlertBox(String mymessage) {
-        // final Context context = this;
-        // AlertDialog.Builder ad;
-        // ad = new AlertDialog.Builder(this);	
-        // ad.setMessage(mymessage);
-        // ad.setPositiveButton(this.getString(R.string.GPS_button), new DialogInterface.OnClickListener() {
-            // public void onClick(DialogInterface dialog, int arg1) {
-                // startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            // }
-        // });
-        // ad.setNegativeButton(this.getString(R.string.listreg_button), new DialogInterface.OnClickListener() {
-            // public void onClick(DialogInterface dialog, int arg1) {
-				// startActivityForResult(new Intent(((Dialog) dialog).getContext(),RegionList.class),1);
-				// return;
-            // }
-        // });
-        // ad.setCancelable(true);
-        // ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            // public void onCancel(DialogInterface dialog) {
-                // finish();
-                // return;
-            // }
-        // });
-        // ad.show();
-    // }
-
-	// public void alert(String message, Context context){
-        // AlertDialog.Builder ad = new AlertDialog.Builder(this);
-        // ad.setMessage(message);
-        // ad.setCancelable(true);
-        // ad.setPositiveButton(context.getString(R.string.close),
-                // new DialogInterface.OnClickListener() {
-                    // public void onClick(DialogInterface dialog, int id) {
-                        // dialog.cancel();
-                        // finish();
-                    // }
-                // }).create().show();
-		// ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            // public void onCancel(DialogInterface dialog) {
-                // finish();
-                // return;
-            // }
-        // });
-        // ad.show();
-    // }
 
     class RegionTask extends AsyncTask<Void, String, String> {
         private Activity thisContext;
 		private String region;
 		private GetLocation gl;
         private RegionTaskListener callback;
-        private AlertIt ad = new AlertIt();
+        private final String THREAD_WAIT = "getLoc";
         
 		public RegionTask(Activity context, String region, RegionTaskListener callback) {
             thisContext = context;
@@ -142,9 +105,9 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
             try {
 				
                 if(region.length() == 0){
-					synchronized ("getLoc") {
+					synchronized (THREAD_WAIT) {
 					try {
-						"getLoc".wait(20000);
+						THREAD_WAIT.wait(20000);
 					} catch (InterruptedException e) {e.printStackTrace();}}
 					gl.checkRegion();
 					region = gl.getRegion();
@@ -168,5 +131,49 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 			}
 		} 
 		
+    }
+	public void alert(String message, Context context){
+        AlertDialog.Builder ad = new AlertDialog.Builder(this);
+        ad.setMessage(message);
+        ad.setCancelable(true);
+        ad.setPositiveButton(context.getString(R.string.close),	new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+				finish();
+			}
+		}).create().show();
+		ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            public void onCancel(DialogInterface dialog) {
+                finish();
+                return;
+            }
+        });
+        ad.show();
+    }
+	public void gpsAlertBox(String mymessage, Context context) {
+		AlertDialog.Builder ad;
+		ad = new AlertDialog.Builder(context);	
+		ad.setMessage(mymessage);
+		ad.setPositiveButton(context.getString(R.string.GPS_button), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int arg1) {
+				startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+				overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+			}
+		});
+		ad.setNegativeButton(context.getString(R.string.listreg_button), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int arg1) {
+				startActivityForResult(new Intent(((Dialog) dialog).getContext(),RegionList.class),1);
+				overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+				return;
+			}
+		});
+		ad.setCancelable(true);
+		ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
+			public void onCancel(DialogInterface dialog) {
+				finish();
+				return;
+			}
+		});
+		ad.show();
     }
 }

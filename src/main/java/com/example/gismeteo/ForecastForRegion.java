@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
-        private Activity thisContext;
 		private String region;
         private ProgressDialog progressDialog;
         private XmlParse gismeteo;
@@ -19,8 +18,7 @@ class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
 		private ForecastTaskListener callback;
         private AlertIt ad = new AlertIt();
         
-		public ForecastForRegion(Activity context, String region, boolean progressDialogSet, ForecastTaskListener callback) {
-            thisContext = context;
+		public ForecastForRegion(String region, boolean progressDialogSet, ForecastTaskListener callback) {
 			this.region = region;
             this.progressDialogSet = progressDialogSet;
 			if(progressDialogSet){
@@ -55,11 +53,8 @@ class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
         protected void onPostExecute(ArrayList<Weather> result) {
             super.onPostExecute(result);
 			if(progressDialogSet){
-			progressDialog.dismiss();
+				progressDialog.dismiss();
 			}
-			if(result == null) {
-				ad.alert(thisContext.getString(R.string.error), thisContext);
-			} 
 			callback.onTaskComplete(result);
         }
     }

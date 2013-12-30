@@ -27,15 +27,15 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 //Test
 public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener, ForecastTaskListener {
-	private final String ON = "ON", OFF = "OFF";
+	private final String FORECAST = "forecast", REGION = "region";
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
-//	private LoadTask lt;
 	private ForecastForRegion task;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
 	private String region = new String();
     private int height;
-    private AlertIt ad = new AlertIt();
+	private MenuItem serviceBtn;
+	private PendingIntent pendingIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +52,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             height = display.getHeight();
         }
         rl.getLayoutParams().height = height;
-
         listView = (ExpandableListView)findViewById(R.id.exListView);
 		listView.setOnGroupExpandListener(this);
         listView.setVerticalFadingEdgeEnabled(false);
@@ -63,14 +62,16 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             }
         });
 		Intent intent = getIntent();
-        forecast = (ArrayList<Weather>) intent.getSerializableExtra("forecast");
+        forecast = (ArrayList<Weather>) intent.getSerializableExtra(FORECAST);
+		region = intent.getString(REGION);
 		if (forecast != null){
 			listItems(forecast);
-		} else{
-			ad.alert(this.getString(R.string.error),this);
+		} else if(region.getLenght != 0){
+			showForecast();
+		} else {
+			alert(this.getString(R.string.error),this);
 		}
 	}
-    MenuItem serviceBtn;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -89,13 +90,13 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			startActivityForResult(new Intent(this,RegionList.class),1);
 			return true;
 		case R.id.service_mbtn:
-            restartNotify();
+            
 			if(isServiceRunning()){
-				// stopService(new Intent(this, WeatherService.class));
-				serviceBtn.setTitle(String.format(this.getString(R.string.service_button), OFF));
+				serviceBtn.setTitle(String.format(this.getString(R.string.service_button), this.getString(R.string.off)));
+				am.cancel(pendingIntent);
 			} else {
-				// startService(new Intent(this, WeatherService.class));
-				serviceBtn.setTitle(String.format(this.getString(R.string.service_button), ON));
+				serviceBtn.setTitle(String.format(this.getString(R.string.service_button), this.getString(R.string.on)));
+				restartNotify();
 			}
 			return true;
 		default:
@@ -103,31 +104,42 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		}
     }
 	private boolean isServiceRunning() {
-		// ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		// for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-			// if (WeatherService.class.getName().equals(service.service.getClassName())) {
-				// return true;
-			// }
-		// }
-		// return false;
+
 		boolean alarmUp = (PendingIntent.getBroadcast(this, 0,
-                new Intent("com.my.package.MY_UNIQUE_ACTION"),
+                new Intent(getApplicationContext(), WeatherNotification.class),
                 PendingIntent.FLAG_NO_CREATE) != null);
 		return alarmUp; 
 	}	
+	private void restartNotify() {
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(this, WeatherNotification.class);
+		intent.putExtra(REGION, region);
+		pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
+		// На случай, если мы ранее запускали активити, а потом поменяли время,
+		// откажемся от уведомления
+		am.cancel(pendingIntent);
+		// Устанавливаем разовое напоминание
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.add(Calendar.SECOND, 5);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , 3000, pendingIntent);
+	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
-        region = data.getStringExtra("region");
+        region = data.getStringExtra(REGION);
         showForecast();
-		// this.setForecastTaskListener();
     }
-
 	private void showForecast(){
-	    // lt = new LoadTask(this, region);
-        // lt.execute();
-		task = new ForecastForRegion(this, region, true, this);
+		task = new ForecastForRegion(region, true, this);
 		task.execute();
+	}
+	public void onTaskComplete(ArrayList<Weather> forecast){
+		if(forecast != null){
+			listItems(forecast);
+		} else {
+			alert(this.getString(R.string.error),this);
+		}
 	}
 	public void listItems(ArrayList<Weather> forecast){
 		adapter = new WeatherListAdapter(getApplicationContext(), forecast, height);
@@ -136,34 +148,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         listView.setDividerHeight(0);
 		listView.expandGroup(0);
     }
-	private void restartNotify() {
-        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent intent = new Intent(this, WeatherNotification.class);
-		intent.putExtra("region", region);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
-		// На случай, если мы ранее запускали активити, а потом поменяли время,
-		// откажемся от уведомления
-		am.cancel(pendingIntent);
-		// Устанавливаем разовое напоминание
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(System.currentTimeMillis());
-		calendar.add(Calendar.SECOND, 15);
-		am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , pendingIntent);
-	}
-	public void onTaskComplete(ArrayList<Weather> forecast){
-		listItems(forecast);
-	}
-    // public void alert(String message){
-        // AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // builder.setMessage(message);
-        // builder.setCancelable(true);
-        // builder.setPositiveButton(this.getString(R.string.close),
-                // new DialogInterface.OnClickListener() {
-                    // public void onClick(DialogInterface dialog, int id) {
-                        // dialog.cancel();
-                    // }
-                // }).create().show();
-    // }
 	public void onGroupExpand(int groupPosition) {
 		int lenght = adapter.getGroupCount();
 		for (int i = 0; i < lenght; i++) {
@@ -172,55 +156,22 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			}
 		}
 	}
-
-    // class LoadTask extends AsyncTask<Void, String, ArrayList<Weather>> {
-        // private Context thisContext;
-		// private String region;
-        // private ProgressDialog progressDialog;
-        // private XmlParse gismeteo;
-		// private boolean progressDialog;
-        
-		// public LoadTask(Context context, String region, boolean progressDialog) {
-            // thisContext = context;
-			// this.region = region;
-			// if(progressDialog){
-				// progressDialog = ProgressDialog.show(MainActivity.this, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_forecast), true);
-			// }
-        // }
-		
-        // @Override
-        // protected void onPreExecute() {
-            // super.onPreExecute();
-        // }
-		
-        // @Override
-        // protected ArrayList<Weather> doInBackground(Void... params) {
-            // try {
-                // gismeteo = new XmlParse(thisContext, region);
-            // return gismeteo.getForecast();
-            // } catch (IOException e) {
-                // progressDialog.dismiss();
-                // e.printStackTrace();
-				// return null;
-            // } catch (XmlPullParserException e) {
-                // progressDialog.dismiss();
-                // e.printStackTrace();
-				// return null;
-            // } catch (Exception e) {
-                // progressDialog.dismiss();
-                // e.printStackTrace();
-				// return null;
-            // }
-        // }
-		
-        // @Override
-        // protected void onPostExecute(ArrayList<Weather> result) {
-            // super.onPostExecute(result);
-            // forecast = result;
-			// progressDialog.dismiss();
-			// if(forecast == null) {
-				// alert(thisContext.getString(R.string.error));
-			// } 
-        // }
-    // }
+	public void alert(String message, Context context){
+        AlertDialog.Builder ad = new AlertDialog.Builder(this);
+        ad.setMessage(message);
+        ad.setCancelable(true);
+        ad.setPositiveButton(context.getString(R.string.close),	new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+				finish();
+			}
+		}).create().show();
+		ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            public void onCancel(DialogInterface dialog) {
+                finish();
+                return;
+            }
+        });
+        ad.show();
+    }
 }
