@@ -63,10 +63,10 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         });
 		Intent intent = getIntent();
         forecast = (ArrayList<Weather>) intent.getSerializableExtra(FORECAST);
-		region = intent.getString(REGION);
+		region = intent.getStringExtra(REGION);
 		if (forecast != null){
 			listItems(forecast);
-		} else if(region.getLenght != 0){
+		} else if(region.length() != 0){
 			showForecast();
 		} else {
 			alert(this.getString(R.string.error),this);
@@ -77,9 +77,9 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         getMenuInflater().inflate(R.menu.main, menu);
 		serviceBtn = menu.findItem(R.id.service_mbtn);
 		if(isServiceRunning()){
-			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),OFF));
+			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),this.getString(R.string.off)));
 		} else {
-			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),ON));
+			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),this.getString(R.string.on)));
 		}
         return super.onCreateOptionsMenu(menu);
     }
@@ -109,9 +109,10 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
                 new Intent(getApplicationContext(), WeatherNotification.class),
                 PendingIntent.FLAG_NO_CREATE) != null);
 		return alarmUp; 
-	}	
+	}
+    AlarmManager am;
 	private void restartNotify() {
-        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(this, WeatherNotification.class);
 		intent.putExtra(REGION, region);
 		pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
@@ -131,7 +132,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         showForecast();
     }
 	private void showForecast(){
-		task = new ForecastForRegion(region, true, this);
+		task = new ForecastForRegion(this, region, true, this);
 		task.execute();
 	}
 	public void onTaskComplete(ArrayList<Weather> forecast){

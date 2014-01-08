@@ -57,7 +57,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         rt.execute();
 	}
 	private void showForecast(){
-	    task = new ForecastForRegion(region, false, this);
+	    task = new ForecastForRegion(this, region, false, this);
 		task.execute();
 	}
 	public void onTaskComplete(ArrayList<Weather> forecast){
@@ -72,7 +72,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		}
 	}
 	public void onRegionTaskComplete(String region){
-		if(result == null) {
+		if(region == null) {
 			gpsAlertBox(this.getString(R.string.GPS_error), this);
 		} else {
 			this.region = region;
@@ -125,7 +125,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 			if(result == null) {
-				ad.gpsAlertBox(thisContext.getString(R.string.GPS_error),thisContext);
+				gpsAlertBox(thisContext.getString(R.string.GPS_error),thisContext);
 			} else {
 			    callback.onRegionTaskComplete(result);
 			}

@@ -4,10 +4,12 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class WeatherService extends Service implements ForecastTaskListener{
@@ -20,17 +22,17 @@ public class WeatherService extends Service implements ForecastTaskListener{
 		Log.e(LOG_TAG, "onCreate");
 		// nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	}
-  
+    NotificationManager nm;
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.e(LOG_TAG, "onStartCommand");
 		region = intent.getStringExtra("region");
 		// Этот метод будет вызываться по событию, сочиним его позже
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notification = new Notification(R.drawable.ic_launcher, "Test"+region, System.currentTimeMillis());
-		Intent intentTL = new Intent(context, MainActivity.class);
+		Intent intentTL = new Intent(this, MainActivity.class);
 		intentTL.putExtra("region",region);
-		notification.setLatestEventInfo(context, "Test", "Do something!" + region,
-		PendingIntent.getActivity(context, 0, intentTL, PendingIntent.FLAG_CANCEL_CURRENT));
+		notification.setLatestEventInfo(this, "Test", "Do something!" + region,
+		PendingIntent.getActivity(this, 0, intentTL, PendingIntent.FLAG_CANCEL_CURRENT));
 		notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 		nm.notify(1, notification);
 		// ===========================================================
@@ -49,7 +51,7 @@ public class WeatherService extends Service implements ForecastTaskListener{
 	}
   
 	void someTask() {
-		ForecastForRegion task = new ForecastForRegion(region, false, this);
+		ForecastForRegion task = new ForecastForRegion(this, region, false, this);
 		task.execute();
         // stopSelf();
 

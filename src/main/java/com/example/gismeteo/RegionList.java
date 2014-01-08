@@ -62,7 +62,7 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
     }
 	@Override
 	public void onBackPressed() {
-		if(getCallingActivity().getClassName() == SplashScreen.class)
+		if(getCallingActivity().getClassName().equals(SplashScreen.class)){
 			Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			intent.putExtra(EXIT, true);
