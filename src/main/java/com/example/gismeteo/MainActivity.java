@@ -1,15 +1,12 @@
 package com.example.gismeteo;
 
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Display;
@@ -19,12 +16,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
-import org.xmlpull.v1.XmlPullParserException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 //Test
 public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener, ForecastTaskListener {
 	private final String FORECAST = "forecast", REGION = "region";
@@ -34,7 +27,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
 	private String region = new String();
     private int height;
-	private MenuItem serviceBtn;
+	private MenuItem serviceBtn,serviceBtn2;
 	private PendingIntent pendingIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +68,8 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        serviceBtn2 = menu.findItem(R.id.service_mbtn2);
+        serviceBtn2.setTitle("Settings");
 		serviceBtn = menu.findItem(R.id.service_mbtn);
 		if(isServiceRunning()){
 			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),this.getString(R.string.off)));
@@ -99,6 +94,15 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 				restartNotify();
 			}
 			return true;
+        case R.id.service_mbtn2:
+            if (android.os.Build.VERSION.SDK_INT < 11) {
+                startActivity(new Intent(this, Prefs.class));
+            } else {
+                getFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new PrefsFrag())
+                        .commit();
+            }
+            return true;
 		default:
             return super.onOptionsItemSelected(item);
 		}
@@ -119,7 +123,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		// На случай, если мы ранее запускали активити, а потом поменяли время,
 		// откажемся от уведомления
 		am.cancel(pendingIntent);
-		// Устанавливаем разовое напоминание
+		// Устанавливаем многоразовое напоминание
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		calendar.add(Calendar.SECOND, 5);

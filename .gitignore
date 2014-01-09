@@ -217,7 +217,7 @@ pip-log.txt
 # Android Studio
 .idea/
 /*/local.properties
-/*/out
+out/
 /*/*/build
 /*/*/production
 *.iml

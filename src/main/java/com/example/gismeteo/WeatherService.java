@@ -6,7 +6,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -29,12 +32,21 @@ public class WeatherService extends Service implements ForecastTaskListener{
 		// Этот метод будет вызываться по событию, сочиним его позже
         nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notification = new Notification(R.drawable.ic_launcher, "Test"+region, System.currentTimeMillis());
+
+        NotificationCompat.Builder notit  = new NotificationCompat.Builder(this)
+                .setContentTitle("Test builder")
+                .setContentText("Builder Do something!")
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher))
+                .setTicker("Colder from Builder");
+//                .build();
 		Intent intentTL = new Intent(this, MainActivity.class);
 		intentTL.putExtra("region",region);
 		notification.setLatestEventInfo(this, "Test", "Do something!" + region,
 		PendingIntent.getActivity(this, 0, intentTL, PendingIntent.FLAG_CANCEL_CURRENT));
 		notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 		nm.notify(1, notification);
+        nm.notify(2, notit.build());
 		// ===========================================================
 		someTask();
 		return super.onStartCommand(intent, flags, startId);
