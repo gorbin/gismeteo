@@ -127,7 +127,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		calendar.add(Calendar.SECOND, 5);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , 3000, pendingIntent);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , 20000, pendingIntent);
 	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

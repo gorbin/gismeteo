@@ -37,7 +37,7 @@ public class WeatherService extends Service implements ForecastTaskListener{
                 .setContentTitle("Test builder")
                 .setContentText("Builder Do something!")
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher))
+//                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher))
                 .setTicker("Colder from Builder");
 //                .build();
 		Intent intentTL = new Intent(this, MainActivity.class);
@@ -66,6 +66,7 @@ public class WeatherService extends Service implements ForecastTaskListener{
 		ForecastForRegion task = new ForecastForRegion(this, region, false, this);
 		task.execute();
         // stopSelf();
+//        sendNotif("dend notif");
 
   }
 	public void onTaskComplete(ArrayList<Weather> forecast){
@@ -91,6 +92,6 @@ public class WeatherService extends Service implements ForecastTaskListener{
     
 		notif.flags |= Notification.FLAG_AUTO_CANCEL;
     
-		nm.notify(2, notif);
+		nm.notify(3, notif);
 	}
 }

@@ -20,6 +20,7 @@ class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
         
 		public ForecastForRegion(Context context, String region, boolean progressDialogSet, ForecastTaskListener callback) {
 			this.region = region;
+            thisContext=context;
             this.progressDialogSet = progressDialogSet;
 			if(progressDialogSet){
 				progressDialog = ProgressDialog.show(thisContext, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_forecast), true);
@@ -43,7 +44,8 @@ class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
             } catch (XmlPullParserException e) {
                 e.printStackTrace();
 				return null;
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
 				return null;
             }

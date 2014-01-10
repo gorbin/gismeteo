@@ -9,11 +9,6 @@
             android:key="evening_pref"
             android:title="@string/evening_notif"
             android:summary="@string/no_notif" />
-        <com.example.gismeteo.TimePreference
-                android:key="alarm_time"
-                android:title="Lunch Alarm Time"
-                android:defaultValue="off"
-                android:summary="Set your desired time for the lunch alarm"
-                android:dependency="alarm" />
+
 	</PreferenceCategory>
 </PreferenceScreen>
