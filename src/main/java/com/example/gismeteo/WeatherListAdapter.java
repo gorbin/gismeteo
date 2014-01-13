@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import java.util.ArrayList;
+
 public class WeatherListAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private final ArrayList<Weather> forecast;
@@ -25,8 +26,7 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
     static class ViewHolder {
         public TextView date, tod, weather, pressure, wind, relwet, heat;
     }
-	private void WeatherColor(int position, View rowView)
-	{
+	private void WeatherColor(int position, View rowView) {
 		for(int i = 0; i < todArray.length; i++)
 		{
 			if(forecast.get(position).getTimeOfDay().equals(todArray[i])){
@@ -114,7 +114,6 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
         return rowView;
 
     }
-
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
                              View convertView, ViewGroup parent) {
@@ -138,7 +137,6 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
 		WeatherColor(groupPosition, childView);
         return childView;
     }
-
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;

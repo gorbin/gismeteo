@@ -84,7 +84,7 @@ public class WeatherService extends Service implements ForecastTaskListener{
 		Notification notif = new Notification(R.drawable.ic_launcher, message,
 		System.currentTimeMillis());
     
-		Intent intent = new Intent(this, MainActivity.class);
+		Intent intent = new Intent(this, SplashScreen.class);
 		intent.putExtra("region", region);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
     
