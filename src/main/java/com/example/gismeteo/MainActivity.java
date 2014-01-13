@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.app.Activity;
@@ -51,7 +52,11 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         listView.setVerticalFadingEdgeEnabled(false);
         listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             public boolean onGroupClick(ExpandableListView arg0, View itemView, int itemPosition, long itemId) {
-                listView.expandGroup(itemPosition);
+                if (android.os.Build.VERSION.SDK_INT >= 14){
+                    listView.expandGroup(itemPosition, true);
+                } else {
+                    listView.expandGroup(itemPosition);
+                }
                 return true;
             }
         });
@@ -114,7 +119,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		}
     }
 	private boolean isServiceRunning() {
-
 		boolean alarmUp = (PendingIntent.getBroadcast(this, 0,
                 new Intent(getApplicationContext(), WeatherNotification.class),
                 PendingIntent.FLAG_NO_CREATE) != null);

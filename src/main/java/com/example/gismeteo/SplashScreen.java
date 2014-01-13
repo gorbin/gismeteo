@@ -6,15 +6,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import org.json.JSONException;
-import org.xmlpull.v1.XmlPullParserException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class SplashScreen extends Activity implements RegionTaskListener, ForecastTaskListener {
@@ -24,7 +19,6 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	private ForecastForRegion task;
     private String region = new String();
     private RegionTask rt;
-    private ArrayList<Weather> forecast = new ArrayList<Weather>();
 	private final String REGION = "region", FORECAST = "forecast", EXIT = "EXIT";
  
     @Override

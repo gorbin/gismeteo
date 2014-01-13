@@ -40,7 +40,7 @@ public class WeatherService extends Service implements ForecastTaskListener{
 //                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher))
                 .setTicker("Colder from Builder");
 //                .build();
-		Intent intentTL = new Intent(this, MainActivity.class);
+		Intent intentTL = new Intent(this, SplashScreen.class);
 		intentTL.putExtra("region",region);
 		notification.setLatestEventInfo(this, "Test", "Do something!" + region,
 		PendingIntent.getActivity(this, 0, intentTL, PendingIntent.FLAG_CANCEL_CURRENT));
@@ -71,27 +71,40 @@ public class WeatherService extends Service implements ForecastTaskListener{
   }
 	public void onTaskComplete(ArrayList<Weather> forecast){
 		if(forecast != null){
-			if(forecast.get(2).getTemperatureMin()>forecast.get(0).getTemperatureMin()){
-				sendNotif("Warmer to "+forecast.get(forecast.size() - 1).getTemperatureMin()+"C");
+
+			if(forecast.get(forecast.size() - 1).getTemperatureMin()>forecast.get(0).getTemperatureMin()){
+				sendNotif("Warmer to "+forecast.get(forecast.size() - 1).getTemperatureMin()+" C", 101);
 			} else {
-				sendNotif("Colder to "+forecast.get(forecast.size() - 1).getTemperatureMin()+"C");
+				sendNotif("Colder to "+forecast.get(forecast.size() - 1).getTemperatureMin()+" C", 101);
 			}
+            for (int i = 0; i < forecast.size(); i++) {
+                if(forecast.get(i).getTimeOfDay().equals("Ночь")){
+                    sendNotif("Temperature at night "+forecast.get(i).getTemperatureMin()+" C", 102);
+                }
+            }
 		} else{ Log.e(LOG_TAG, "no forecast");} 
 		stopSelf();
 	
 	}
-	void sendNotif(String message) {
-		Notification notif = new Notification(R.drawable.ic_launcher, message,
-		System.currentTimeMillis());
-    
+	void sendNotif(String message, int i) {
+//		Notification notif = new Notification(R.drawable.ic_launcher, message,
+//		System.currentTimeMillis());
+        NotificationCompat.Builder notif  = new NotificationCompat.Builder(this)
+                .setContentTitle("At night")
+                .setContentText(message)
+                .setSmallIcon(R.drawable.ic_launcher)
+//                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher))
+                .setTicker(message);
+//                .build();
 		Intent intent = new Intent(this, SplashScreen.class);
 		intent.putExtra("region", region);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
     
-		notif.setLatestEventInfo(this, "GisWeather", message, pIntent);
+//		notif.setLatestEventInfo(this, "GisWeather", message, pIntent);
     
-		notif.flags |= Notification.FLAG_AUTO_CANCEL;
+//		notif.flags |= Notification.FLAG_AUTO_CANCEL;
     
-		nm.notify(3, notif);
+//		nm.notify(i, notif);
+        nm.notify(i, notif.build());
 	}
 }
