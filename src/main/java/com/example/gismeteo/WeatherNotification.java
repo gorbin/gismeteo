@@ -17,7 +17,6 @@ public class WeatherNotification extends BroadcastReceiver {
 		updater.putExtra("region",region);
 		context.startService(updater);
 		Log.d("AlarmReceiver", "Called context.startService from AlarmReceiver.onReceive");
-		// Интент для активити, которую мы хотим запускать при нажатии на уведомление
-		
+
 	}
 }

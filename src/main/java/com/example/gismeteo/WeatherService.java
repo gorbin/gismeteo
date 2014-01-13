@@ -33,18 +33,22 @@ public class WeatherService extends Service implements ForecastTaskListener{
         nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notification = new Notification(R.drawable.ic_launcher, "Test"+region, System.currentTimeMillis());
 
+
+		Intent intentTL = new Intent(this, SplashScreen.class);
+		intentTL.putExtra("region",region);
+		notification.setLatestEventInfo(this, "Test", "Do something!" + region,
+		PendingIntent.getActivity(this, 0, intentTL, PendingIntent.FLAG_CANCEL_CURRENT));
+		notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
+        PendingIntent wat = PendingIntent.getActivity(this, 0, intentTL, PendingIntent.FLAG_CANCEL_CURRENT);
         NotificationCompat.Builder notit  = new NotificationCompat.Builder(this)
+                .setContentIntent(wat)
                 .setContentTitle("Test builder")
                 .setContentText("Builder Do something!")
                 .setSmallIcon(R.drawable.ic_launcher)
 //                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher))
                 .setTicker("Colder from Builder");
 //                .build();
-		Intent intentTL = new Intent(this, SplashScreen.class);
-		intentTL.putExtra("region",region);
-		notification.setLatestEventInfo(this, "Test", "Do something!" + region,
-		PendingIntent.getActivity(this, 0, intentTL, PendingIntent.FLAG_CANCEL_CURRENT));
-		notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
+
 		nm.notify(1, notification);
         nm.notify(2, notit.build());
 		// ===========================================================
@@ -89,17 +93,18 @@ public class WeatherService extends Service implements ForecastTaskListener{
 	void sendNotif(String message, int i) {
 //		Notification notif = new Notification(R.drawable.ic_launcher, message,
 //		System.currentTimeMillis());
+
+		Intent intent = new Intent(this, SplashScreen.class);
+		intent.putExtra("region", region);
+		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
         NotificationCompat.Builder notif  = new NotificationCompat.Builder(this)
+                .setContentIntent(pIntent)
                 .setContentTitle("At night")
                 .setContentText(message)
                 .setSmallIcon(R.drawable.ic_launcher)
 //                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher))
                 .setTicker(message);
 //                .build();
-		Intent intent = new Intent(this, SplashScreen.class);
-		intent.putExtra("region", region);
-		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-    
 //		notif.setLatestEventInfo(this, "GisWeather", message, pIntent);
     
 //		notif.flags |= Notification.FLAG_AUTO_CANCEL;

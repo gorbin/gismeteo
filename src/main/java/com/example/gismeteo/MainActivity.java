@@ -61,7 +61,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             }
         });
 		Intent intent = getIntent();
-        forecast = (ArrayList<Weather>) intent.getParcelableExtra(FORECAST);
+        forecast = intent.getParcelableArrayListExtra(FORECAST);
 		region = intent.getStringExtra(REGION);
 		if (forecast != null){
 			listItems(forecast);
@@ -96,6 +96,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			return true;
 		case R.id.service_mbtn:
 			if(isServiceRunning()){
+                am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 				Intent intent = new Intent(this, WeatherNotification.class);
                 intent.putExtra(REGION, region);
                 pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );

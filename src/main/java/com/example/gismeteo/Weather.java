@@ -52,8 +52,23 @@ public class Weather implements Parcelable {
     }
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeStringArray(new String[] {date, timeOfDay, weekday, cloudiness, precipitation, windDirection});
-        parcel.writeIntArray(new int[] {pressure, temperatureMin, temperatureMax, windMin, windMax, wetMin,wetMax, heatMin, heatMax});
+        parcel.writeString(date);
+        parcel.writeString(timeOfDay);
+        parcel.writeString(weekday);
+        parcel.writeString(cloudiness);
+        parcel.writeString(precipitation);
+        parcel.writeString(windDirection);
+        parcel.writeInt(pressure);
+        parcel.writeInt(temperatureMin);
+        parcel.writeInt(temperatureMax);
+        parcel.writeInt(windMin);
+        parcel.writeInt(windMax);
+        parcel.writeInt(wetMin);
+        parcel.writeInt(wetMax);
+        parcel.writeInt(heatMin);
+        parcel.writeInt(heatMax);
+//        parcel.writeStringArray(new String[] {date, timeOfDay, weekday, cloudiness, precipitation, windDirection});
+//        parcel.writeIntArray(new int[] {pressure, temperatureMin, temperatureMax, windMin, windMax, wetMin, wetMax, heatMin, heatMax});
     }
     public static final Parcelable.Creator<Weather> CREATOR = new Parcelable.Creator<Weather>() {
         @Override
