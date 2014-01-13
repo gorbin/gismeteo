@@ -29,6 +29,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     private int height;
 	private MenuItem serviceBtn,serviceBtn2;
 	private PendingIntent pendingIntent;
+    private AlarmManager am;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +56,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             }
         });
 		Intent intent = getIntent();
-        forecast = (ArrayList<Weather>) intent.getSerializableExtra(FORECAST);
+        forecast = (ArrayList<Weather>) intent.getParcelableExtra(FORECAST);
 		region = intent.getStringExtra(REGION);
 		if (forecast != null){
 			listItems(forecast);
@@ -71,12 +72,16 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         serviceBtn2 = menu.findItem(R.id.service_mbtn2);
         serviceBtn2.setTitle("Settings");
 		serviceBtn = menu.findItem(R.id.service_mbtn);
-		if(isServiceRunning()){
-			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),this.getString(R.string.off)));
-		} else {
-			serviceBtn.setTitle(String.format(this.getString(R.string.service_button),this.getString(R.string.on)));
-		}
         return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
+        if(isServiceRunning()){
+            serviceBtn.setTitle(String.format(this.getString(R.string.service_button),this.getString(R.string.off)));
+        } else {
+            serviceBtn.setTitle(String.format(this.getString(R.string.service_button),this.getString(R.string.on)));
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -85,12 +90,13 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			startActivityForResult(new Intent(this,RegionList.class),1);
 			return true;
 		case R.id.service_mbtn:
-            
 			if(isServiceRunning()){
-				serviceBtn.setTitle(String.format(this.getString(R.string.service_button), this.getString(R.string.off)));
+				Intent intent = new Intent(this, WeatherNotification.class);
+                intent.putExtra(REGION, region);
+                pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
 				am.cancel(pendingIntent);
+                pendingIntent.cancel();
 			} else {
-				serviceBtn.setTitle(String.format(this.getString(R.string.service_button), this.getString(R.string.on)));
 				restartNotify();
 			}
 			return true;
@@ -114,16 +120,13 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
                 PendingIntent.FLAG_NO_CREATE) != null);
 		return alarmUp; 
 	}
-    AlarmManager am;
 	private void restartNotify() {
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(this, WeatherNotification.class);
 		intent.putExtra(REGION, region);
 		pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
-		// На случай, если мы ранее запускали активити, а потом поменяли время,
-		// откажемся от уведомления
 		am.cancel(pendingIntent);
-		// Устанавливаем многоразовое напоминание
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		calendar.add(Calendar.SECOND, 5);
