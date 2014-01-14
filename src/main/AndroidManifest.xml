@@ -38,6 +38,7 @@
         <activity
                 android:name="Prefs"
                 android:windowSoftInputMode="stateHidden"
+                android:theme="@android:style/Theme.Light"
                 android:screenOrientation="portrait">
         </activity>
 		<receiver android:name="WeatherNotification" />

@@ -24,4 +24,5 @@ public class PrefsFrag extends PreferenceFragment {
 
         return view;
     }
+
 }

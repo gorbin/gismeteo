@@ -7,16 +7,17 @@ import android.content.Intent;
 import android.util.Log;
 
 public class WeatherNotification extends BroadcastReceiver {
-	int i;
+	private final String REGION = "region", FIRST_NOTIF = "firstNotif", SECOND_NOTIF = "secondNotif";
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		i++;
-		String region = intent.getStringExtra("region");
-	
+		String region = intent.getStringExtra(REGION);
+	    boolean first = intent.getBooleanExtra(FIRST_NOTIF, false);
+        boolean second = intent.getBooleanExtra(SECOND_NOTIF, false);
 		Intent updater = new Intent(context, WeatherService.class);
-		updater.putExtra("region",region);
-		context.startService(updater);
-		Log.d("AlarmReceiver", "Called context.startService from AlarmReceiver.onReceive");
+		updater.putExtra(REGION,region);
+        updater.putExtra(FIRST_NOTIF, first);
+        updater.putExtra(SECOND_NOTIF, second);
+        context.startService(updater);
 
 	}
 }

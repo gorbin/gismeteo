@@ -19,11 +19,13 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	private ForecastForRegion task;
     private String region = new String();
     private RegionTask rt;
+    private boolean active;
 	private final String REGION = "region", FORECAST = "forecast", EXIT = "EXIT";
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        active = true;
         setContentView(R.layout.splash_screen);
 		if (getIntent().getBooleanExtra(EXIT, false)) {
 			finish();
@@ -45,6 +47,11 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		} else {
 		showForecast();
 		}
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
     }
 	private void showRegion(){
 	    rt = new RegionTask(this, region, this);
@@ -143,7 +150,9 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
                 return;
             }
         });
-        ad.show();
+        if(active) {
+            ad.show();
+        }
     }
 	public void gpsAlertBox(String mymessage, Context context) {
 		AlertDialog.Builder ad;
@@ -169,6 +178,8 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 				return;
 			}
 		});
-		ad.show();
+        if(active) {
+		    ad.show();
+        }
     }
 }

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 //Test
 public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener, ForecastTaskListener {
-	private final String FORECAST = "forecast", REGION = "region";
+	private final String FORECAST = "forecast", REGION = "region", FIRST_NOTIF = "firstNotif", SECOND_NOTIF = "secondNotif";
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
 	private ForecastForRegion task;
@@ -31,9 +31,11 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	private MenuItem serviceBtn,serviceBtn2;
 	private PendingIntent pendingIntent;
     private AlarmManager am;
+    private boolean active;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        active = true;
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         RelativeLayout rl = (RelativeLayout) findViewById(R.id.RL);
@@ -112,6 +114,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             } else {
                 getFragmentManager().beginTransaction()
                         .replace(android.R.id.content, new PrefsFrag())
+                        .addToBackStack(null)
                         .commit();
             }
             return true;
@@ -129,6 +132,8 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(this, WeatherNotification.class);
 		intent.putExtra(REGION, region);
+        intent.putExtra(FIRST_NOTIF, true);
+        intent.putExtra(SECOND_NOTIF, true);
 		pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
 		am.cancel(pendingIntent);
 
@@ -169,6 +174,11 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			}
 		}
 	}
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
+    }
 	public void alert(String message, Context context){
         AlertDialog.Builder ad = new AlertDialog.Builder(this);
         ad.setMessage(message);
@@ -185,6 +195,8 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
                 return;
             }
         });
-        ad.show();
+        if(active) {
+            ad.show();
+        }
     }
 }

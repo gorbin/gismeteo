@@ -22,7 +22,9 @@
 	
 	<string name="gapi_region_url">http://maps.googleapis.com/maps/api/geocode/json?latlng=%s&amp;sensor=true</string>
 	<string name="gismeteo_url">http://informer.gismeteo.ru/xml/%s_1.xml</string>
-	
+
+    <string name="current_notif">Сейчас %s °С</string>
+    <string name="night_notif">Ночью будет %s °С</string>
     <string name="pressure">%s мм. рт.ст.</string>
     <string name="wind">%s м/с</string>
     <string name="relwet"></string>
