@@ -35,10 +35,10 @@ public class GetLocation {
 			}
         }
         if(currentLocation == null){
-            getGeo(LocationManager.NETWORK_PROVIDER, 10000, 0);
+            getGeo(LocationManager.NETWORK_PROVIDER, 1000, 0);
         }
         if(currentLocation == null){
-            getGeo(LocationManager.GPS_PROVIDER, 10000, 0);
+            getGeo(LocationManager.GPS_PROVIDER, 1000, 0);
         }
     }
 	

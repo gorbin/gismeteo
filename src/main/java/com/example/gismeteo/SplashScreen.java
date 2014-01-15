@@ -49,7 +49,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		}
     }
     @Override
-    public void onStop() {
+    public void onDestroy() {
         super.onStop();
         active = false;
     }
@@ -94,7 +94,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
             thisContext = context;
 			this.region = region;
             this.callback = callback;
-            gl = new GetLocation(thisContext);
+
         }
 		
         @Override
@@ -105,7 +105,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         @Override
         protected String doInBackground(Void... params) {
             try {
-				
+                gl = new GetLocation(thisContext);
                 if(region.length() == 0){
 					synchronized (THREAD_WAIT) {
 					try {
@@ -127,7 +127,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 			if(result == null) {
-				gpsAlertBox(thisContext.getString(R.string.GPS_error),thisContext);
+			    gpsAlertBox(thisContext.getString(R.string.GPS_error),thisContext);
 			} else {
 			    callback.onRegionTaskComplete(result);
 			}
