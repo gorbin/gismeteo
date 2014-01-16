@@ -42,6 +42,8 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
     @Override
     protected void onResume() {
         super.onResume();
+        Intent intent = getIntent();
+        region = intent.getStringExtra(REGION);
 		if (region.length() == 0){
         showRegion();
 		} else {
@@ -84,13 +86,13 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	}
 
     class RegionTask extends AsyncTask<Void, String, String> {
-        private Activity thisContext;
+        private Context thisContext;
 		private String region;
 		private GetLocation gl;
         private RegionTaskListener callback;
         private final String THREAD_WAIT = "getLoc";
         
-		public RegionTask(Activity context, String region, RegionTaskListener callback) {
+		public RegionTask(Context context, String region, RegionTaskListener callback) {
             thisContext = context;
 			this.region = region;
             this.callback = callback;
