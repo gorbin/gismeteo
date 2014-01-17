@@ -30,6 +30,8 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		if (getIntent().getBooleanExtra(EXIT, false)) {
 			finish();
 		}
+        Intent intent = getIntent();
+        region = intent.getStringExtra(REGION);
 		noty = (TextView) findViewById(R.id.noty);
 		noty.setText(this.getString(R.string.pd_message));
 		progress = (ProgressBar) findViewById(R.id.progress);
@@ -42,12 +44,11 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
     @Override
     protected void onResume() {
         super.onResume();
-        Intent intent = getIntent();
-        region = intent.getStringExtra(REGION);
-		if (region.length() == 0){
-        showRegion();
+
+		if (region != null && region.length() != 0){
+            showForecast();
 		} else {
-		showForecast();
+		    showRegion();
 		}
     }
     @Override
@@ -108,17 +109,14 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         protected String doInBackground(Void... params) {
             try {
                 gl = new GetLocation(thisContext);
-                if(region.length() == 0){
+                if(region == null || region.length() == 0){
 					synchronized (THREAD_WAIT) {
-					try {
-						THREAD_WAIT.wait(20000);
-					} catch (InterruptedException e) {e.printStackTrace();}}
-					gl.checkRegion();
-					region = gl.getRegion();
-					if (region == null) {
-						return null;
-					}
-				}               
+                        try {
+                            THREAD_WAIT.wait(20000);
+                        } catch (InterruptedException e) {e.printStackTrace();}}
+                    gl.checkRegion();
+                    region = gl.getRegion();
+				}
                 return region;
             } catch (Exception e) {
                 e.printStackTrace();
