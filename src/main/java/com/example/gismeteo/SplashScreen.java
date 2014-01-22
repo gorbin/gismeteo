@@ -53,8 +53,14 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
     }
     @Override
     public void onDestroy() {
-        super.onStop();
+        super.onDestroy();
         active = false;
+        if (rt != null && rt.getStatus() != AsyncTask.Status.FINISHED) {
+            rt.cancel(true);
+        }
+        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
+            task.cancel(true);
+        }
     }
 	private void showRegion(){
 	    rt = new RegionTask(this, region, this);
@@ -65,7 +71,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		task.execute();
 	}
 	public void onTaskComplete(ArrayList<Weather> forecast){
-		if(forecast != null) {
+		if(forecast != null && active) {
 			Intent intent = new Intent(this,MainActivity.class);
 			intent.putParcelableArrayListExtra(FORECAST, forecast);
             intent.putExtra(REGION, region);
@@ -77,7 +83,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		}
 	}
 	public void onRegionTaskComplete(String region){
-		if(region == null) {
+		if(region == null && active) {
 			gpsAlertBox(this.getString(R.string.GPS_error), this);
 		} else {
 			this.region = region;

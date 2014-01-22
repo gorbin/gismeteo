@@ -1,9 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
         >
+    <group android:id="@+id/group_delete">
 	<item android:id="@+id/listregion"
           android:title="@string/listreg_button"
             android:layout_width="match_parent"/>
  
     <item android:id="@+id/service_mbtn" android:layout_width="match_parent"/>
 	<item android:id="@+id/service_mbtn2" android:layout_width="match_parent"/>
+    </group>
 </menu>
