@@ -1,4 +1,4 @@
-package com.example.gismeteo;
+package com.example.gismeteo.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -13,6 +13,14 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
+import com.example.gismeteo.R;
+import com.example.gismeteo.SplashScreen;
+import com.example.gismeteo.interfaces.ForecastTaskListener;
+import com.example.gismeteo.task.ForecastForRegion;
+import com.example.gismeteo.utils.Weather;
+
+
 
 public class WeatherService extends Service implements ForecastTaskListener{
 

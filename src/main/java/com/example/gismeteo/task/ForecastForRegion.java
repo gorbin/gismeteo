@@ -1,4 +1,4 @@
-package com.example.gismeteo;
+package com.example.gismeteo.task;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,7 +9,12 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
+import com.example.gismeteo.R;
+import com.example.gismeteo.utils.Weather;
+import com.example.gismeteo.xml.XmlParse;
+import com.example.gismeteo.interfaces.ForecastTaskListener;
+
+public class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
 		private String region;
         private ProgressDialog progressDialog;
         private XmlParse gismeteo;

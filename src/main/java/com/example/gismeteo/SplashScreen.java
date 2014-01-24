@@ -10,7 +10,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import java.util.ArrayList;
+
+import com.example.gismeteo.task.ForecastForRegion;
+import com.example.gismeteo.interfaces.ForecastTaskListener;
+import com.example.gismeteo.interfaces.RegionTaskListener;
+import com.example.gismeteo.utils.Weather;
+import com.example.gismeteo.utils.GetLocation;
 
 public class SplashScreen extends Activity implements RegionTaskListener, ForecastTaskListener {
 	

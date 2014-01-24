@@ -1,7 +1,9 @@
-package com.example.gismeteo;
+package com.example.gismeteo.preference;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+
+import com.example.gismeteo.R;
 
 public class Prefs extends PreferenceActivity {
     @Override

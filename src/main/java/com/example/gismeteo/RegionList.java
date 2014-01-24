@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import com.example.gismeteo.interfaces.XMLTaskListener;
+
 public class RegionList extends Activity implements AdapterView.OnItemClickListener, XMLTaskListener {
 	private final static String REG_NAME = "region_name", REGION = "region", EXIT = "EXIT";
     private ListView regionListView;

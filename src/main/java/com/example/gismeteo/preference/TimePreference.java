@@ -1,4 +1,4 @@
-package com.example.gismeteo;
+package com.example.gismeteo.preference;
 
 import android.content.Context;
 import android.content.res.TypedArray;

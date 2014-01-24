@@ -1,4 +1,4 @@
-package com.example.gismeteo;
+package com.example.gismeteo.json;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

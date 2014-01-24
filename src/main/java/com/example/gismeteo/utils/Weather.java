@@ -1,8 +1,10 @@
-package com.example.gismeteo;
+package com.example.gismeteo.utils;
 
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.example.gismeteo.R;
 
 public class Weather implements Parcelable {
 
@@ -67,8 +69,6 @@ public class Weather implements Parcelable {
         parcel.writeInt(wetMax);
         parcel.writeInt(heatMin);
         parcel.writeInt(heatMax);
-//        parcel.writeStringArray(new String[] {date, timeOfDay, weekday, cloudiness, precipitation, windDirection});
-//        parcel.writeIntArray(new int[] {pressure, temperatureMin, temperatureMax, windMin, windMax, wetMin, wetMax, heatMin, heatMax});
     }
     public static final Parcelable.Creator<Weather> CREATOR = new Parcelable.Creator<Weather>() {
         @Override

@@ -1,4 +1,4 @@
-package com.example.gismeteo;
+package com.example.gismeteo.xml;
 
 import android.content.Context;
 
@@ -9,6 +9,9 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+
+import com.example.gismeteo.R;
+import com.example.gismeteo.utils.Weather;
 
 public class XmlParse {
 

@@ -1,4 +1,4 @@
-package com.example.gismeteo;
+package com.example.gismeteo.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import java.util.ArrayList;
+
+import com.example.gismeteo.R;
+import com.example.gismeteo.utils.Weather;
 
 public class WeatherListAdapter extends BaseExpandableListAdapter {
     private final Context context;

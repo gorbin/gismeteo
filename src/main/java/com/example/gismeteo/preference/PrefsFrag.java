@@ -1,4 +1,4 @@
-package com.example.gismeteo;
+package com.example.gismeteo.preference;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -9,6 +9,8 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.gismeteo.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class PrefsFrag extends PreferenceFragment {

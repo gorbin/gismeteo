@@ -1,10 +1,12 @@
-package com.example.gismeteo;
+package com.example.gismeteo.receiver;
 
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import com.example.gismeteo.service.WeatherService;
 
 public class WeatherNotification extends BroadcastReceiver {
 	private final String REGION = "region", FIRST_NOTIF = "firstNotif", SECOND_NOTIF = "secondNotif";

@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.app.Activity;
@@ -17,8 +16,18 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
+
+import com.example.gismeteo.task.ForecastForRegion;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import com.example.gismeteo.interfaces.ForecastTaskListener;
+import com.example.gismeteo.adapter.WeatherListAdapter;
+import com.example.gismeteo.utils.Weather;
+import com.example.gismeteo.receiver.WeatherNotification;
+import com.example.gismeteo.preference.Prefs;
+import com.example.gismeteo.preference.PrefsFrag;
 //Test
 public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener, ForecastTaskListener {
 	private final String FORECAST = "forecast", REGION = "region", FIRST_NOTIF = "firstNotif", SECOND_NOTIF = "secondNotif";

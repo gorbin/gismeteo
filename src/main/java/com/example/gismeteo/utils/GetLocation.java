@@ -1,4 +1,4 @@
-package com.example.gismeteo;
+package com.example.gismeteo.utils;
 
 import android.content.Context;
 import android.location.Criteria;
@@ -12,6 +12,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+
+import com.example.gismeteo.R;
+import com.example.gismeteo.json.JSONFromURL;
 
 public class GetLocation {
 	private final static String STATUS = "status", OK = "OK", RESULTS = "results", ADDRESS_COMPONENTS = "address_components", TYPES = "types", ADML1 = "administrative_area_level_1", SHORT_NAME = "short_name";
@@ -35,10 +38,10 @@ public class GetLocation {
 			}
         }
         if(currentLocation == null){
-            getGeo(LocationManager.NETWORK_PROVIDER, 1000, 0);
+            getGeo(LocationManager.NETWORK_PROVIDER, 0, 0);
         }
         if(currentLocation == null){
-            getGeo(LocationManager.GPS_PROVIDER, 1000, 0);
+            getGeo(LocationManager.GPS_PROVIDER, 0, 0);
         }
     }
 	

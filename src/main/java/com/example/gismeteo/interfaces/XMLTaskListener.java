@@ -1,4 +1,4 @@
-package com.example.gismeteo;
+package com.example.gismeteo.interfaces;
 
 import java.util.ArrayList;
 

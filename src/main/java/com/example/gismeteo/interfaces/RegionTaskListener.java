@@ -1,4 +1,4 @@
-package com.example.gismeteo;
+package com.example.gismeteo.interfaces;
 
 public interface RegionTaskListener {
     public void onRegionTaskComplete(String region);
