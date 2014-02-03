@@ -28,9 +28,10 @@ import com.example.gismeteo.utils.Weather;
 import com.example.gismeteo.receiver.WeatherNotification;
 import com.example.gismeteo.preference.Prefs;
 import com.example.gismeteo.preference.PrefsFrag;
+import com.example.gismeteo.constants.Constants;
 //Test
 public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener, ForecastTaskListener {
-	private final String FORECAST = "forecast", REGION = "region", FIRST_NOTIF = "firstNotif", SECOND_NOTIF = "secondNotif";
+	// private final String FORECAST = "forecast", REGION = "region", FIRST_NOTIF = "firstNotif", SECOND_NOTIF = "secondNotif";
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
 	private ForecastForRegion task;
@@ -72,8 +73,8 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             }
         });
 		Intent intent = getIntent();
-        forecast = intent.getParcelableArrayListExtra(FORECAST);
-		region = intent.getStringExtra(REGION);
+        forecast = intent.getParcelableArrayListExtra(Constants.FORECAST);
+		region = intent.getStringExtra(Constants.REGION);
 		if (forecast != null){
 			listItems(forecast);
 		} else if(region.length() != 0){
@@ -109,7 +110,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			if(isServiceRunning()){
                 am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 				Intent intent = new Intent(this, WeatherNotification.class);
-                intent.putExtra(REGION, region);
+                intent.putExtra(Constants.REGION, region);
                 pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
 				am.cancel(pendingIntent);
                 pendingIntent.cancel();
@@ -140,9 +141,9 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	private void restartNotify() {
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(this, WeatherNotification.class);
-		intent.putExtra(REGION, region);
-        intent.putExtra(FIRST_NOTIF, true);
-        intent.putExtra(SECOND_NOTIF, true);
+		intent.putExtra(Constants.REGION, region);
+        intent.putExtra(Constants.NOTIF, true);
+        // intent.putExtra(SECOND_NOTIF, true);
 		pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
 		am.cancel(pendingIntent);
 
@@ -154,7 +155,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
-        region = data.getStringExtra(REGION);
+        region = data.getStringExtra(Constants.REGION);
         showForecast();
     }
 	private void showForecast(){

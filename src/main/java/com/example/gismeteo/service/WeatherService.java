@@ -19,30 +19,30 @@ import com.example.gismeteo.SplashScreen;
 import com.example.gismeteo.interfaces.ForecastTaskListener;
 import com.example.gismeteo.task.ForecastForRegion;
 import com.example.gismeteo.utils.Weather;
-
+import com.example.gismeteo.constants.Constants;
 
 
 public class WeatherService extends Service implements ForecastTaskListener{
 
-    private final String REGION = "region", FIRST_NOTIF = "firstNotif", SECOND_NOTIF = "secondNotif", LOG_TAG = "myLogs";
+    // private final String REGION = "region", FIRST_NOTIF = "firstNotif", SECOND_NOTIF = "secondNotif", LOG_TAG = "myLogs";
 	private String region;
 	private NotificationManager nm;
     private PendingIntent pIntent;
     private Intent notificationIntent;
     private String[] todArray = new String[4];
-    boolean firstNotif = false, secondNotif = false;
+    boolean firstNotif = false;// secondNotif = false;
 	public void onCreate() {
 		super.onCreate();
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         todArray = this.getResources().getStringArray(R.array.time_day);
 	}
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		region = intent.getStringExtra(REGION);
-        firstNotif = intent.getBooleanExtra(FIRST_NOTIF, false);
-        secondNotif = intent.getBooleanExtra(SECOND_NOTIF, false);
+		region = intent.getStringExtra(Constants.REGION);
+        firstNotif = intent.getBooleanExtra(Constants.NOTIF, false);
+        // secondNotif = intent.getBooleanExtra(SECOND_NOTIF, false);
         //============================================================
         notificationIntent = new Intent(this, SplashScreen.class);
-        notificationIntent.putExtra(REGION, region);
+        notificationIntent.putExtra(Cnstants.REGION, region);
         pIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 		// ===========================================================
 		notificationTask();
@@ -65,16 +65,16 @@ public class WeatherService extends Service implements ForecastTaskListener{
                           String.format(this.getString(R.string.current_notif), forecast.get(0).getHeatMin()),
                           101);
             }
-            if(secondNotif) {
-                for (int i = 0; i < forecast.size(); i++) {
-                    if(forecast.get(i).getTimeOfDay().equals(todArray[todArray.length-1])){
-                        sendNotif(forecast.get(i).getCloudiness() + ", " + forecast.get(i).getPrecipitation(),
-                                  String.format(this.getString(R.string.night_notif), forecast.get(i).getTemperatureMin()),
-                                  102);
-                    }
-                }
-            }
-		} else{ Log.e(LOG_TAG, "no forecast");} 
+            // if(secondNotif) {
+                // for (int i = 0; i < forecast.size(); i++) {
+                    // if(forecast.get(i).getTimeOfDay().equals(todArray[todArray.length-1])){
+                        // sendNotif(forecast.get(i).getCloudiness() + ", " + forecast.get(i).getPrecipitation(),
+                                  // String.format(this.getString(R.string.night_notif), forecast.get(i).getTemperatureMin()),
+                                  // 102);
+                    // }
+                // }
+            // }
+		} else{ Log.e(Constants.LOG_TAG, "no forecast");} 
 		stopSelf();
 	}
 	void sendNotif(String title, String message, int i) {

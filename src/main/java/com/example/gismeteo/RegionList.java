@@ -25,9 +25,10 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import com.example.gismeteo.interfaces.XMLTaskListener;
+import com.example.gismeteo.constants.Constants;
 
 public class RegionList extends Activity implements AdapterView.OnItemClickListener, XMLTaskListener {
-	private final static String REG_NAME = "region_name", REGION = "region", EXIT = "EXIT";
+	// private final static String REG_NAME = "region_name", REGION = "region", EXIT = "EXIT";
     private ListView regionListView;
     private EditText inputSearch;
     private ArrayList<String> regionList = new ArrayList<String>();
@@ -55,7 +56,7 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
 	@Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent();
-        intent.putExtra(REGION, regionList.get(position).toString());
+        intent.putExtra(Constants.REGION, regionList.get(position).toString());
         setResult(RESULT_OK, intent);
 		overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
         finish();
@@ -66,7 +67,7 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
 		if(getCallingActivity().getClassName().equals(SplashScreen.class)){
 			Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			intent.putExtra(EXIT, true);
+			intent.putExtra(Constants.EXIT, true);
 			startActivity(intent);
 		} else { finish();}
 	}
@@ -121,7 +122,7 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
                         tagName = xpp.getName();
                     }
                     if(xpp.getEventType() == XmlPullParser.TEXT) {
-                        if (tagName.equals(REG_NAME)){
+                        if (tagName.equals(Constants.REG_NAME)){
                             taskRegionList.add(xpp.getText());
                         }
                     }

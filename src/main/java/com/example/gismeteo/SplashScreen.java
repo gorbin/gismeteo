@@ -18,35 +18,40 @@ import com.example.gismeteo.interfaces.ForecastTaskListener;
 import com.example.gismeteo.interfaces.RegionTaskListener;
 import com.example.gismeteo.utils.Weather;
 import com.example.gismeteo.utils.GetLocation;
+import com.example.gismeteo.constants.Constants;
 
-public class SplashScreen extends Activity implements RegionTaskListener, ForecastTaskListener {
-	
+public class SplashScreen extends Activity implements RegionTaskListener, ForecastTaskListener, LocationFound {
+	private Thread thread;
 	private ProgressBar progress;
 	private TextView noty;
 	private ForecastForRegion task;
     private String region = new String();
     private RegionTask rt;
     private boolean active;
-	private final String REGION = "region", FORECAST = "forecast", EXIT = "EXIT";
- 
+	// private final String REGION = "region", FORECAST = "forecast", EXIT = "EXIT";
+	private LocationListenerPlayServices locationListener;
+    private LocationListenerStandart locationListener2;
+	
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         active = true;
         setContentView(R.layout.splash_screen);
-		if (getIntent().getBooleanExtra(EXIT, false)) {
+		if (getIntent().getBooleanExtra(Constants.EXIT, false)) {
 			finish();
 		}
         Intent intent = getIntent();
-        region = intent.getStringExtra(REGION);
+        region = intent.getStringExtra(Constants.REGION);
 		noty = (TextView) findViewById(R.id.noty);
 		noty.setText(this.getString(R.string.pd_message));
 		progress = (ProgressBar) findViewById(R.id.progress);
+		
     }
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
-        region = data.getStringExtra(REGION);
+        region = data.getStringExtra(Constants.REGION);
     }
     @Override
     protected void onResume() {
@@ -70,8 +75,42 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         }
     }
 	private void showRegion(){
-	    rt = new RegionTask(this, region, this);
-        rt.execute();
+	    // rt = new RegionTask(this, region, this);
+        // rt.execute();
+		locationListener = LocationListenerPlayServices.getInstance(this);
+        locationListener2 = LocationListenerStandart.getInstance(this);
+        if(locationListener.servicesConnected(this)) {
+            locationListener.enableMyLocation();
+            locationListener.setLocationFound(this);
+        }
+        if(locationListener2.providersEnabled(this)) {
+            locationListener2.setLocationFound(this);
+            locationListener2.startLocation();
+        }
+		
+		thread=  new Thread(){
+        @Override
+        public void run(){
+            try {
+                synchronized(this){
+                    wait(20000);
+                }
+            }
+            catch(InterruptedException ex){   	
+				Log.e(Constants.LOG_TAG, "interrupted");			
+            }
+            // TODO 
+			Log.e(Constants.LOG_TAG, "fine");
+			
+        }
+    };
+    thread.start(); 
+		Log.e(Constants.LOG_TAG, "after?");
+	disableLocationListeners();	
+	if(region == null && active) {
+		gpsAlertBox(this.getString(R.string.GPS_error), this);
+	}
+	
 	}
 	private void showForecast(){
 	    task = new ForecastForRegion(this, region, false, this);
@@ -80,8 +119,8 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	public void onTaskComplete(ArrayList<Weather> forecast){
 		if(forecast != null && active) {
 			Intent intent = new Intent(this,MainActivity.class);
-			intent.putParcelableArrayListExtra(FORECAST, forecast);
-            intent.putExtra(REGION, region);
+			intent.putParcelableArrayListExtra(Constants.FORECAST, forecast);
+            intent.putExtra(Constants.REGION, region);
 			startActivity(intent);
 			overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 			finish();
@@ -98,19 +137,83 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 			showForecast();
 		}
 	}
-
-    class RegionTask extends AsyncTask<Void, String, String> {
-        private Context thisContext;
-		private String region;
-		private GetLocation gl;
-        private RegionTaskListener callback;
-        private final String THREAD_WAIT = "getLoc";
+	 @Override
+    public void locationFound(Location location) {
+        //label.setText("Location: "+location.getLongitude()+"/"+location.getLatitude());
+        synchronized(thread){
+            thread.notifyAll();
+        }
+		rt = new RegionTask(this, location.getLatitude(), location.getLongitude(), this);
+        rt.execute();
+	}
+	public void disableLocationListeners() {
+		if(locationListener != null && locationListener.clientConnected()){
+            locationListener.disableMyLocation();
+        }
+        if(locationListener2 != null && locationListener2.request){
+            locationListener2.disableLocationUpdates();
+        }
+	}
+    // class RegionTask extends AsyncTask<Void, String, String> {
+        // private Context thisContext;
+		// private String region;
+		// private GetLocation gl;
+        // private RegionTaskListener callback;
+        // private final String THREAD_WAIT = "getLoc";
         
-		public RegionTask(Context context, String region, RegionTaskListener callback) {
-            thisContext = context;
+		// public RegionTask(Context context, String region, RegionTaskListener callback) {
+            // thisContext = context;
+			// this.region = region;
+            // this.callback = callback;
+
+        // }
+		
+        // @Override
+        // protected void onPreExecute() {
+            // super.onPreExecute();
+        // }
+		
+        // @Override
+        // protected String doInBackground(Void... params) {
+            // try {
+                // gl = new GetLocation(thisContext);
+                // if(region == null || region.length() == 0){
+					// synchronized (THREAD_WAIT) {
+                        // try {
+                            // THREAD_WAIT.wait(20000);
+                        // } catch (InterruptedException e) {e.printStackTrace();}}
+                    // gl.checkRegion();
+                    // region = gl.getRegion();
+				// }
+                // return region;
+            // } catch (Exception e) {
+                // e.printStackTrace();
+				// return null;
+            // }
+        // }
+        // @Override
+        // protected void onPostExecute(String result) {
+            // super.onPostExecute(result);
+			// if(result == null) {
+			    // gpsAlertBox(thisContext.getString(R.string.GPS_error),thisContext);
+			// } else {
+			    // callback.onRegionTaskComplete(result);
+			// }
+		// } 
+		
+    // }
+	 class RegionTask extends AsyncTask<Void, String, String> {
+        private Context context;
+		private double lat, lng;
+        private RegionTaskListener callback;
+        private final static String STATUS = "status", OK = "OK", RESULTS = "results", ADDRESS_COMPONENTS = "address_components", TYPES = "types", ADML1 = "administrative_area_level_1", SHORT_NAME = "short_name";
+		
+		public RegionTask(Context context, double lat, double lng, RegionTaskListener callback) {
+            this.context = context;
 			this.region = region;
             this.callback = callback;
-
+			this.lat = lat;
+			this.lng = lng;
         }
 		
         @Override
@@ -120,17 +223,21 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		
         @Override
         protected String doInBackground(Void... params) {
-            try {
-                gl = new GetLocation(thisContext);
-                if(region == null || region.length() == 0){
-					synchronized (THREAD_WAIT) {
-                        try {
-                            THREAD_WAIT.wait(20000);
-                        } catch (InterruptedException e) {e.printStackTrace();}}
-                    gl.checkRegion();
-                    region = gl.getRegion();
+            String regionName = new String();
+			try {
+                JSONObject jsonObj = JSONFromURL.getJSON(String.format(context.getString(R.string.gapi_region_url), lat + "," + lng));
+				String Status = jsonObj.getString(STATUS);
+				if (Status.equalsIgnoreCase(OK)) {
+					JSONArray results = jsonObj.getJSONArray(RESULTS).getJSONObject(0).getJSONArray(ADDRESS_COMPONENTS);
+					for(int j=1;j<results.length();j++){
+						String adminArea;
+						adminArea = ((JSONArray)((JSONObject)results.get(j)).get(TYPES)).getString(0);
+						if (adminArea.compareTo(ADML1) == 0) {
+							regionName = ((JSONObject)results.get(j)).getString(SHORT_NAME);
+						}
+					}
 				}
-                return region;
+			return regionName;
             } catch (Exception e) {
                 e.printStackTrace();
 				return null;
@@ -140,7 +247,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 			if(result == null) {
-			    gpsAlertBox(thisContext.getString(R.string.GPS_error),thisContext);
+			    gpsAlertBox(context.getString(R.string.GPS_error),context);
 			} else {
 			    callback.onRegionTaskComplete(result);
 			}
