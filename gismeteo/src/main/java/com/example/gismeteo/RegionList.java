@@ -75,22 +75,19 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
     @Override
     public void onXMLTaskComplete(ArrayList<String> regionList) {
         progress.setVisibility(View.INVISIBLE);
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,regionList);
+        adapter = new RegionListAdapter<String>(this, regionListNums, regionListNames);
         regionListView.setAdapter(adapter);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
         inputSearch.addTextChangedListener(new TextWatcher() {
-
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
                 RegionList.this.adapter.getFilter().filter(cs);
             }
-
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
                                           int arg3) {
 
             }
-
             @Override
             public void afterTextChanged(Editable arg0) {
 
