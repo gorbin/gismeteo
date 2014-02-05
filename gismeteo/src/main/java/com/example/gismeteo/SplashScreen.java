@@ -75,9 +75,9 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
     public void onDestroy() {
         super.onDestroy();
         active = false;
-        if (rt != null && rt.getStatus() != AsyncTask.Status.FINISHED) {
-            rt.cancel(true);
-        }
+        // if (rt != null && rt.getStatus() != AsyncTask.Status.FINISHED) {
+            // rt.cancel(true);
+        // }
         if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
             task.cancel(true);
         }
@@ -141,6 +141,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 			gpsAlertBox(this.getString(R.string.GPS_error), this);
 		} else {
 			this.region = region;
+			// this.gisCode = region;
 			noty.setText(this.getString(R.string.pd_forecast));
 			showForecast();
 		}
@@ -231,25 +232,29 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		
         @Override
         protected String doInBackground(Void... params) {
-            String regionName = new String();
-			try {
-                JSONObject jsonObj = JSONFromURL.getJSON(String.format(context.getString(R.string.gapi_region_url), lat + "," + lng));
-				String Status = jsonObj.getString(STATUS);
-				if (Status.equalsIgnoreCase(OK)) {
-					JSONArray results = jsonObj.getJSONArray(RESULTS).getJSONObject(0).getJSONArray(ADDRESS_COMPONENTS);
-					for(int j=1;j<results.length();j++){
-						String adminArea;
-						adminArea = ((JSONArray)((JSONObject)results.get(j)).get(TYPES)).getString(0);
-						if (adminArea.compareTo(ADML1) == 0) {
-							regionName = ((JSONObject)results.get(j)).getString(SHORT_NAME);
-						}
-					}
-				}
+			String regionName = new String();
+			regionName = regionFromLocation();
 			return regionName;
-            } catch (Exception e) {
-                e.printStackTrace();
-				return null;
-            }
+			// return gisCodeFromRegion(regionName);
+			// try {
+                // JSONObject jsonObj = JSONFromURL.getJSON(String.format(context.getString(R.string.gapi_region_url), lat + "," + lng));
+				// String Status = jsonObj.getString(STATUS);
+				// if (Status.equalsIgnoreCase(OK)) {
+					// JSONArray results = jsonObj.getJSONArray(RESULTS).getJSONObject(0).getJSONArray(ADDRESS_COMPONENTS);
+					// for(int j=1;j<results.length();j++){
+						// String adminArea;
+						// adminArea = ((JSONArray)((JSONObject)results.get(j)).get(TYPES)).getString(0);
+						// if (adminArea.compareTo(ADML1) == 0) {
+							// regionName = ((JSONObject)results.get(j)).getString(SHORT_NAME);
+						// }
+					// }
+				// }
+			// return regionName;
+            // } catch (Exception e) {
+                // e.printStackTrace();
+				// return null;
+            // }
+			
         }
         @Override
         protected void onPostExecute(String result) {
@@ -262,6 +267,52 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		} 
 		
     }
+	private String regionFromLocation() {
+		String regionName = new String();
+		try {
+            JSONObject jsonObj = JSONFromURL.getJSON(String.format(context.getString(R.string.gapi_region_url), lat + "," + lng));
+			String Status = jsonObj.getString(STATUS);
+			if (Status.equalsIgnoreCase(OK)) {
+				JSONArray results = jsonObj.getJSONArray(RESULTS).getJSONObject(0).getJSONArray(ADDRESS_COMPONENTS);
+				for(int j=1;j<results.length();j++){
+					String adminArea;
+					adminArea = ((JSONArray)((JSONObject)results.get(j)).get(TYPES)).getString(0);
+					if (adminArea.compareTo(ADML1) == 0) {
+						regionName = ((JSONObject)results.get(j)).getString(SHORT_NAME);
+					}
+				}
+			}
+		return regionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+			return null;
+        }
+	}
+	
+	// private String gisCodeFromRegion(String region) {
+	 // if(region != null){
+            // String gisCode = new String();
+            // XmlPullParser xpp= context.getResources().getXml(R.xml.gismeteo_city);
+            // String tagName = new String();
+            // while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+                // if(xpp.getEventType() == XmlPullParser.START_TAG) {
+                    // tagName = xpp.getName();
+                // }
+                // if(xpp.getEventType() == XmlPullParser.TEXT) {
+                    // if (tagName.equals(REG_NAME))
+                        // if(xpp.getText().equals(region)) {
+                            // return gisCode;
+                        // }
+                    // if(tagName.equals(GIS_CODE)) {
+                        // gisCode = xpp.getText();
+                    // }
+                // }
+                // xpp.next();
+            // }
+        // }
+        // return null;
+	// }
+	
 	public void alert(String message, Context context){
         AlertDialog.Builder ad = new AlertDialog.Builder(this);
         ad.setMessage(message);

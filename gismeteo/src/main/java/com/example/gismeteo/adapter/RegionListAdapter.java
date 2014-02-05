@@ -6,24 +6,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import java.util.ArrayList;
+
+import com.example.gismeteo.utils.Region;
+
 
 public class RegionListAdapter extends ArrayAdapter<String> {
     private final Activity context;
-	private final String[] nums;
-    private final String[] names;
+	private final ArrayList<Region> regionList;
+		private ArrayList<Region> arraylist;
 
-    public MyArrayAdapter(Activity context, String[] nums, String[] names) {
+    public MyArrayAdapter(Activity context, ArrayList<Region> regionList) {
         super(context, R.layout.region_row, nums, names);
         this.context = context;
-		this.nums = nums;
-        this.names = names;
+		this.regionList = regionList;
+		this.arraylist = regionList;
     }
-
     static class ViewHolder {
         public TextView textViewNum;
         public TextView textViewName;
     }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
@@ -38,8 +40,24 @@ public class RegionListAdapter extends ArrayAdapter<String> {
         } else {
             holder = (ViewHolder) rowView.getTag();
         }
-        holder.textViewNum.setText(nums[position]);
-        holder.textViewName.setText(names[position]);
+        holder.textViewNum.setText(regionList.get(position).getNums());
+        holder.textViewName.setText(regionList.get(position).getNames());
         return rowView;
     }
+
+	// Filter Class
+	public void filter(String charText) {
+		charText = charText.toLowerCase(Locale.getDefault());
+		regionList.clear();
+		if (charText.length() == 0) {
+			regionList.addAll(arraylist);
+		} else {
+			for (Region regionFilter : arraylist) {
+				if((regionFilter.getName().toLowerCase(Locale.getDefault()).contains(charText))||(regionFilter.getNum().toLowerCase(Locale.getDefault()).contains(charText))){
+					regionList.add(regionFilter);
+				}
+			}
+		}
+		notifyDataSetChanged();
+	}
 }

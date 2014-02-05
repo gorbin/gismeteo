@@ -41,7 +41,7 @@ public class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather
         @Override
         protected ArrayList<Weather> doInBackground(Void... params) {
             try {
-                gismeteo = new XmlParse(thisContext, region);
+                gismeteo = new XmlParse(thisContext, region, null);
             return gismeteo.getForecast();
             } catch (IOException e) {
                 e.printStackTrace();

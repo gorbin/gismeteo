@@ -25,10 +25,10 @@ public class XmlParse {
     private String url = new String();
     private Context context;
 
-    public XmlParse(Context context, String region) throws IOException, XmlPullParserException
+    public XmlParse(Context context, String region, String gisCode) throws IOException, XmlPullParserException
     {
         this.context = context;
-
+		this.gisCode = gisCode;
         gisCode = getGisCode(context, region);
         if(gisCode != null){
 			url = String.format(context.getString(R.string.gismeteo_url),gisCode);

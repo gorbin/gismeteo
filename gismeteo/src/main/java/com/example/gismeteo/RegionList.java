@@ -24,17 +24,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import com.example.gismeteo.interfaces.XMLTaskListener;
+import com.example.gismeteo.interfaces.XMLRegionTaskListener;
 import com.example.gismeteo.constants.Constants;
+import com.example.gismeteo.utils.Region;
 
-public class RegionList extends Activity implements AdapterView.OnItemClickListener, XMLTaskListener {
+
+public class RegionList extends Activity implements AdapterView.OnItemClickListener, XMLRegionTaskListener {
 	// private final static String REG_NAME = "region_name", REGION = "region", EXIT = "EXIT";
     private ListView regionListView;
     private EditText inputSearch;
-    private ArrayList<String> regionList = new ArrayList<String>();
+    private ArrayList<Region> regionList = new ArrayList<Region>();
     private ArrayAdapter<String> adapter;
     private ProgressBar progress;
-    private XMLTask regionFind;
+    private XMLRegionTask regionFind;
     private boolean active = false;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
         progress = (ProgressBar) findViewById(R.id.progressBar);
 		regionListView = (ListView)findViewById(R.id.region_list);
 		regionListView.setOnItemClickListener(this);
-        regionFind = new XMLTask(this, regionList, this);
+        regionFind = new XMLRegionTask(this, regionList, this);
         regionFind.execute();
 	}
 	@Override
@@ -56,7 +58,7 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
 	@Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent();
-        intent.putExtra(Constants.REGION, regionList.get(position).toString());
+        intent.putExtra(Constants.REGION, regionList.get(position).getName());
         setResult(RESULT_OK, intent);
 		overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
         finish();
@@ -73,15 +75,16 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
 	}
 
     @Override
-    public void onXMLTaskComplete(ArrayList<String> regionList) {
+    public void onXMLRegionTaskComplete(ArrayList<Region> regionList) {
         progress.setVisibility(View.INVISIBLE);
-        adapter = new RegionListAdapter<String>(this, regionListNums, regionListNames);
+        adapter = new RegionListAdapter<String>(this, regionList);
         regionListView.setAdapter(adapter);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
         inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
                 RegionList.this.adapter.getFilter().filter(cs);
+				// adapterContactList.filter(cs.toString());
             }
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
@@ -95,56 +98,56 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
         });
     }
 
-    class XMLTask extends AsyncTask<Void, Void, ArrayList<String>> {
-        private Context context;
-        private ArrayList<String> taskRegionList;
-        private XMLTaskListener callback;
+    // class XMLTask extends AsyncTask<Void, Void, ArrayList<String>> {
+        // private Context context;
+        // private ArrayList<String> taskRegionList;
+        // private XMLTaskListener callback;
 
-        public XMLTask(Context context, ArrayList<String> regionList, XMLTaskListener callback) {
-            this.context = context;
-            this.taskRegionList = regionList;
-            this.callback = callback;
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-        @Override
-        protected ArrayList<String> doInBackground(Void... params) {
-            XmlPullParser xpp = context.getResources().getXml(R.xml.gismeteo_city);
-            String tagName = new String();
-            try {
-                while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
-                    if(xpp.getEventType() == XmlPullParser.START_TAG) {
-                        tagName = xpp.getName();
-                    }
-                    if(xpp.getEventType() == XmlPullParser.TEXT) {
-                        if (tagName.equals(Constants.REG_NAME)){
-                            taskRegionList.add(xpp.getText());
-                        }
-                    }
-                    xpp.next();
-                }
-                return taskRegionList;
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-                return null;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        @Override
-        protected void onPostExecute(ArrayList<String> result) {
-            super.onPostExecute(result);
-            if(result == null) {
-                alert(context.getString(R.string.error), context);
-            } else {
-                callback.onXMLTaskComplete(result);
-            }
-        }
+        // public XMLTask(Context context, ArrayList<String> regionList, XMLTaskListener callback) {
+            // this.context = context;
+            // this.taskRegionList = regionList;
+            // this.callback = callback;
+        // }
+        // @Override
+        // protected void onPreExecute() {
+            // super.onPreExecute();
+        // }
+        // @Override
+        // protected ArrayList<String> doInBackground(Void... params) {
+            // XmlPullParser xpp = context.getResources().getXml(R.xml.gismeteo_city);
+            // String tagName = new String();
+            // try {
+                // while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+                    // if(xpp.getEventType() == XmlPullParser.START_TAG) {
+                        // tagName = xpp.getName();
+                    // }
+                    // if(xpp.getEventType() == XmlPullParser.TEXT) {
+                        // if (tagName.equals(Constants.REG_NAME)){
+                            // taskRegionList.add(xpp.getText());
+                        // }
+                    // }
+                    // xpp.next();
+                // }
+                // return taskRegionList;
+            // } catch (XmlPullParserException e) {
+                // e.printStackTrace();
+                // return null;
+            // } catch (IOException e) {
+                // e.printStackTrace();
+                // return null;
+            // }
+        // }
+        // @Override
+        // protected void onPostExecute(ArrayList<String> result) {
+            // super.onPostExecute(result);
+            // if(result == null) {
+                // alert(context.getString(R.string.error), context);
+            // } else {
+                // callback.onXMLTaskComplete(result);
+            // }
+        // }
 
-    }
+    // }
     public void alert(String message, Context context){
         AlertDialog.Builder ad = new AlertDialog.Builder(this);
         ad.setMessage(message);
