@@ -322,13 +322,14 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 				dialog.cancel();
 				finish();
 			}
-		}).create().show();
+		});
 		ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
             public void onCancel(DialogInterface dialog) {
                 finish();
                 return;
             }
         });
+		ad.create().show();
         if(active) {
             ad.show();
         }
