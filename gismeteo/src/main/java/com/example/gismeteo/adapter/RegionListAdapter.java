@@ -5,27 +5,48 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.Locale;
 
+import com.example.gismeteo.R;
 import com.example.gismeteo.utils.Region;
 
 
-public class RegionListAdapter extends ArrayAdapter<String> {
+public class RegionListAdapter extends BaseAdapter {// {
     private final Activity context;
-	private final ArrayList<Region> regionList;
+	private ArrayList<Region> regionList;
 		private ArrayList<Region> arraylist;
 
-    public MyArrayAdapter(Activity context, ArrayList<Region> regionList) {
-        super(context, R.layout.region_row, nums, names);
+    public RegionListAdapter(Activity context, ArrayList<Region> regionList) {
+//        super(context, R.layout.region_row, regionList);
         this.context = context;
 		this.regionList = regionList;
-		this.arraylist = regionList;
+//		this.arraylist = regionList;
+        this.arraylist = new ArrayList<Region>();
+        this.arraylist.addAll(regionList);
     }
     static class ViewHolder {
         public TextView textViewNum;
         public TextView textViewName;
     }
+
+    @Override
+    public int getCount() {
+        return regionList.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return regionList.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
@@ -40,8 +61,8 @@ public class RegionListAdapter extends ArrayAdapter<String> {
         } else {
             holder = (ViewHolder) rowView.getTag();
         }
-        holder.textViewNum.setText(regionList.get(position).getNums());
-        holder.textViewName.setText(regionList.get(position).getNames());
+        holder.textViewNum.setText(regionList.get(position).getNum());
+        holder.textViewName.setText(regionList.get(position).getName());
         return rowView;
     }
 

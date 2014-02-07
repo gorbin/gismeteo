@@ -233,7 +233,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         @Override
         protected String doInBackground(Void... params) {
 			String regionName = new String();
-			regionName = regionFromLocation();
+			regionName = regionFromLocation(lat, lng);
 			return regionName;
 			// return gisCodeFromRegion(regionName);
 			// try {
@@ -267,10 +267,12 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		} 
 		
     }
-	private String regionFromLocation() {
+    private final static String STATUS = "status", OK = "OK", RESULTS = "results", ADDRESS_COMPONENTS = "address_components", TYPES = "types", ADML1 = "administrative_area_level_1", SHORT_NAME = "short_name";
+
+    private String regionFromLocation(double lat, double lng) {
 		String regionName = new String();
 		try {
-            JSONObject jsonObj = JSONFromURL.getJSON(String.format(context.getString(R.string.gapi_region_url), lat + "," + lng));
+            JSONObject jsonObj = JSONFromURL.getJSON(String.format(this.getString(R.string.gapi_region_url), lat + "," + lng));
 			String Status = jsonObj.getString(STATUS);
 			if (Status.equalsIgnoreCase(OK)) {
 				JSONArray results = jsonObj.getJSONArray(RESULTS).getJSONObject(0).getJSONArray(ADDRESS_COMPONENTS);

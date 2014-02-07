@@ -1,7 +1,5 @@
 package com.example.gismeteo.utils;
 
-import com.example.gismeteo.R;
-
 public class Region {
 
     private String num;
@@ -12,7 +10,7 @@ public class Region {
     }
     
     public void setNum(String num) {
-		if (num.lenght() == 1) {
+		if (num.length() == 1) {
 			num = "0"+num;
 		}
         this.num = num;
@@ -33,4 +31,9 @@ public class Region {
     public String getGisCode() {
         return giscode;
     }
+
+//    @Override
+//    public String toString() {
+//        return "Hello, world.";
+//    }
 }

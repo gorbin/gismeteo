@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutionException;
 import com.example.gismeteo.interfaces.XMLRegionTaskListener;
 import com.example.gismeteo.constants.Constants;
 import com.example.gismeteo.utils.Region;
+import com.example.gismeteo.task.XMLRegionTask;
+import com.example.gismeteo.adapter.RegionListAdapter;
 
 
 public class RegionList extends Activity implements AdapterView.OnItemClickListener, XMLRegionTaskListener {
@@ -34,7 +36,8 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
     private ListView regionListView;
     private EditText inputSearch;
     private ArrayList<Region> regionList = new ArrayList<Region>();
-    private ArrayAdapter<String> adapter;
+//    private ArrayAdapter adapter;
+    private RegionListAdapter adapter;
     private ProgressBar progress;
     private XMLRegionTask regionFind;
     private boolean active = false;
@@ -77,13 +80,13 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
     @Override
     public void onXMLRegionTaskComplete(ArrayList<Region> regionList) {
         progress.setVisibility(View.INVISIBLE);
-        adapter = new RegionListAdapter<String>(this, regionList);
+        adapter = new RegionListAdapter(this, regionList);
         regionListView.setAdapter(adapter);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
         inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                RegionList.this.adapter.getFilter().filter(cs);
+                adapter.filter(cs.toString());
 				// adapterContactList.filter(cs.toString());
             }
             @Override

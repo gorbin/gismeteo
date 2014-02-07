@@ -16,7 +16,8 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text=""
-            android:id="@+id/wind"
+            android:id="@+id/name"
             android:layout_gravity="left|center_vertical"
-            android:layout_below="@+id/name"/>
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/num" />
 </RelativeLayout>

@@ -1,15 +1,25 @@
 package com.example.gismeteo.task;
 
-import com.example.gismeteo.R;
-import com.example.gismeteo.interfaces.XMLTaskListener;
-import com.example.gismeteo.constants.Constants;
+import android.content.Context;
+import android.os.AsyncTask;
 
-class XMLRegionTask extends AsyncTask<Void, Void, ArrayList<Region>> {
+import com.example.gismeteo.R;
+import com.example.gismeteo.interfaces.XMLRegionTaskListener;
+import com.example.gismeteo.constants.Constants;
+import com.example.gismeteo.utils.Region;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class XMLRegionTask extends AsyncTask<Void, Void, ArrayList<Region>> {
         private Context context;
         private ArrayList<Region> taskRegionList;
         private XMLRegionTaskListener callback;
 
-        public XMLRegionTask(Context context, ArrayList<Region> regionList, XMLTaskListener callback) {
+        public XMLRegionTask(Context context, ArrayList<Region> regionList, XMLRegionTaskListener callback) {
             this.context = context;
             this.taskRegionList = regionList;
             this.callback = callback;
@@ -19,10 +29,11 @@ class XMLRegionTask extends AsyncTask<Void, Void, ArrayList<Region>> {
             super.onPreExecute();
         }
         @Override
-        protected ArrayList<String> doInBackground(Void... params) {
+        protected ArrayList<Region> doInBackground(Void... params) {
             XmlPullParser xpp = context.getResources().getXml(R.xml.gismeteo_city);
 			Region regionItem = new Region();
             String tagName = new String();
+            int i = 0;
             try {
                 while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
                     if(xpp.getEventType() == XmlPullParser.START_TAG) {
@@ -61,11 +72,6 @@ class XMLRegionTask extends AsyncTask<Void, Void, ArrayList<Region>> {
         @Override
         protected void onPostExecute(ArrayList<Region> result) {
             super.onPostExecute(result);
-            if(result == null) {
-                alert(context.getString(R.string.error), context);
-            } else {
-                callback.onXMLTaskComplete(result);
+            callback.onXMLRegionTaskComplete(result);
             }
-        }
-
-    }
+}
