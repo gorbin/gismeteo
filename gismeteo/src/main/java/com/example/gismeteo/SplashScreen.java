@@ -96,28 +96,28 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
             locationListener2.startLocation();
         }
 		
-		thread=  new Thread(){
-        @Override
-        public void run(){
-            try {
-                synchronized(this){
-                    wait(20000);
-                }
-            }
-            catch(InterruptedException ex){   	
-				Log.e(Constants.LOG_TAG, "interrupted");
-            }
-            // TODO 
-			Log.e(Constants.LOG_TAG, "fine");
-			
-        }
-    };
-    thread.start(); 
+//		thread=  new Thread(){
+//        @Override
+//        public void run(){
+//            try {
+//                synchronized(this){
+//                    wait(20000);
+//                }
+//            }
+//            catch(InterruptedException ex){
+//				Log.e(Constants.LOG_TAG, "interrupted");
+//            }
+//            // TODO
+//			Log.e(Constants.LOG_TAG, "fine");
+//
+//        }
+//    };
+//    thread.start();
 		Log.e(Constants.LOG_TAG, "after?");
-	disableLocationListeners();	
-	if(region == null && active) {
-		gpsAlertBox(this.getString(R.string.GPS_error), this);
-	}
+//	disableLocationListeners();
+//	if(region == null && active) {
+//		gpsAlertBox(this.getString(R.string.GPS_error), this);
+//	}
 	
 	}
 	private void showForecast(){
@@ -149,9 +149,9 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	 @Override
     public void locationFound(Location location) {
         //label.setText("Location: "+location.getLongitude()+"/"+location.getLatitude());
-        synchronized(thread){
-            thread.notifyAll();
-        }
+//        synchronized(thread){
+//            thread.notifyAll();
+//        }
 		rt = new RegionTask(this, location.getLatitude(), location.getLongitude(), this);
         rt.execute();
 	}
