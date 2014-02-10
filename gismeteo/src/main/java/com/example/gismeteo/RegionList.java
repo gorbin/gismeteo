@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -64,6 +65,8 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
         intent.putExtra(Constants.REGION, regionList.get(position).getName());
         setResult(RESULT_OK, intent);
 		overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(inputSearch.getWindowToken(), 0);
         finish();
     }
 	@Override

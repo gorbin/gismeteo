@@ -14,8 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.CheckBox;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
+import android.widget.TimePicker;
 
 import com.example.gismeteo.task.ForecastForRegion;
 
@@ -42,12 +44,16 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	private PendingIntent pendingIntent;
     private AlarmManager am;
     private boolean active;
+	private TimePicker tp ;
+    private CheckBox activeBox;
+	private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         active = true;
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+		context = this;
         RelativeLayout rl = (RelativeLayout) findViewById(R.id.RL);
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -119,14 +125,15 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			}
 			return true;
         case R.id.service_mbtn2:
-            if (android.os.Build.VERSION.SDK_INT < 11) {
-                startActivity(new Intent(this, Prefs.class));
-            } else {
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new PrefsFrag())
-                        .addToBackStack(null)
-                        .commit();
-            }
+            // if (android.os.Build.VERSION.SDK_INT < 11) {
+                // startActivity(new Intent(this, Prefs.class));
+            // } else {
+                // getFragmentManager().beginTransaction()
+                        // .replace(android.R.id.content, new PrefsFrag())
+                        // .addToBackStack(null)
+                        // .commit();
+            // }
+			openTime(context);
             return true;
 		default:
             return super.onOptionsItemSelected(item);
@@ -150,7 +157,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		calendar.add(Calendar.SECOND, 5);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , 20000, pendingIntent);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 20000, pendingIntent);
 	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -209,4 +216,39 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             ad.show();
         }
     }
+	private void openTime(Context context) {
+        View timeLayout = getLayoutInflater().inflate(R.layout.time_dialog, null);
+        AlertDialog.Builder ad = new AlertDialog.Builder(this);
+        ad.setMessage("Wat");
+        ad.setView(timeLayout);
+        ad.setCancelable(true);
+        tp = (TimePicker)timeLayout.findViewById(R.id.timePicker);
+        tp.setIs24HourView(true);
+        tp.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+        activeBox = (CheckBox) timeLayout.findViewById(R.id.active);
+        ad.setPositiveButton("Set",	new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+                Integer hour = tp.getCurrentHour();
+                Integer minute = tp.getCurrentMinute();
+                boolean activeIt = activeBox.isChecked();
+                // label.setText("Active:"+activeIt+"; Time"+hour+":"+minute);
+                // dialog.cancel();
+            }
+        }).create();
+        ad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                dialog.cancel();
+            }
+        });
+        ad.setCancelable(true);
+        ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            public void onCancel(DialogInterface dialog) {
+                dialog.cancel();
+            }
+        });
+        ad.show();
+
+    }
+
 }

@@ -66,7 +66,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         super.onResume();
 
 		if (region != null && region.length() != 0){
-            showForecast();
+            showForecast(region);
 		} else {
 		    showRegion();
 		}
@@ -120,7 +120,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 //	}
 	
 	}
-	private void showForecast(){
+	private void showForecast(String region){
 	    task = new ForecastForRegion(this, region, false, this);
 		task.execute();
 	}
@@ -140,10 +140,10 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		if(region == null && active) {
 			gpsAlertBox(this.getString(R.string.GPS_error), this);
 		} else {
-			this.region = region;
+			// this.region = region;
 			// this.gisCode = region;
 			noty.setText(this.getString(R.string.pd_forecast));
-			showForecast();
+			showForecast(region);
 		}
 	}
 	 @Override
@@ -154,6 +154,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 //        }
 		rt = new RegionTask(this, location.getLatitude(), location.getLongitude(), this);
         rt.execute();
+		disableLocationListeners();
 	}
 	public void disableLocationListeners() {
 		if(locationListener != null && locationListener.clientConnected()){
