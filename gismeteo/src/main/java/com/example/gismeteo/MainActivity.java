@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
@@ -37,7 +38,8 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     private WeatherListAdapter adapter;
 	private ForecastForRegion task;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
-	private String region = new String();
+//	private String region = new String();
+    private String giscode = new String();
     private int height;
 	private MenuItem serviceBtn,serviceBtn2;
 	private PendingIntent pendingIntent;
@@ -51,6 +53,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         super.onCreate(savedInstanceState);
         active = true;
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 		context = this;
         RelativeLayout rl = (RelativeLayout) findViewById(R.id.RL);
@@ -79,11 +82,11 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         });
 		Intent intent = getIntent();
         forecast = intent.getParcelableArrayListExtra(Constants.FORECAST);
-		region = intent.getStringExtra(Constants.REGION);
+		giscode = intent.getStringExtra(Constants.REGION);
 		if (forecast != null){
 			listItems(forecast);
-		} else if(region.length() != 0){
-			showForecast();
+		} else if(giscode.length() != 0){
+			showForecast(giscode);
 		} else {
 			alert(this.getString(R.string.error),this);
 		}
@@ -115,7 +118,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			if(isServiceRunning()){
                 am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 				Intent intent = new Intent(this, WeatherNotification.class);
-                intent.putExtra(Constants.REGION, region);
+                intent.putExtra(Constants.REGION, giscode);
                 pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
 				am.cancel(pendingIntent);
                 pendingIntent.cancel();
@@ -124,14 +127,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			}
 			return true;
         case R.id.service_mbtn2:
-            // if (android.os.Build.VERSION.SDK_INT < 11) {
-                // startActivity(new Intent(this, Prefs.class));
-            // } else {
-                // getFragmentManager().beginTransaction()
-                        // .replace(android.R.id.content, new PrefsFrag())
-                        // .addToBackStack(null)
-                        // .commit();
-            // }
 			openTime(context);
             return true;
 		default:
@@ -147,9 +142,8 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	private void restartNotify() {
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(this, WeatherNotification.class);
-		intent.putExtra(Constants.REGION, region);
+		intent.putExtra(Constants.REGION, giscode);
         intent.putExtra(Constants.NOTIF, true);
-        // intent.putExtra(SECOND_NOTIF, true);
 		pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
 		am.cancel(pendingIntent);
 
@@ -161,11 +155,16 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
-        region = data.getStringExtra(Constants.REGION);
-        showForecast();
+
+        giscode = data.getStringExtra(Constants.REGION);
+        if (giscode != null) {
+            showForecast(giscode);
+        } else {
+            alert(this.getString(R.string.error),this);
+        }
     }
-	private void showForecast(){
-		task = new ForecastForRegion(this, region, true, this);
+	private void showForecast(String giscode){
+		task = new ForecastForRegion(this, giscode, true, this);
 		task.execute();
 	}
 	public void onTaskComplete(ArrayList<Weather> forecast){
@@ -231,8 +230,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
                 Integer hour = tp.getCurrentHour();
                 Integer minute = tp.getCurrentMinute();
                 boolean activeIt = activeBox.isChecked();
-                // label.setText("Active:"+activeIt+"; Time"+hour+":"+minute);
-                // dialog.cancel();
+                dialog.cancel();
             }
         }).create();
         ad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

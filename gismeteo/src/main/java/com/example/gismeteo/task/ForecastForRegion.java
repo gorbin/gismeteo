@@ -15,20 +15,20 @@ import com.example.gismeteo.xml.XmlParse;
 import com.example.gismeteo.interfaces.ForecastTaskListener;
 
 public class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
-		private String region;
+		private String giscode;
         private ProgressDialog progressDialog;
         private XmlParse gismeteo;
 		private boolean progressDialogSet;
 		private ForecastTaskListener callback;
-        private Context thisContext;
+        private Context context;
 
         
-		public ForecastForRegion(Context context, String region, boolean progressDialogSet, ForecastTaskListener callback) {
-			this.region = region;
-            thisContext=context;
+		public ForecastForRegion(Context context, String giscode, boolean progressDialogSet, ForecastTaskListener callback) {
+			this.giscode = giscode;
+            this.context=context;
             this.progressDialogSet = progressDialogSet;
 			if(progressDialogSet){
-				progressDialog = ProgressDialog.show(thisContext, thisContext.getString(R.string.pd_title),thisContext.getString(R.string.pd_forecast), true);
+				progressDialog = ProgressDialog.show(context, context.getString(R.string.pd_title), context.getString(R.string.pd_forecast), true);
 			}
 			this.callback = callback;
         }
@@ -41,8 +41,8 @@ public class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather
         @Override
         protected ArrayList<Weather> doInBackground(Void... params) {
             try {
-                gismeteo = new XmlParse(thisContext, region, null);
-            return gismeteo.getForecast();
+                gismeteo = new XmlParse(context, giscode);
+                return gismeteo.getForecast();
             } catch (IOException e) {
                 e.printStackTrace();
 				return null;

@@ -10,16 +10,14 @@ import com.example.gismeteo.service.WeatherService;
 import com.example.gismeteo.constants.Constants;
 
 public class WeatherNotification extends BroadcastReceiver {
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		String region = intent.getStringExtra(Constants.REGION);
+		String giscode = intent.getStringExtra(Constants.REGION);
 	    boolean first = intent.getBooleanExtra(Constants.NOTIF, false);
-        // boolean second = intent.getBooleanExtra(SECOND_NOTIF, false);
 		Intent updater = new Intent(context, WeatherService.class);
-		updater.putExtra(Constants.REGION,region);
+		updater.putExtra(Constants.REGION, giscode);
         updater.putExtra(Constants.NOTIF, first);
-        // updater.putExtra(SECOND_NOTIF, second);
         context.startService(updater);
-
 	}
 }

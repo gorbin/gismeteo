@@ -11,9 +11,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.example.gismeteo.json.JSONFromURL;
@@ -26,7 +28,10 @@ import com.example.gismeteo.constants.Constants;
 import com.example.gismeteo.utils.*;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 
 public class SplashScreen extends Activity implements RegionTaskListener, ForecastTaskListener, LocationFound {
@@ -34,24 +39,26 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	private ProgressBar progress;
 	private TextView noty;
 	private ForecastForRegion task;
-    private String region = new String();
+//    private String region = new String();
+    private String giscode = new String();
     private RegionTask rt;
     private boolean active, locationFound;
 	private LocationListenerPlayServices locationListener;
     private LocationListenerStandart locationListener2;
-	
-	
+    private final static String STATUS = "status", OK = "OK", RESULTS = "results", ADDRESS_COMPONENTS = "address_components", TYPES = "types", ADML1 = "administrative_area_level_1", SHORT_NAME = "short_name";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         active = true;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.splash_screen);
 		if (getIntent().getBooleanExtra(Constants.EXIT, false)) {
 			finish();
 		}
         Intent intent = getIntent();
-        region = intent.getStringExtra(Constants.REGION);
+        giscode = intent.getStringExtra(Constants.REGION);
 		noty = (TextView) findViewById(R.id.noty);
 		noty.setText(this.getString(R.string.pd_message));
 		progress = (ProgressBar) findViewById(R.id.progress);
@@ -61,14 +68,13 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
-        region = data.getStringExtra(Constants.REGION);
+        giscode = data.getStringExtra(Constants.REGION);
     }
     @Override
     protected void onResume() {
         super.onResume();
-
-		if (region != null && region.length() != 0){
-            showForecast(region);
+		if (giscode != null && giscode.length() != 0){
+            showForecast(giscode);
 		} else {
 		    showRegion();
 		}
@@ -85,8 +91,6 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         }
     }
 	private void showRegion(){
-	    // rt = new RegionTask(this, region, this);
-        // rt.execute();
 		locationListener = LocationListenerPlayServices.getInstance(this);
         locationListener2 = LocationListenerStandart.getInstance(this);
         if(locationListener.servicesConnected(this)) {
@@ -122,15 +126,15 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 //	}
 	
 	}
-	private void showForecast(String region){
-	    task = new ForecastForRegion(this, region, false, this);
+	private void showForecast(String giscode){
+	    task = new ForecastForRegion(this, giscode, false, this);
 		task.execute();
 	}
 	public void onTaskComplete(ArrayList<Weather> forecast){
 		if(forecast != null && active) {
 			Intent intent = new Intent(this,MainActivity.class);
 			intent.putParcelableArrayListExtra(Constants.FORECAST, forecast);
-            intent.putExtra(Constants.REGION, region);
+            intent.putExtra(Constants.REGION, giscode);
 			startActivity(intent);
 			overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 			finish();
@@ -138,14 +142,13 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 			alert(this.getString(R.string.error), this);
 		}
 	}
-	public void onRegionTaskComplete(String region){
-		if(region == null && active) {
+	public void onRegionTaskComplete(String giscode){
+		if(giscode == null && active) {
 			gpsAlertBox(this.getString(R.string.GPS_error), this);
 		} else {
-			this.region = region;
-			// this.gisCode = region;
+			this.giscode = giscode;
 			noty.setText(this.getString(R.string.pd_forecast));
-			showForecast(region);
+			showForecast(giscode);
 		}
 	}
 	 @Override
@@ -168,60 +171,17 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
             locationListener2.disableLocationUpdates();
         }
 	}
-    // class RegionTask extends AsyncTask<Void, String, String> {
-        // private Context thisContext;
-		// private String region;
-		// private GetLocation gl;
-        // private RegionTaskListener callback;
-        // private final String THREAD_WAIT = "getLoc";
-        
-		// public RegionTask(Context context, String region, RegionTaskListener callback) {
-            // thisContext = context;
-			// this.region = region;
-            // this.callback = callback;
-
-        // }
-		
-        // @Override
-        // protected void onPreExecute() {
-            // super.onPreExecute();
-        // }
-		
-        // @Override
-        // protected String doInBackground(Void... params) {
-            // try {
-                // gl = new GetLocation(thisContext);
-                // if(region == null || region.length() == 0){
+//	============================================================
 					// synchronized (THREAD_WAIT) {
                         // try {
                             // THREAD_WAIT.wait(20000);
                         // } catch (InterruptedException e) {e.printStackTrace();}}
-                    // gl.checkRegion();
-                    // region = gl.getRegion();
-				// }
-                // return region;
-            // } catch (Exception e) {
-                // e.printStackTrace();
-				// return null;
-            // }
-        // }
-        // @Override
-        // protected void onPostExecute(String result) {
-            // super.onPostExecute(result);
-			// if(result == null) {
-			    // gpsAlertBox(thisContext.getString(R.string.GPS_error),thisContext);
-			// } else {
-			    // callback.onRegionTaskComplete(result);
-			// }
-		// } 
-		
-    // }
-	 class RegionTask extends AsyncTask<Void, String, String> {
+//  =============================================================
+	class RegionTask extends AsyncTask<Void, String, String> {
         private Context context;
 		private double lat, lng;
         private RegionTaskListener callback;
-        private final static String STATUS = "status", OK = "OK", RESULTS = "results", ADDRESS_COMPONENTS = "address_components", TYPES = "types", ADML1 = "administrative_area_level_1", SHORT_NAME = "short_name";
-		
+
 		public RegionTask(Context context, double lat, double lng, RegionTaskListener callback) {
             this.context = context;
             this.callback = callback;
@@ -237,87 +197,69 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
         @Override
         protected String doInBackground(Void... params) {
 			String regionName = new String();
-			regionName = regionFromLocation(lat, lng);
-			return regionName;
-			// return gisCodeFromRegion(regionName);
-			// try {
-                // JSONObject jsonObj = JSONFromURL.getJSON(String.format(context.getString(R.string.gapi_region_url), lat + "," + lng));
-				// String Status = jsonObj.getString(STATUS);
-				// if (Status.equalsIgnoreCase(OK)) {
-					// JSONArray results = jsonObj.getJSONArray(RESULTS).getJSONObject(0).getJSONArray(ADDRESS_COMPONENTS);
-					// for(int j=1;j<results.length();j++){
-						// String adminArea;
-						// adminArea = ((JSONArray)((JSONObject)results.get(j)).get(TYPES)).getString(0);
-						// if (adminArea.compareTo(ADML1) == 0) {
-							// regionName = ((JSONObject)results.get(j)).getString(SHORT_NAME);
-						// }
-					// }
-				// }
-			// return regionName;
-            // } catch (Exception e) {
-                // e.printStackTrace();
-				// return null;
-            // }
-			
+            String giscode = new String();
+            try {
+                regionName = regionFromLocation(lat, lng);
+                giscode = gisCodeFromRegion(regionName, context);
+                return giscode;
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+                return null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-			if(result == null) {
-			    gpsAlertBox(context.getString(R.string.GPS_error),context);
-			} else {
-			    callback.onRegionTaskComplete(result);
-			}
+			callback.onRegionTaskComplete(result);
 		} 
 		
     }
-    private final static String STATUS = "status", OK = "OK", RESULTS = "results", ADDRESS_COMPONENTS = "address_components", TYPES = "types", ADML1 = "administrative_area_level_1", SHORT_NAME = "short_name";
 
-    private String regionFromLocation(double lat, double lng) {
+    private String regionFromLocation(double lat, double lng) throws JSONException {
 		String regionName = new String();
-		try {
-            JSONObject jsonObj = JSONFromURL.getJSON(String.format(this.getString(R.string.gapi_region_url), lat + "," + lng));
-			String Status = jsonObj.getString(STATUS);
-			if (Status.equalsIgnoreCase(OK)) {
-				JSONArray results = jsonObj.getJSONArray(RESULTS).getJSONObject(0).getJSONArray(ADDRESS_COMPONENTS);
-				for(int j=1;j<results.length();j++){
-					String adminArea;
-					adminArea = ((JSONArray)((JSONObject)results.get(j)).get(TYPES)).getString(0);
-					if (adminArea.compareTo(ADML1) == 0) {
-						regionName = ((JSONObject)results.get(j)).getString(SHORT_NAME);
-					}
+        JSONObject jsonObj = JSONFromURL.getJSON(String.format(this.getString(R.string.gapi_region_url), lat + "," + lng));
+		String Status = jsonObj.getString(STATUS);
+		if (Status.equalsIgnoreCase(OK)) {
+			JSONArray results = jsonObj.getJSONArray(RESULTS).getJSONObject(0).getJSONArray(ADDRESS_COMPONENTS);
+			for(int j=1;j<results.length();j++){
+				String adminArea;
+				adminArea = ((JSONArray)((JSONObject)results.get(j)).get(TYPES)).getString(0);
+				if (adminArea.compareTo(ADML1) == 0) {
+					regionName = ((JSONObject)results.get(j)).getString(SHORT_NAME);
 				}
 			}
+		}
 		return regionName;
-        } catch (Exception e) {
-            e.printStackTrace();
-			return null;
-        }
 	}
-	
-	// private String gisCodeFromRegion(String region) {
-	 // if(region != null){
-            // String gisCode = new String();
-            // XmlPullParser xpp= context.getResources().getXml(R.xml.gismeteo_city);
-            // String tagName = new String();
-            // while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
-                // if(xpp.getEventType() == XmlPullParser.START_TAG) {
-                    // tagName = xpp.getName();
-                // }
-                // if(xpp.getEventType() == XmlPullParser.TEXT) {
-                    // if (tagName.equals(REG_NAME))
-                        // if(xpp.getText().equals(region)) {
-                            // return gisCode;
-                        // }
-                    // if(tagName.equals(GIS_CODE)) {
-                        // gisCode = xpp.getText();
-                    // }
-                // }
-                // xpp.next();
-            // }
-        // }
-        // return null;
-	// }
+	private String gisCodeFromRegion(String region, Context context) throws XmlPullParserException, IOException {
+	 if(region != null){
+            String gisCode = new String();
+            XmlPullParser xpp= context.getResources().getXml(R.xml.gismeteo_city);
+            String tagName = new String();
+            while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+                if(xpp.getEventType() == XmlPullParser.START_TAG) {
+                    tagName = xpp.getName();
+                }
+                if(xpp.getEventType() == XmlPullParser.TEXT) {
+                    if (tagName.equals(Constants.REG_NAME))
+                        if(xpp.getText().equals(region)) {
+                            return gisCode;
+                        }
+                    if(tagName.equals(Constants.REG_CODE)) {
+                        gisCode = xpp.getText();
+                    }
+                }
+                xpp.next();
+            }
+        }
+        return null;
+	}
 	
 	public void alert(String message, Context context){
         AlertDialog.Builder ad = new AlertDialog.Builder(this);

@@ -41,7 +41,6 @@ public class XMLRegionTask extends AsyncTask<Void, Void, ArrayList<Region>> {
                     }
                     if(xpp.getEventType() == XmlPullParser.TEXT) {
                         if (tagName.equals(Constants.REG_NAME)){
-                            // taskRegionList.add(xpp.getText());
 							regionItem.setName(xpp.getText());
                         }
                         if (tagName.equals(Constants.REG_NUM)){

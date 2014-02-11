@@ -24,40 +24,43 @@ import com.example.gismeteo.constants.Constants;
 
 public class WeatherService extends Service implements ForecastTaskListener{
 
-    // private final String REGION = "region", FIRST_NOTIF = "firstNotif", SECOND_NOTIF = "secondNotif", LOG_TAG = "myLogs";
-	private String region;
+    private String giscode;
 	private NotificationManager nm;
     private PendingIntent pIntent;
     private Intent notificationIntent;
     private String[] todArray = new String[4];
-    boolean firstNotif = false;// secondNotif = false;
+    boolean firstNotif = false;
+
 	public void onCreate() {
 		super.onCreate();
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         todArray = this.getResources().getStringArray(R.array.time_day);
 	}
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		region = intent.getStringExtra(Constants.REGION);
+		giscode = intent.getStringExtra(Constants.REGION);
         firstNotif = intent.getBooleanExtra(Constants.NOTIF, false);
-        // secondNotif = intent.getBooleanExtra(SECOND_NOTIF, false);
-        //============================================================
+
         notificationIntent = new Intent(this, SplashScreen.class);
-        notificationIntent.putExtra(Constants.REGION, region);
+        notificationIntent.putExtra(Constants.REGION, giscode);
         pIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-		// ===========================================================
+
 		notificationTask();
 		return super.onStartCommand(intent, flags, startId);
 	}
+
 	public void onDestroy() {
 		super.onDestroy();
 	}
+
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
+
 	void notificationTask() {
-		ForecastForRegion task = new ForecastForRegion(this, region, false, this);
+		ForecastForRegion task = new ForecastForRegion(this, giscode, false, this);
 		task.execute();
     }
+
 	public void onTaskComplete(ArrayList<Weather> forecast){
 		if(forecast != null){
             if(firstNotif) {
@@ -65,15 +68,6 @@ public class WeatherService extends Service implements ForecastTaskListener{
                           String.format(this.getString(R.string.current_notif), forecast.get(0).getHeatMin()),
                           101);
             }
-            // if(secondNotif) {
-                // for (int i = 0; i < forecast.size(); i++) {
-                    // if(forecast.get(i).getTimeOfDay().equals(todArray[todArray.length-1])){
-                        // sendNotif(forecast.get(i).getCloudiness() + ", " + forecast.get(i).getPrecipitation(),
-                                  // String.format(this.getString(R.string.night_notif), forecast.get(i).getTemperatureMin()),
-                                  // 102);
-                    // }
-                // }
-            // }
 		} else{ Log.e(Constants.LOG_TAG, "no forecast");} 
 		stopSelf();
 	}
@@ -83,12 +77,10 @@ public class WeatherService extends Service implements ForecastTaskListener{
                 .setContentTitle(title)
                 .setContentText(message)
                 .setSmallIcon(R.drawable.ic_launcher)
-//                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher))
                 .setTicker(message)
                 .setAutoCancel(true)
                 .setWhen(System.currentTimeMillis())
                 .setDefaults(Notification.DEFAULT_ALL);
-//                .build();
         nm.notify(i, notif.build());
 	}
 }
