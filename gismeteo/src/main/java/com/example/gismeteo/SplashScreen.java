@@ -10,6 +10,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -35,8 +36,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	private ForecastForRegion task;
     private String region = new String();
     private RegionTask rt;
-    private boolean active;
-	// private final String REGION = "region", FORECAST = "forecast", EXIT = "EXIT";
+    private boolean active, locationFound;
 	private LocationListenerPlayServices locationListener;
     private LocationListenerStandart locationListener2;
 	
@@ -45,6 +45,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         active = true;
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.splash_screen);
 		if (getIntent().getBooleanExtra(Constants.EXIT, false)) {
 			finish();
@@ -54,6 +55,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		noty = (TextView) findViewById(R.id.noty);
 		noty.setText(this.getString(R.string.pd_message));
 		progress = (ProgressBar) findViewById(R.id.progress);
+		locationFound = false;
 		
     }
 	@Override
@@ -140,7 +142,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		if(region == null && active) {
 			gpsAlertBox(this.getString(R.string.GPS_error), this);
 		} else {
-			// this.region = region;
+			this.region = region;
 			// this.gisCode = region;
 			noty.setText(this.getString(R.string.pd_forecast));
 			showForecast(region);
@@ -148,13 +150,15 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	}
 	 @Override
     public void locationFound(Location location) {
-        //label.setText("Location: "+location.getLongitude()+"/"+location.getLatitude());
 //        synchronized(thread){
 //            thread.notifyAll();
 //        }
-		rt = new RegionTask(this, location.getLatitude(), location.getLongitude(), this);
-        rt.execute();
-		disableLocationListeners();
+		if(!locationFound) {
+			locationFound = true;
+			rt = new RegionTask(this, location.getLatitude(), location.getLongitude(), this);
+			rt.execute();
+			disableLocationListeners();
+		}
 	}
 	public void disableLocationListeners() {
 		if(locationListener != null && locationListener.clientConnected()){
@@ -220,7 +224,6 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		
 		public RegionTask(Context context, double lat, double lng, RegionTaskListener callback) {
             this.context = context;
-//			this.region = region;
             this.callback = callback;
 			this.lat = lat;
 			this.lng = lng;

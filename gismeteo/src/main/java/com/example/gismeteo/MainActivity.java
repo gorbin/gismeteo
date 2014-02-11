@@ -28,12 +28,11 @@ import com.example.gismeteo.interfaces.ForecastTaskListener;
 import com.example.gismeteo.adapter.WeatherListAdapter;
 import com.example.gismeteo.utils.Weather;
 import com.example.gismeteo.receiver.WeatherNotification;
-import com.example.gismeteo.preference.Prefs;
-import com.example.gismeteo.preference.PrefsFrag;
+
 import com.example.gismeteo.constants.Constants;
 //Test
 public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener, ForecastTaskListener {
-	// private final String FORECAST = "forecast", REGION = "region", FIRST_NOTIF = "firstNotif", SECOND_NOTIF = "secondNotif";
+
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
 	private ForecastForRegion task;

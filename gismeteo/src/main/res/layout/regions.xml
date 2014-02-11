@@ -16,7 +16,9 @@
             android:inputType="textVisiblePassword"
             android:layout_marginTop="@dimen/edittext_top_margin"
             android:layout_marginLeft="@dimen/edittext_left_margin"
-            android:layout_marginRight="@dimen/edittext_right_margin"/>
+            android:layout_marginRight="@dimen/edittext_right_margin"
+            android:layout_marginBottom="@dimen/edittext_bottom_margin"
+        android:background="#ffffff" />
     <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
