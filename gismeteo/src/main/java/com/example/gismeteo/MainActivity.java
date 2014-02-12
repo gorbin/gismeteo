@@ -20,6 +20,8 @@ import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 
+import com.example.gismeteo.dialogs.SimpleDialogs;
+import com.example.gismeteo.dialogs.TimeOfNotificationDialog;
 import com.example.gismeteo.task.ForecastForRegion;
 
 import java.util.ArrayList;
@@ -38,7 +40,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     private WeatherListAdapter adapter;
 	private ForecastForRegion task;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
-//	private String region = new String();
     private String giscode = new String();
     private int height;
 	private MenuItem serviceBtn,serviceBtn2;
@@ -83,14 +84,18 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		Intent intent = getIntent();
         forecast = intent.getParcelableArrayListExtra(Constants.FORECAST);
 		giscode = intent.getStringExtra(Constants.REGION);
-		if (forecast != null){
-			listItems(forecast);
-		} else if(giscode.length() != 0){
-			showForecast(giscode);
-		} else {
-			alert(this.getString(R.string.error),this);
-		}
 	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (forecast != null){
+            listItems(forecast);
+        } else if(giscode.length() != 0){
+            showForecast(giscode);
+        } else {
+            SimpleDialogs.alert(context.getString(R.string.error), context, active);
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -102,9 +107,9 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     @Override
     public boolean onPrepareOptionsMenu (Menu menu) {
         if(isServiceRunning()){
-            serviceBtn.setTitle(String.format(this.getString(R.string.service_button),this.getString(R.string.off)));
+            serviceBtn.setTitle(String.format(context.getString(R.string.service_button),context.getString(R.string.off)));
         } else {
-            serviceBtn.setTitle(String.format(this.getString(R.string.service_button),this.getString(R.string.on)));
+            serviceBtn.setTitle(String.format(context.getString(R.string.service_button),context.getString(R.string.on)));
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -112,14 +117,14 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.listregion:
-			startActivityForResult(new Intent(this,RegionList.class),1);
+			startActivityForResult(new Intent(context,RegionList.class),1);
 			return true;
 		case R.id.service_mbtn:
 			if(isServiceRunning()){
                 am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-				Intent intent = new Intent(this, WeatherNotification.class);
+				Intent intent = new Intent(context, WeatherNotification.class);
                 intent.putExtra(Constants.REGION, giscode);
-                pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
+                pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
 				am.cancel(pendingIntent);
                 pendingIntent.cancel();
 			} else {
@@ -127,24 +132,24 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 			}
 			return true;
         case R.id.service_mbtn2:
-			openTime(context);
+			TimeOfNotificationDialog.openTime(context, active, true);
             return true;
 		default:
             return super.onOptionsItemSelected(item);
 		}
     }
 	private boolean isServiceRunning() {
-		boolean alarmUp = (PendingIntent.getBroadcast(this, 0,
+		boolean alarmUp = (PendingIntent.getBroadcast(context, 0,
                 new Intent(getApplicationContext(), WeatherNotification.class),
                 PendingIntent.FLAG_NO_CREATE) != null);
 		return alarmUp; 
 	}
 	private void restartNotify() {
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent intent = new Intent(this, WeatherNotification.class);
+		Intent intent = new Intent(context, WeatherNotification.class);
 		intent.putExtra(Constants.REGION, giscode);
         intent.putExtra(Constants.NOTIF, true);
-		pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
+		pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
 		am.cancel(pendingIntent);
 
 		Calendar calendar = Calendar.getInstance();
@@ -160,21 +165,21 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         if (giscode != null) {
             showForecast(giscode);
         } else {
-            alert(this.getString(R.string.error),this);
+            SimpleDialogs.alert(context.getString(R.string.error), context, active);
         }
     }
 	private void showForecast(String giscode){
-		task = new ForecastForRegion(this, giscode, true, this);
+		task = new ForecastForRegion(context, giscode, true, this);
 		task.execute();
 	}
 	public void onTaskComplete(ArrayList<Weather> forecast){
 		if(forecast != null){
 			listItems(forecast);
 		} else {
-			alert(this.getString(R.string.error),this);
+            SimpleDialogs.alert(context.getString(R.string.error), context, active);
 		}
 	}
-	public void listItems(ArrayList<Weather> forecast){
+	private void listItems(ArrayList<Weather> forecast){
 		adapter = new WeatherListAdapter(getApplicationContext(), forecast, height);
         listView.setAdapter(adapter);
 		listView.setChildDivider(getResources().getDrawable(android.R.color.transparent));
@@ -194,58 +199,59 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         super.onStop();
         active = false;
     }
-	public void alert(String message, Context context){
-        AlertDialog.Builder ad = new AlertDialog.Builder(this);
-        ad.setMessage(message);
-        ad.setCancelable(true);
-        ad.setPositiveButton(context.getString(R.string.close),	new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-				finish();
-			}
-		}).create().show();
-		ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(DialogInterface dialog) {
-                finish();
-                return;
-            }
-        });
-        if(active) {
-            ad.show();
-        }
-    }
-	private void openTime(Context context) {
-        View timeLayout = getLayoutInflater().inflate(R.layout.time_dialog, null);
-        AlertDialog.Builder ad = new AlertDialog.Builder(this);
-        ad.setMessage("Wat");
-        ad.setView(timeLayout);
-        ad.setCancelable(true);
-        tp = (TimePicker)timeLayout.findViewById(R.id.timePicker);
-        tp.setIs24HourView(true);
-        tp.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-        activeBox = (CheckBox) timeLayout.findViewById(R.id.active);
-        ad.setPositiveButton("Set",	new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-
-                Integer hour = tp.getCurrentHour();
-                Integer minute = tp.getCurrentMinute();
-                boolean activeIt = activeBox.isChecked();
-                dialog.cancel();
-            }
-        }).create();
-        ad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int arg1) {
-                dialog.cancel();
-            }
-        });
-        ad.setCancelable(true);
-        ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(DialogInterface dialog) {
-                dialog.cancel();
-            }
-        });
-        ad.show();
-
-    }
+//	private void alert(String message, Context context){
+//        AlertDialog.Builder ad = new AlertDialog.Builder(context);
+//        ad.setMessage(message);
+//        ad.setCancelable(true);
+//        ad.setPositiveButton(context.getString(R.string.close),	new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int id) {
+//				dialog.cancel();
+//				finish();
+//			}
+//		}).create().show();
+//		ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//            public void onCancel(DialogInterface dialog) {
+//                finish();
+//                return;
+//            }
+//        });
+//        if(active) {
+//            ad.show();
+//        }
+//    }
+//	private void openTime(Context context) {
+//        View timeLayout = getLayoutInflater().inflate(R.layout.time_dialog, null);
+//        AlertDialog.Builder ad = new AlertDialog.Builder(context);
+//        ad.setMessage("Wat");
+//        ad.setView(timeLayout);
+//        ad.setCancelable(true);
+//        tp = (TimePicker)timeLayout.findViewById(R.id.timePicker);
+//        tp.setIs24HourView(true);
+//        tp.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+//        activeBox = (CheckBox) timeLayout.findViewById(R.id.active);
+//        ad.setPositiveButton("Set",	new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int id) {
+//
+//                Integer hour = tp.getCurrentHour();
+//                Integer minute = tp.getCurrentMinute();
+//                boolean activeIt = activeBox.isChecked();
+//                dialog.cancel();
+//            }
+//        });
+//        ad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int arg1) {
+//                dialog.cancel();
+//            }
+//        });
+//        ad.setCancelable(true);
+//        ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//            public void onCancel(DialogInterface dialog) {
+//                dialog.cancel();
+//            }
+//        });
+//        ad.create();
+//        ad.show();
+//
+//    }
 
 }

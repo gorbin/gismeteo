@@ -1,4 +1,4 @@
-package com.example.gismeteo.utils;
+package com.example.gismeteo.location;
 
 import android.location.Location;
 

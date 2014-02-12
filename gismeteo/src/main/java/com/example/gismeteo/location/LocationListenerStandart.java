@@ -1,4 +1,4 @@
-package com.example.gismeteo.utils;
+package com.example.gismeteo.location;
 
 import android.content.Context;
 import android.location.Criteria;
@@ -32,6 +32,11 @@ public final class LocationListenerStandart implements LocationListener{
         }
         return instance;
     }
+
+    public void clear() {
+        instance = null;
+    }
+
     public boolean providersEnabled(Context context) {
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
             return true;

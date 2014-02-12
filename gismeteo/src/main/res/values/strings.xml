@@ -1,30 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">gismeteo</string>
-	
+
+    <!--SplashScreen-->
     <string name="pd_title">Обновление</string>
     <string name="pd_message">Подождите немного, определяется месторасположение</string>
 	<string name="pd_forecast">Обрабатываем прогноз</string>
+
+    <!--Dialogs-->
 	<string name="GPS_error">Не удается точно определить расположение, включите GPS или уточните регион</string>
 	<string name="GPS_button">Включить GPS</string>
+    <string name="error">Проблемы с интернет соединением, перезапустите приложение</string>
+    <string name="noLocation">Не можем определить ваше расположение</string>
+    <string name="close">Закрыть</string>
+    <string name="time_of_notif">Уведомления</string>
+    <string name="set">Установить</string>
+    <string name="set_notif">%s уведомления</string>
+
+    <!--Menu-->
 	<string name="listreg_button">Выбрать регион</string>
+    <string name="notif_button">Уведомления</string>
 	<string name="service_button">%s оповещения</string>
 	<string name="off">Выключить</string>
 	<string name="on">Включить</string>
-    <string name="error">Проблемы с интернет соединением, перезапустите приложение</string>
-	<string name="noLocation">Не можем определить ваше расположение</string>
-    <string name="close">Закрыть</string>
-	
+
+	<!--Notifications-->
 	<string name="notif">Уведомления</string>
-	<string name="morning_notif">Утреннее уведомление</string>
-	<string name="evening_notif">Вечернее уведомление</string>
+	<string name="morning_notif">Уведомление</string>
 	<string name="no_notif">Отключено</string>
-	
+    <string name="current_notif">Сейчас %s °С</string>
+
+    <!--URLs-->
 	<string name="gapi_region_url">http://maps.googleapis.com/maps/api/geocode/json?latlng=%s&amp;sensor=true</string>
 	<string name="gismeteo_url">http://informer.gismeteo.ru/xml/%s_1.xml</string>
 
-    <string name="current_notif">Сейчас %s °С</string>
-    <string name="night_notif">Ночью будет %s °С</string>
+    <!--Weather-->
     <string name="pressure">%s мм. рт.ст.</string>
     <string name="wind">%s м/с</string>
     <string name="relwet"></string>

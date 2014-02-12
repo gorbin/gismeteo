@@ -1,8 +1,7 @@
-package com.example.gismeteo.utils;
+package com.example.gismeteo.location;
 
 import android.content.Context;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -39,11 +38,14 @@ public final class LocationListenerPlayServices implements LocationListener, Goo
         return instance;
     }
 
+    public void clear() {
+        instance = null;
+    }
+
     public void setLocationFound(LocationFound locationFound)
     {
         this.callback = locationFound;
     }
-
 
     @Override
     public void onLocationChanged(final Location location) {
