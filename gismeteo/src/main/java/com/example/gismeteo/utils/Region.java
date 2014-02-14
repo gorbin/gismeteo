@@ -32,8 +32,4 @@ public class Region {
         return giscode;
     }
 
-//    @Override
-//    public String toString() {
-//        return "Hello, world.";
-//    }
 }

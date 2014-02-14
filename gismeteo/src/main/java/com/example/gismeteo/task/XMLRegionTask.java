@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.gismeteo.R;
-import com.example.gismeteo.interfaces.XMLRegionTaskListener;
 import com.example.gismeteo.constants.Constants;
 import com.example.gismeteo.utils.Region;
 
@@ -15,9 +14,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class XMLRegionTask extends AsyncTask<Void, Void, ArrayList<Region>> {
+
         private Context context;
         private ArrayList<Region> taskRegionList;
         private XMLRegionTaskListener callback;
+
+        public interface XMLRegionTaskListener {
+            public void onXMLRegionTaskComplete(ArrayList<Region> regionList);
+        }
 
         public XMLRegionTask(Context context, ArrayList<Region> regionList, XMLRegionTaskListener callback) {
             this.context = context;

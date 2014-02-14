@@ -1,18 +1,3 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory
-        android:title="@string/notif">
-		<CheckBoxPreference
-            android:key="morning_pref"
-            android:title="@string/morning_notif"
-            android:summary="@string/no_notif" />
-		<CheckBoxPreference
-            android:key="evening_pref"
-            android:title="@string/evening_notif"
-            android:summary="@string/no_notif" />
-        <com.example.gismeteo.TimePreference
-                      android:key="alarm_time"
-                      android:title="Lunch Alarm Time"
-                      android:summary="Set your desired time for the lunch alarm"
-                       />
-	</PreferenceCategory>
+
 </PreferenceScreen>

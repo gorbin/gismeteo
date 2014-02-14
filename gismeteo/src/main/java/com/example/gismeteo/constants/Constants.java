@@ -7,6 +7,9 @@ public class Constants {
     public static final String REGION = "region";
 	public static final String NOTIF = "firstNotif";
     public static final int TIMEOUT = 1000 * 20;
+    public static final int HOUR = 1000 * 60 * 60;
+    public static final int MIN = 1000 * 60;
+    public static final String LOC_TIME = "location_time";
 
     // gismeteo constants
     public static final String REG_NAME = "region_name";

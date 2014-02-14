@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import com.example.gismeteo.R;
 import com.example.gismeteo.utils.Weather;
 import com.example.gismeteo.xml.XmlParse;
-import com.example.gismeteo.interfaces.ForecastTaskListener;
 
 public class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather>> {
 		private String giscode;
@@ -22,6 +21,9 @@ public class ForecastForRegion extends AsyncTask<Void, String, ArrayList<Weather
 		private ForecastTaskListener callback;
         private Context context;
 
+        public interface ForecastTaskListener {
+            public void onTaskComplete(ArrayList<Weather> forecast);
+        }
         
 		public ForecastForRegion(Context context, String giscode, boolean progressDialogSet, ForecastTaskListener callback) {
 			this.giscode = giscode;

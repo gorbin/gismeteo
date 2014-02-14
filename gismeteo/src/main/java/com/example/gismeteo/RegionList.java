@@ -19,14 +19,13 @@ import android.widget.ProgressBar;
 import java.util.ArrayList;
 
 import com.example.gismeteo.dialogs.SimpleDialogs;
-import com.example.gismeteo.interfaces.XMLRegionTaskListener;
 import com.example.gismeteo.constants.Constants;
 import com.example.gismeteo.utils.Region;
 import com.example.gismeteo.task.XMLRegionTask;
 import com.example.gismeteo.adapter.RegionListAdapter;
 
 
-public class RegionList extends Activity implements AdapterView.OnItemClickListener, XMLRegionTaskListener {
+public class RegionList extends Activity implements AdapterView.OnItemClickListener, XMLRegionTask.XMLRegionTaskListener {
     private ListView regionListView;
     private EditText inputSearch;
     private ArrayList<Region> regionList = new ArrayList<Region>();
@@ -86,7 +85,6 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
                 @Override
                 public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
                     adapter.filter(cs.toString());
-                    // adapterContactList.filter(cs.toString());
                 }
                 @Override
                 public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
@@ -101,25 +99,4 @@ public class RegionList extends Activity implements AdapterView.OnItemClickListe
         } else { SimpleDialogs.alert(context.getString(R.string.error), context, active);}
     }
 
-//    private void alert(String message, Context context){
-//        AlertDialog.Builder ad = new AlertDialog.Builder(context);
-//        ad.setMessage(message);
-//        ad.setCancelable(true);
-//        ad.setPositiveButton(context.getString(R.string.close), new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int id) {
-//                dialog.cancel();
-//                finish();
-//            }
-//        });
-//        ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            public void onCancel(DialogInterface dialog) {
-//                finish();
-//                return;
-//            }
-//        });
-//        ad.create();
-//        if(active) {
-//            ad.show();
-//        }
-//    }
 }

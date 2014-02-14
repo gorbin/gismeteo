@@ -11,7 +11,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Active"
+        android:text="@string/checkBoxNotif"
         android:id="@+id/active"
         android:checked="false"
         android:layout_below="@+id/timePicker"

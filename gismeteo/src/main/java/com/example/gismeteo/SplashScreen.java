@@ -1,40 +1,29 @@
 package com.example.gismeteo;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import com.example.gismeteo.dialogs.SimpleDialogs;
-import com.example.gismeteo.json.JSONFromURL;
 import com.example.gismeteo.task.ForecastForRegion;
-import com.example.gismeteo.interfaces.ForecastTaskListener;
-import com.example.gismeteo.interfaces.RegionTaskListener;
+import com.example.gismeteo.task.RegionTask;
 import com.example.gismeteo.utils.Weather;
 import com.example.gismeteo.constants.Constants;
 import com.example.gismeteo.location.*;
-import com.example.gismeteo.dialogs.SimpleDialogs;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 
-public class SplashScreen extends Activity implements RegionTaskListener, ForecastTaskListener, LocationFound {
+public class SplashScreen extends Activity implements RegionTask.RegionTaskListener, ForecastForRegion.ForecastTaskListener, LocationFound {
 	private ProgressBar progress;
 	private TextView noty;
 	private ForecastForRegion task;
@@ -46,6 +35,8 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
     private Handler waitHandler = new Handler();
 	private LocationListenerPlayServices locationListener;
     private LocationListenerStandart locationListener2;
+    SharedPreferences sPref;
+    SharedPreferences.Editor ed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +55,8 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 		progress = (ProgressBar) findViewById(R.id.progress);
 		locationFound = false;
         active = true;
+        sPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        ed = sPref.edit();
     }
 
 	@Override
@@ -75,13 +68,18 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
     @Override
     protected void onResume() {
         super.onResume();
+        String giscodePrefs = sPref.getString(Constants.REGION, "");
 		if (giscode != null && giscode.length() != 0){
             showForecast(giscode);
-		} else {
+		} else if ((giscodePrefs != null && giscodePrefs.length() != 0)) {
+            showForecast(giscodePrefs);
+        } else {
 //            if ((locationListener != null) && (locationListener2 != null)) {
 //                locationListener.clear();
 //                locationListener2.clear();
 //            }
+
+
 		    showRegion();
 		}
     }
@@ -127,6 +125,7 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 	}
 
 	private void showForecast(String giscode){
+        noty.setText(context.getString(R.string.pd_forecast));
 	    task = new ForecastForRegion(context, giscode, false, this);
 		task.execute();
 	}
@@ -149,7 +148,8 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
 			SimpleDialogs.gpsAlertBox(context.getString(R.string.GPS_error), context, active);
 		} else {
 			this.giscode = giscode;
-			noty.setText(context.getString(R.string.pd_forecast));
+			ed.putString(Constants.REGION, giscode);
+            ed.commit();
 			showForecast(giscode);
 		}
 	}
@@ -160,6 +160,8 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
                  waitHandler.removeCallbacks(longLocation);
             }
 			locationFound = true;
+            ed.putLong(Constants.LOC_TIME, location.getTime());
+            ed.commit();
 			rt = new RegionTask(context, location.getLatitude(), location.getLongitude(), this);
 			rt.execute();
 			disableLocationListeners();
@@ -173,138 +175,4 @@ public class SplashScreen extends Activity implements RegionTaskListener, Foreca
             locationListener2.disableLocationUpdates();
         }
 	}
-
-	class RegionTask extends AsyncTask<Void, String, String> {
-        private Context context;
-		private double lat, lng;
-        private RegionTaskListener callback;
-
-		public RegionTask(Context context, double lat, double lng, RegionTaskListener callback) {
-            this.context = context;
-            this.callback = callback;
-			this.lat = lat;
-			this.lng = lng;
-        }
-		
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-		
-        @Override
-        protected String doInBackground(Void... params) {
-			String regionName = new String();
-            String giscode = new String();
-            try {
-                regionName = regionFromLocation(lat, lng);
-                giscode = gisCodeFromRegion(regionName, context);
-                return giscode;
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-                return null;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-			callback.onRegionTaskComplete(result);
-		} 
-		
-    }
-
-    private String regionFromLocation(double lat, double lng) throws JSONException {
-		String regionName = new String();
-        JSONObject jsonObj = JSONFromURL.getJSON(String.format(context.getString(R.string.gapi_region_url), lat + "," + lng));
-		String Status = jsonObj.getString(Constants.STATUS);
-		if (Status.equalsIgnoreCase(Constants.OK)) {
-			JSONArray results = jsonObj.getJSONArray(Constants.RESULTS).getJSONObject(0).getJSONArray(Constants.ADDRESS_COMPONENTS);
-			for(int j=1;j<results.length();j++){
-				String adminArea;
-				adminArea = ((JSONArray)((JSONObject)results.get(j)).get(Constants.TYPES)).getString(0);
-				if (adminArea.compareTo(Constants.ADML1) == 0) {
-					regionName = ((JSONObject)results.get(j)).getString(Constants.SHORT_NAME);
-				}
-			}
-		}
-		return regionName;
-	}
-	private String gisCodeFromRegion(String region, Context context) throws XmlPullParserException, IOException {
-	 if(region != null){
-            String gisCode = new String();
-            XmlPullParser xpp= context.getResources().getXml(R.xml.gismeteo_city);
-            String tagName = new String();
-            while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
-                if(xpp.getEventType() == XmlPullParser.START_TAG) {
-                    tagName = xpp.getName();
-                }
-                if(xpp.getEventType() == XmlPullParser.TEXT) {
-                    if (tagName.equals(Constants.REG_NAME))
-                        if(xpp.getText().equals(region)) {
-                            return gisCode;
-                        }
-                    if(tagName.equals(Constants.REG_CODE)) {
-                        gisCode = xpp.getText();
-                    }
-                }
-                xpp.next();
-            }
-        }
-        return null;
-	}
-	
-//	private void alert(String message, Context context){
-//        AlertDialog.Builder ad = new AlertDialog.Builder(context);
-//        ad.setMessage(message);
-//        ad.setCancelable(true);
-//        ad.setPositiveButton(context.getString(R.string.close),	new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int id) {
-//				dialog.cancel();
-//				finish();
-//			}
-//		});
-//		ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            public void onCancel(DialogInterface dialog) {
-//                finish();
-//                return;
-//            }
-//        });
-//		ad.create().show();
-//        if(active) {
-//            ad.show();
-//        }
-//    }
-//    private void gpsAlertBox(String mymessage, Context context) {
-//		AlertDialog.Builder ad;
-//		ad = new AlertDialog.Builder(context);
-//		ad.setMessage(mymessage);
-//		ad.setPositiveButton(context.getString(R.string.GPS_button), new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int arg1) {
-//				startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-//				overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-//			}
-//		});
-//		ad.setNegativeButton(context.getString(R.string.listreg_button), new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int arg1) {
-//				startActivityForResult(new Intent(((Dialog) dialog).getContext(),RegionList.class),1);
-//				overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-//				return;
-//			}
-//		});
-//		ad.setCancelable(true);
-//		ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//			public void onCancel(DialogInterface dialog) {
-//				finish();
-//				return;
-//			}
-//		});
-//        if(active) {
-//		    ad.show();
-//        }
-//    }
 }

@@ -5,24 +5,19 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import com.example.gismeteo.R;
 import com.example.gismeteo.SplashScreen;
-import com.example.gismeteo.interfaces.ForecastTaskListener;
 import com.example.gismeteo.task.ForecastForRegion;
 import com.example.gismeteo.utils.Weather;
 import com.example.gismeteo.constants.Constants;
 
 
-public class WeatherService extends Service implements ForecastTaskListener{
+public class WeatherService extends Service implements ForecastForRegion.ForecastTaskListener{
 
     private String giscode;
 	private NotificationManager nm;

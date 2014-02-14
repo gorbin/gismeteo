@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import java.util.ArrayList;
@@ -14,16 +13,14 @@ import com.example.gismeteo.R;
 import com.example.gismeteo.utils.Region;
 
 
-public class RegionListAdapter extends BaseAdapter {// {
+public class RegionListAdapter extends BaseAdapter {
     private final Activity context;
 	private ArrayList<Region> regionList;
 		private ArrayList<Region> arraylist;
 
     public RegionListAdapter(Activity context, ArrayList<Region> regionList) {
-//        super(context, R.layout.region_row, regionList);
         this.context = context;
 		this.regionList = regionList;
-//		this.arraylist = regionList;
         this.arraylist = new ArrayList<Region>();
         this.arraylist.addAll(regionList);
     }
@@ -66,7 +63,6 @@ public class RegionListAdapter extends BaseAdapter {// {
         return rowView;
     }
 
-	// Filter Class
 	public void filter(String charText) {
 		charText = charText.toLowerCase(Locale.getDefault());
 		regionList.clear();

@@ -9,12 +9,17 @@ import android.widget.CheckBox;
 import android.widget.TimePicker;
 
 import com.example.gismeteo.R;
+import com.example.gismeteo.constants.Constants;
 
 import java.util.Calendar;
 
 public class TimeOfNotificationDialog {
 
-    public static void openTime(Context context, boolean active, boolean check) {
+    public interface TimeNotifSetListener {
+        public void onTimeNotifSet(long time, boolean activate);
+    }
+
+    public static void openTime(Context context, boolean active, boolean check, final TimeNotifSetListener callback) {
         final TimePicker tp ;
         final CheckBox activeBox;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
@@ -28,17 +33,12 @@ public class TimeOfNotificationDialog {
         tp.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
         activeBox = (CheckBox) timeLayout.findViewById(R.id.active);
         activeBox.setChecked(check);
-        if (check) {
-            activeBox.setText(String.format(context.getString(R.string.set_notif),context.getString(R.string.on)));
-        } else {
-            activeBox.setText(String.format(context.getString(R.string.set_notif),context.getString(R.string.off)));
-        }
         ad.setPositiveButton(context.getString(R.string.set), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
-                Integer hour = tp.getCurrentHour();
-                Integer minute = tp.getCurrentMinute();
                 boolean activeIt = activeBox.isChecked();
+                long time = tp.getCurrentHour() * Constants.HOUR + tp.getCurrentMinute() * Constants.MIN;
+                callback.onTimeNotifSet(time, activeIt);
                 dialog.cancel();
             }
         });
