@@ -10,11 +10,12 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
+import com.example.gismeteo.constants.Constants;
+
 public final class LocationListenerPlayServices implements LocationListener, GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener
 {
     private LocationRequest locationRequest;
     private LocationClient locationClient;
-    private final int UPDATE_INTERVAL_IN_MILLISECONDS = 5000, FAST_INTERVAL_CEILING_IN_MILLISECONDS = 1000;
     public Location currentLocation;
     private LocationFound callback;
 
@@ -22,9 +23,9 @@ public final class LocationListenerPlayServices implements LocationListener, Goo
 
     private LocationListenerPlayServices(final Context context) {
         locationRequest = LocationRequest.create();
-        locationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        locationRequest.setInterval(Constants.UPDATE_INTERVAL_IN_MILLISECONDS);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setFastestInterval(FAST_INTERVAL_CEILING_IN_MILLISECONDS);
+        locationRequest.setFastestInterval(Constants.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
         locationClient = new LocationClient(context, this, this);
     }
 
@@ -88,7 +89,7 @@ public final class LocationListenerPlayServices implements LocationListener, Goo
 
     private boolean useCurrentLocation() {
         final Location location = locationClient.getLastLocation();
-        if ((location != null)&&(System.currentTimeMillis() - location.getTime() < 180 * 60 * 1000)) {
+        if ((location != null)&&(System.currentTimeMillis() - location.getTime() > Constants.TIME_FOR_LOC)) {
             disableMyLocation();
             if (location != null) {
                 currentLocation = location;

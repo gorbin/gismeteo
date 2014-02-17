@@ -6,10 +6,14 @@ public class Constants {
     public static final String FORECAST = "forecast";
     public static final String REGION = "region";
 	public static final String NOTIF = "firstNotif";
+	public static final String LOC_TIME = "location_time";
+	public static final String LONG_LOC = "longloc";
     public static final int TIMEOUT = 1000 * 20;
     public static final int HOUR = 1000 * 60 * 60;
     public static final int MIN = 1000 * 60;
-    public static final String LOC_TIME = "location_time";
+	public static final int TIME_FOR_LOC = 3  * 60 * 60 * 1000;
+	public static int UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
+	public static int FAST_INTERVAL_CEILING_IN_MILLISECONDS = 1000;
 
     // gismeteo constants
     public static final String REG_NAME = "region_name";

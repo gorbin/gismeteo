@@ -7,6 +7,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.example.gismeteo.constants.Constants;
+
 public final class LocationListenerStandart implements LocationListener{
     public boolean request = false;
     private Location currentLocation;
@@ -52,7 +54,7 @@ public final class LocationListenerStandart implements LocationListener{
     public void startLocation() {
         if(provider !=null){
             currentLocation = locationManager.getLastKnownLocation(provider);
-            if(currentLocation != null && System.currentTimeMillis() - currentLocation.getTime() < 180 * 60 * 1000) {
+            if((currentLocation != null) && (System.currentTimeMillis() - currentLocation.getTime() > Constants.TIME_FOR_LOC)) {
                 this.callback.locationFound(currentLocation);
             } else {
                 getGeo(LocationManager.NETWORK_PROVIDER, 0, 0);

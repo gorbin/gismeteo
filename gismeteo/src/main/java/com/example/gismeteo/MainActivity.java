@@ -29,12 +29,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import com.example.gismeteo.adapter.WeatherListAdapter;
+import com.example.gismeteo.utils.GetGiscode;
 import com.example.gismeteo.utils.Weather;
 import com.example.gismeteo.receiver.WeatherNotification;
 
 import com.example.gismeteo.constants.Constants;
 //Test
-public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener, ForecastForRegion.ForecastTaskListener, TimeOfNotificationDialog.TimeNotifSetListener {
+public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener, ForecastForRegion.ForecastTaskListener, TimeOfNotificationDialog.TimeNotifSetListener, GetGiscode.GetGiscodeListener {
 
     private ExpandableListView listView;
     private WeatherListAdapter adapter;
@@ -48,6 +49,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	private Context context;
     SharedPreferences sPref;
     SharedPreferences.Editor ed;
+	private GetGiscode giscodeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +95,8 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         super.onResume();
 
         String giscodePrefs = sPref.getString(Constants.REGION, "");
-        Long giscodetimes = sPref.getLong(Constants.LOC_TIME, 0);
-        Toast.makeText(context, "PrefReg = " + giscodePrefs + " PrefTime = " + giscodetimes, Toast.LENGTH_LONG).show();
-
+        Long giscodeTimes = sPref.getLong(Constants.LOC_TIME, 0);
+        Toast.makeText(context, "PrefReg = " + giscodePrefs + " PrefTime = " + giscodeTimes, Toast.LENGTH_LONG).show();
         if (forecast != null){
             listItems(forecast);
         } else if(giscode.length() != 0){
@@ -103,6 +104,10 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         } else {
             SimpleDialogs.alert(context.getString(R.string.error), context, active);
         }
+		if (System.currentTimeMillis() - giscodeTimes > Constants.TIME_FOR_LOC) {
+			giscodeListener = GetGiscode.getInstance(context, false, this);
+            giscodeListener.showRegion();
+		}
     }
 
     @Override
@@ -159,7 +164,17 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             SimpleDialogs.alert(context.getString(R.string.error), context, active);
         }
     }
-
+	public void onGetGiscode(String giscode) {
+		if(giscode.equals(Constants.LONG_LOC)) {
+			SimpleDialogs.gpsAlertBox(context.getString(R.string.GPS_error), context, active);
+		} else if (giscode == null || giscode.length() == 0) {
+			SimpleDialogs.alert(context.getString(R.string.error2), context, active);
+		} else {
+			ed.putString(Constants.REGION, giscode);
+            ed.commit();
+			showForecast(giscode);
+		}
+	}
 	private void showForecast(String giscode){
 		task = new ForecastForRegion(context, giscode, true, this);
 		task.execute();

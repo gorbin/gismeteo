@@ -18,23 +18,26 @@ import java.util.ArrayList;
 import com.example.gismeteo.dialogs.SimpleDialogs;
 import com.example.gismeteo.task.ForecastForRegion;
 import com.example.gismeteo.task.RegionTask;
+import com.example.gismeteo.utils.GetGiscode;
 import com.example.gismeteo.utils.Weather;
 import com.example.gismeteo.constants.Constants;
 import com.example.gismeteo.location.*;
 
 
-public class SplashScreen extends Activity implements RegionTask.RegionTaskListener, ForecastForRegion.ForecastTaskListener, LocationFound {
+public class SplashScreen extends Activity implements ForecastForRegion.ForecastTaskListener,// LocationFound, RegionTask.RegionTaskListener {
+GetGiscode.GetGiscodeListener {
 	private ProgressBar progress;
 	private TextView noty;
 	private ForecastForRegion task;
     private Context context;
     private String giscode = new String();
-    private RegionTask rt;
+//    private RegionTask rt;
     private boolean active;
-    private boolean locationFound;
-    private Handler waitHandler = new Handler();
-	private LocationListenerPlayServices locationListener;
-    private LocationListenerStandart locationListener2;
+//    private boolean locationFound;
+//    private Handler waitHandler = new Handler();
+//	private LocationListenerPlayServices locationListener;
+//    private LocationListenerStandart locationListener2;
+	private GetGiscode giscodeListener;
     SharedPreferences sPref;
     SharedPreferences.Editor ed;
 
@@ -53,7 +56,7 @@ public class SplashScreen extends Activity implements RegionTask.RegionTaskListe
 		noty = (TextView) findViewById(R.id.noty);
 		noty.setText(context.getString(R.string.pd_message));
 		progress = (ProgressBar) findViewById(R.id.progress);
-		locationFound = false;
+//		locationFound = false;
         active = true;
         sPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         ed = sPref.edit();
@@ -74,13 +77,16 @@ public class SplashScreen extends Activity implements RegionTask.RegionTaskListe
 		} else if ((giscodePrefs != null && giscodePrefs.length() != 0)) {
             showForecast(giscodePrefs);
         } else {
-//            if ((locationListener != null) && (locationListener2 != null)) {
-//                locationListener.clear();
-//                locationListener2.clear();
-//            }
+////            if ((locationListener != null) && (locationListener2 != null)) {
+////                locationListener.clear();
+////                locationListener2.clear();
+////            }
 
 
-		    showRegion();
+		    // showRegion();
+
+			giscodeListener = GetGiscode.getInstance(context, true, this);
+            giscodeListener.showRegion();
 		}
     }
     @Override
@@ -91,38 +97,48 @@ public class SplashScreen extends Activity implements RegionTask.RegionTaskListe
             task.cancel(true);
         }
     }
-
-    private Runnable longLocation  = new Runnable (){
-        @Override
-        public void run() {
-            disableLocationListeners();
-            locationFound = true;
-            if(giscode == null && active) {
-                SimpleDialogs.gpsAlertBox(context.getString(R.string.GPS_error), context, active);
-            }
-        }
-    };
-	private void showRegion(){
-        boolean connected = false;
-		locationListener = LocationListenerPlayServices.getInstance(context);
-        locationListener2 = LocationListenerStandart.getInstance(context);
-        if(locationListener.servicesConnected(context)) {
-            locationListener.enableMyLocation();
-            locationListener.setLocationFound(this);
-//            connected = true;
-        }
-        if(locationListener2.providersEnabled(context)) {
-            locationListener2.setLocationFound(this);
-            locationListener2.startLocation();
-//            connected = true;
-        }
-//        if (!connected) {
-//            locationFound = true;
-//            gpsAlertBox(context.getString(R.string.GPS_error), context);
-//        } else {
-            waitHandler.postDelayed(longLocation, Constants.TIMEOUT);
-//        }
+	public void onGetGiscode(String giscode) {
+		if(giscode.equals(Constants.LONG_LOC)) {
+			SimpleDialogs.gpsAlertBox(context.getString(R.string.GPS_error), context, active);
+		} else if (giscode == null || giscode.length() == 0) {
+			SimpleDialogs.alert(context.getString(R.string.error2), context, active);
+		} else {
+			ed.putString(Constants.REGION, giscode);
+            ed.commit();
+			showForecast(giscode);
+		}
 	}
+    // private Runnable longLocation  = new Runnable (){
+        // @Override
+        // public void run() {
+            // disableLocationListeners();
+            // locationFound = true;
+            // if(giscode == null && active) {
+                // SimpleDialogs.gpsAlertBox(context.getString(R.string.GPS_error), context, active);
+            // }
+        // }
+    // };
+	// private void showRegion(){
+        // boolean connected = false;
+		// locationListener = LocationListenerPlayServices.getInstance(context);
+        // locationListener2 = LocationListenerStandart.getInstance(context);
+        // if(locationListener.servicesConnected(context)) {
+            // locationListener.enableMyLocation();
+            // locationListener.setLocationFound(this);
+ //          // connected = true;
+        // }
+        // if(locationListener2.providersEnabled(context)) {
+            // locationListener2.setLocationFound(this);
+            // locationListener2.startLocation();
+//     //       connected = true;
+        // }
+//      //  if (!connected) {
+//        //    locationFound = true;
+//          //  gpsAlertBox(context.getString(R.string.GPS_error), context);
+//       // } else {
+            // waitHandler.postDelayed(longLocation, Constants.TIMEOUT);
+//       // }
+	// }
 
 	private void showForecast(String giscode){
         noty.setText(context.getString(R.string.pd_forecast));
@@ -143,36 +159,36 @@ public class SplashScreen extends Activity implements RegionTask.RegionTaskListe
 		}
 	}
 
-	public void onRegionTaskComplete(String giscode){
-		if(giscode == null && active) {
-			SimpleDialogs.gpsAlertBox(context.getString(R.string.GPS_error), context, active);
-		} else {
-			this.giscode = giscode;
-			ed.putString(Constants.REGION, giscode);
-            ed.commit();
-			showForecast(giscode);
-		}
-	}
-	 @Override
-    public void locationFound(Location location) {
-         if(!locationFound) {
-            if(waitHandler!=null){
-                 waitHandler.removeCallbacks(longLocation);
-            }
-			locationFound = true;
-            ed.putLong(Constants.LOC_TIME, location.getTime());
-            ed.commit();
-			rt = new RegionTask(context, location.getLatitude(), location.getLongitude(), this);
-			rt.execute();
-			disableLocationListeners();
-		}
-	}
-	public void disableLocationListeners() {
-		if(locationListener != null && locationListener.clientConnected()){
-            locationListener.disableMyLocation();
-        }
-        if(locationListener2 != null && locationListener2.request){
-            locationListener2.disableLocationUpdates();
-        }
-	}
+	// public void onRegionTaskComplete(String giscode){
+		// if(giscode == null && active) {
+			// SimpleDialogs.gpsAlertBox(context.getString(R.string.GPS_error), context, active);
+		// } else {
+			// this.giscode = giscode;
+			// ed.putString(Constants.REGION, giscode);
+            // ed.commit();
+			// showForecast(giscode);
+		// }
+	// }
+	 // @Override
+    // public void locationFound(Location location) {
+         // if(!locationFound) {
+            // if(waitHandler!=null){
+                 // waitHandler.removeCallbacks(longLocation);
+            // }
+			// locationFound = true;
+            // ed.putLong(Constants.LOC_TIME, location.getTime());
+            // ed.commit();
+			// rt = new RegionTask(context, location.getLatitude(), location.getLongitude(), this);
+			// rt.execute();
+			// disableLocationListeners();
+		// }
+	// }
+	// public void disableLocationListeners() {
+		// if(locationListener != null && locationListener.clientConnected()){
+            // locationListener.disableMyLocation();
+        // }
+        // if(locationListener2 != null && locationListener2.request){
+            // locationListener2.disableLocationUpdates();
+        // }
+	// }
 }

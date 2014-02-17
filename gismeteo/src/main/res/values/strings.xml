@@ -8,9 +8,10 @@
 	<string name="pd_forecast">Обрабатываем прогноз</string>
 
     <!--Dialogs-->
-	<string name="GPS_error">Не удается точно определить расположение, включите GPS или уточните регион</string>
+	<string name="GPS_error">Не удается точно определить расположение, включите GPS или уточните регион.</string>
 	<string name="GPS_button">Включить GPS</string>
     <string name="error">Проблемы с интернет соединением, включите передачу мобильных данных и перезапустите приложение</string>
+	<string name="error2">К сожалению для Вашего расположения не предоставляется прогноз. Вы можете сами выбрать регион.</string>
     <string name="noLocation">Не можем определить ваше расположение</string>
     <string name="close">Закрыть</string>
     <string name="time_of_notif">Уведомления</string>
