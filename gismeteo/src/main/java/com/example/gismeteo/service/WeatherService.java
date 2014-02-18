@@ -23,23 +23,19 @@ public class WeatherService extends Service implements ForecastForRegion.Forecas
 	private NotificationManager nm;
     private PendingIntent pIntent;
     private Intent notificationIntent;
-    private String[] todArray = new String[4];
-    boolean firstNotif = false;
 
 	public void onCreate() {
 		super.onCreate();
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        todArray = this.getResources().getStringArray(R.array.time_day);
 	}
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		giscode = intent.getStringExtra(Constants.REGION);
-        firstNotif = intent.getBooleanExtra(Constants.NOTIF, false);
 
         notificationIntent = new Intent(this, SplashScreen.class);
         notificationIntent.putExtra(Constants.REGION, giscode);
         pIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-		notificationTask();
+		notificationTask(giscode);
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -51,19 +47,17 @@ public class WeatherService extends Service implements ForecastForRegion.Forecas
 		return null;
 	}
 
-	void notificationTask() {
+	void notificationTask(String giscode) {
 		ForecastForRegion task = new ForecastForRegion(this, giscode, false, this);
 		task.execute();
     }
 
 	public void onTaskComplete(ArrayList<Weather> forecast){
 		if(forecast != null){
-            if(firstNotif) {
-                sendNotif(forecast.get(0).getCloudiness() + ", " + forecast.get(0).getPrecipitation(),
-                          String.format(this.getString(R.string.current_notif), forecast.get(0).getHeatMin()),
-                          101);
-            }
-		} else{ Log.e(Constants.LOG_TAG, "no forecast");} 
+            sendNotif(forecast.get(0).getCloudiness() + ", " + forecast.get(0).getPrecipitation(),
+                      String.format(this.getString(R.string.current_notif), forecast.get(0).getHeatMin()),
+                      101);
+        } else{ Log.e(Constants.LOG_TAG, "no forecast");} 
 		stopSelf();
 	}
 	void sendNotif(String title, String message, int i) {

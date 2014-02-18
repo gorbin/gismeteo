@@ -45,7 +45,7 @@ GetGiscode.GetGiscodeListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+////        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.splash_screen);
         context = this;
 		if (getIntent().getBooleanExtra(Constants.EXIT, false)) {
@@ -57,7 +57,6 @@ GetGiscode.GetGiscodeListener {
 		noty.setText(context.getString(R.string.pd_message));
 		progress = (ProgressBar) findViewById(R.id.progress);
 //		locationFound = false;
-        active = true;
         sPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         ed = sPref.edit();
     }
@@ -71,7 +70,8 @@ GetGiscode.GetGiscodeListener {
     @Override
     protected void onResume() {
         super.onResume();
-        String giscodePrefs = sPref.getString(Constants.REGION, "");
+		active = true;
+        String giscodePrefs = sPref.getString(Constants.REGION, null);
 		if (giscode != null && giscode.length() != 0){
             showForecast(giscode);
 		} else if ((giscodePrefs != null && giscodePrefs.length() != 0)) {
@@ -84,9 +84,12 @@ GetGiscode.GetGiscodeListener {
 
 
 		    // showRegion();
-
-			giscodeListener = GetGiscode.getInstance(context, true, this);
-            giscodeListener.showRegion();
+			if(giscodeListener != null) { 
+				giscodeListener.clear();
+			}
+			giscodeListener = GetGiscode.getInstance(context);
+			giscodeListener.setGiscodeListener(this);
+            giscodeListener.showRegion(true);
 		}
     }
     @Override

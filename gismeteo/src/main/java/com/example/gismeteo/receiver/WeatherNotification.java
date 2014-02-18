@@ -14,10 +14,8 @@ public class WeatherNotification extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String giscode = intent.getStringExtra(Constants.REGION);
-	    boolean first = intent.getBooleanExtra(Constants.NOTIF, false);
 		Intent updater = new Intent(context, WeatherService.class);
 		updater.putExtra(Constants.REGION, giscode);
-        updater.putExtra(Constants.NOTIF, first);
         context.startService(updater);
 	}
 }

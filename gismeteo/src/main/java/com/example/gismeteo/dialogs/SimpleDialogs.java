@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.ContextThemeWrapper;
 
 import com.example.gismeteo.R;
 import com.example.gismeteo.RegionList;
@@ -14,7 +15,7 @@ import com.example.gismeteo.RegionList;
 public class SimpleDialogs {
     public static void alert(String message, Context context, boolean active){
         final Activity activity = (Activity) context;
-        AlertDialog.Builder ad = new AlertDialog.Builder(context);
+        AlertDialog.Builder ad = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.MyOpaqueAlertDialog));
         ad.setMessage(message);
         ad.setCancelable(true);
         ad.setPositiveButton(context.getString(R.string.close),	new DialogInterface.OnClickListener() {
@@ -36,8 +37,9 @@ public class SimpleDialogs {
     }
     public static void gpsAlertBox(String mymessage, Context context, boolean active) {
         final Activity activity = (Activity) context;
-        AlertDialog.Builder ad;
-        ad = new AlertDialog.Builder(context);
+//        AlertDialog.Builder ad;
+//        ad = new AlertDialog.Builder(context);
+        AlertDialog.Builder ad = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.MyOpaqueAlertDialog));
         ad.setMessage(mymessage);
         ad.setPositiveButton(context.getString(R.string.GPS_button), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {

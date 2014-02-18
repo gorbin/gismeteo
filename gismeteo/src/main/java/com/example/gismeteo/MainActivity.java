@@ -54,7 +54,6 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        active = true;
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
@@ -93,20 +92,26 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     @Override
     protected void onResume() {
         super.onResume();
-
-        String giscodePrefs = sPref.getString(Constants.REGION, "");
+        active = true;
+		boolean error = false;
+        String giscodePrefs = sPref.getString(Constants.REGION, null);
         Long giscodeTimes = sPref.getLong(Constants.LOC_TIME, 0);
         Toast.makeText(context, "PrefReg = " + giscodePrefs + " PrefTime = " + giscodeTimes, Toast.LENGTH_LONG).show();
         if (forecast != null){
             listItems(forecast);
-        } else if(giscode.length() != 0){
+        } else if(giscode != null && giscode.length() != 0){
             showForecast(giscode);
         } else {
+			error = true;
             SimpleDialogs.alert(context.getString(R.string.error), context, active);
         }
-		if (System.currentTimeMillis() - giscodeTimes > Constants.TIME_FOR_LOC) {
-			giscodeListener = GetGiscode.getInstance(context, false, this);
-            giscodeListener.showRegion();
+		if ((!error) && (System.currentTimeMillis() - giscodeTimes > Constants.TIME_FOR_LOC)) {
+			if(giscodeListener != null) { 
+				giscodeListener.clear();
+			}
+			giscodeListener = GetGiscode.getInstance(context);
+			giscodeListener.setGiscodeListener(this);
+            giscodeListener.showRegion(false);
 		}
     }
 
@@ -126,10 +131,10 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.listregion:
-			startActivityForResult(new Intent(context,RegionList.class),1);
+				startActivityForResult(new Intent(context,RegionList.class),1);
 			return true;
-        case R.id.service_mbtn2:
-            TimeOfNotificationDialog.openTime(context, active, isServiceRunning(), this);
+			case R.id.service_mbtn2:
+				TimeOfNotificationDialog.openTime(context, active, isServiceRunning(), this);
             return true;
 		default:
             return super.onOptionsItemSelected(item);
@@ -144,13 +149,14 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 	}
 
 	private void restartNotify(long time) {
+		Toast.makeText(context, "Time = " + time , Toast.LENGTH_LONG).show();
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, WeatherNotification.class);
 		intent.putExtra(Constants.REGION, giscode);
-        intent.putExtra(Constants.NOTIF, true);
 		pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
 		am.cancel(pendingIntent);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, time, AlarmManager.INTERVAL_DAY, pendingIntent);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, time, 20000//AlarmManager.INTERVAL_DAY
+		, pendingIntent);
 	}
 
 	@Override
@@ -165,11 +171,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
         }
     }
 	public void onGetGiscode(String giscode) {
-		if(giscode.equals(Constants.LONG_LOC)) {
-			SimpleDialogs.gpsAlertBox(context.getString(R.string.GPS_error), context, active);
-		} else if (giscode == null || giscode.length() == 0) {
-			SimpleDialogs.alert(context.getString(R.string.error2), context, active);
-		} else {
+		if (giscode != null && giscode.length() != 0) {
 			ed.putString(Constants.REGION, giscode);
             ed.commit();
 			showForecast(giscode);
@@ -213,13 +215,13 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 
     @Override
     public void onTimeNotifSet(long time, boolean activate) {
-        Calendar date = Calendar.getInstance();
-        date.set(Calendar.HOUR_OF_DAY, 0);
-        date.set(Calendar.MINUTE, 0);
-        date.set(Calendar.SECOND, 0);
-        date.set(Calendar.MILLISECOND, 0);
-        long notifTime = date.getTimeInMillis() + time;
         if (activate) {
+			Calendar date = Calendar.getInstance();
+			date.set(Calendar.HOUR_OF_DAY, 0);
+			date.set(Calendar.MINUTE, 0);
+			date.set(Calendar.SECOND, 0);
+			date.set(Calendar.MILLISECOND, 0);
+			long notifTime = date.getTimeInMillis() + time;
             restartNotify(notifTime);
         } else if(isServiceRunning()) {
             am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);

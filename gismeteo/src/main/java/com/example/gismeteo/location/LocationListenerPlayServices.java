@@ -89,13 +89,10 @@ public final class LocationListenerPlayServices implements LocationListener, Goo
 
     private boolean useCurrentLocation() {
         final Location location = locationClient.getLastLocation();
-        if ((location != null)&&(System.currentTimeMillis() - location.getTime() > Constants.TIME_FOR_LOC)) {
+        if ((location != null)&&(System.currentTimeMillis() - location.getTime() < Constants.TIME_FOR_LOC)) {
             disableMyLocation();
-            if (location != null) {
-                currentLocation = location;
-                if (callback != null)
-                    callback.locationFound(location);
-            }
+            currentLocation = location;
+            callback.locationFound(location);
             return true;
         }
         return false;

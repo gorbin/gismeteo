@@ -54,7 +54,7 @@ public final class LocationListenerStandart implements LocationListener{
     public void startLocation() {
         if(provider !=null){
             currentLocation = locationManager.getLastKnownLocation(provider);
-            if((currentLocation != null) && (System.currentTimeMillis() - currentLocation.getTime() > Constants.TIME_FOR_LOC)) {
+            if((currentLocation != null) && (System.currentTimeMillis() - currentLocation.getTime() < Constants.TIME_FOR_LOC)) {
                 this.callback.locationFound(currentLocation);
             } else {
                 getGeo(LocationManager.NETWORK_PROVIDER, 0, 0);
