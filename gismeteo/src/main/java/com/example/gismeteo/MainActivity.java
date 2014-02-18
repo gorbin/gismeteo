@@ -155,8 +155,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		intent.putExtra(Constants.REGION, giscode);
 		pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT );
 		am.cancel(pendingIntent);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, time, 20000//AlarmManager.INTERVAL_DAY
-		, pendingIntent);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, time, AlarmManager.INTERVAL_DAY, pendingIntent);
 	}
 
 	@Override

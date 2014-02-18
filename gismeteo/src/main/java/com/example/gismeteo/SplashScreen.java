@@ -75,6 +75,7 @@ GetGiscode.GetGiscodeListener {
 		if (giscode != null && giscode.length() != 0){
             showForecast(giscode);
 		} else if ((giscodePrefs != null && giscodePrefs.length() != 0)) {
+            giscode = giscodePrefs;
             showForecast(giscodePrefs);
         } else {
 ////            if ((locationListener != null) && (locationListener2 != null)) {
@@ -106,9 +107,10 @@ GetGiscode.GetGiscodeListener {
 		} else if (giscode == null || giscode.length() == 0) {
 			SimpleDialogs.alert(context.getString(R.string.error2), context, active);
 		} else {
+            this.giscode = giscode;
 			ed.putString(Constants.REGION, giscode);
             ed.commit();
-			showForecast(giscode);
+			showForecast(this.giscode);
 		}
 	}
     // private Runnable longLocation  = new Runnable (){
