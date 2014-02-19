@@ -12,7 +12,7 @@
             android:id="@+id/inputSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search products.."
+            android:hint="@string/search_hint"
             android:inputType="textVisiblePassword"
             android:layout_marginTop="@dimen/edittext_top_margin"
             android:layout_marginLeft="@dimen/edittext_left_margin"

@@ -1,7 +1,6 @@
 package com.example.gismeteo;
 
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -231,5 +229,4 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             pendingIntent.cancel();
         }
     }
-
 }

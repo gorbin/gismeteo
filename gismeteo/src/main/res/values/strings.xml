@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">gismeteo</string>
-
+	<string name="search_hint">Номер или название региона</string>
     <!--SplashScreen-->
     <string name="pd_title">Обновление</string>
     <string name="pd_message">Подождите немного, определяется месторасположение</string>

@@ -37,8 +37,6 @@ public class SimpleDialogs {
     }
     public static void gpsAlertBox(String mymessage, Context context, boolean active) {
         final Activity activity = (Activity) context;
-//        AlertDialog.Builder ad;
-//        ad = new AlertDialog.Builder(context);
         AlertDialog.Builder ad = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.MyOpaqueAlertDialog));
         ad.setMessage(mymessage);
         ad.setPositiveButton(context.getString(R.string.GPS_button), new DialogInterface.OnClickListener() {

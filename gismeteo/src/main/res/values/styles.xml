@@ -16,8 +16,6 @@
     </style>
     <style name="MyOpaqueAlertDialog" parent="AppBaseTheme">
         <item name="android:background">@color/transparent</item>
-
-        <item name="@android:textColor">#FF0000</item>
     </style>
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">

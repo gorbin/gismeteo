@@ -4,7 +4,6 @@ package com.example.gismeteo.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.example.gismeteo.service.WeatherService;
 import com.example.gismeteo.constants.Constants;

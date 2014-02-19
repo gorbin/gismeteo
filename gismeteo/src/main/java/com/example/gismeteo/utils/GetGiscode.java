@@ -1,24 +1,12 @@
 package com.example.gismeteo.utils;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import java.util.ArrayList;
 
-import com.example.gismeteo.dialogs.SimpleDialogs;
-import com.example.gismeteo.task.ForecastForRegion;
 import com.example.gismeteo.task.RegionTask;
-import com.example.gismeteo.utils.Weather;
 import com.example.gismeteo.constants.Constants;
 import com.example.gismeteo.location.*;
 
@@ -32,7 +20,6 @@ public class GetGiscode implements RegionTask.RegionTaskListener, LocationFound 
 	private static volatile GetGiscode instance;
 	
 	private Context context;
-//	private boolean wait;
 	private boolean locationFound;
 	private LocationListenerPlayServices locationListener;
     private LocationListenerStandart locationListener2;
@@ -44,8 +31,7 @@ public class GetGiscode implements RegionTask.RegionTaskListener, LocationFound 
 	
 	private GetGiscode(final Context context) {
 		this.context = context;
-//		this.wait = wait;
-		locationFound = false; 
+		locationFound = false;
 		sPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         ed = sPref.edit();
 	}
