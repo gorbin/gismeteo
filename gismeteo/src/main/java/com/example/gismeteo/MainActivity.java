@@ -25,6 +25,7 @@ import com.example.gismeteo.task.ForecastForRegion;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import android.widget.ExpandableListView.OnGroupClickListener;
 
 import com.example.gismeteo.adapter.WeatherListAdapter;
 import com.example.gismeteo.utils.GetGiscode;
@@ -32,10 +33,12 @@ import com.example.gismeteo.utils.Weather;
 import com.example.gismeteo.receiver.WeatherNotification;
 
 import com.example.gismeteo.constants.Constants;
+import com.example.gismeteo.widget.AnimatedExpandableListView;
+
 //Test
 public class MainActivity extends Activity implements ExpandableListView.OnGroupExpandListener, ForecastForRegion.ForecastTaskListener, TimeOfNotificationDialog.TimeNotifSetListener, GetGiscode.GetGiscodeListener {
 
-    private ExpandableListView listView;
+    private AnimatedExpandableListView listView;
     private WeatherListAdapter adapter;
 	private ForecastForRegion task;
     private ArrayList<Weather> forecast = new ArrayList<Weather>();
@@ -48,6 +51,7 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
     SharedPreferences sPref;
     SharedPreferences.Editor ed;
 	private GetGiscode giscodeListener;
+	private int lenght = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +71,16 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
             height = display.getHeight();
         }
         rl.getLayoutParams().height = height;
-        listView = (ExpandableListView)findViewById(R.id.exListView);
-		listView.setOnGroupExpandListener(this);
+        listView = (AnimatedExpandableListView)findViewById(R.id.exListView);
+		// listView.setOnGroupExpandListener(this);
         listView.setVerticalFadingEdgeEnabled(false);
         listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             public boolean onGroupClick(ExpandableListView arg0, View itemView, int itemPosition, long itemId) {
-                if (android.os.Build.VERSION.SDK_INT >= 14){
-                    listView.expandGroup(itemPosition, true);
-                } else {
-                    listView.expandGroup(itemPosition);
-                }
+//                if (android.os.Build.VERSION.SDK_INT >= 14){
+//                    listView.expandGroup(itemPosition, true);
+//                } else {
+                    listView.expandGroupWithAnimation(itemPosition);
+//                }
                 return true;
             }
         });
@@ -193,16 +197,32 @@ public class MainActivity extends Activity implements ExpandableListView.OnGroup
 		listView.setChildDivider(getResources().getDrawable(android.R.color.transparent));
         listView.setDividerHeight(0);
 		listView.expandGroup(0);
+		lenght = adapter.getGroupCount();
+//        listView.setOnGroupClickListener(this);
     }
 
 	public void onGroupExpand(int groupPosition) {
 		int lenght = adapter.getGroupCount();
 		for (int i = 0; i < lenght; i++) {
 			if (i != groupPosition) {
-				listView.collapseGroup(i);
+				listView.collapseGroupWithAnimation(i);
 			}
 		}
 	}
+//	@Override
+//    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+//        if (listView.isGroupExpanded(groupPosition)) {
+//            listView.collapseGroupWithAnimation(groupPosition);
+//        } else {
+//            listView.expandGroupWithAnimation(groupPosition);
+//            for (int i = 0; i < lenght; i++) {
+//                if (i != groupPosition) {
+//                    listView.collapseGroupWithAnimation(i);
+//                }
+//            }
+//        }
+//        return true;
+//    }
 
     @Override
     public void onStop() {

@@ -11,14 +11,17 @@ import java.util.ArrayList;
 
 import com.example.gismeteo.R;
 import com.example.gismeteo.utils.Weather;
+import com.example.gismeteo.widget.AnimatedExpandableListView;
 
-public class WeatherListAdapter extends BaseExpandableListAdapter {
+public class WeatherListAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter { //BaseExpandableListAdapter {
     private final Context context;
     private final ArrayList<Weather> forecast;
 	private String[] tempColorArray = new String[4];
     private String[] todArray = new String[4];
     private int height;
-    public WeatherListAdapter(Context context, ArrayList<Weather> forecast, int height)
+	private LayoutInflater inflater;
+    
+	public WeatherListAdapter(Context context, ArrayList<Weather> forecast, int height)
     {
         this.context = context;
         this.forecast = forecast;
@@ -60,7 +63,7 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public int getChildrenCount(int groupPosition) {
+    public int getRealChildrenCount(int groupPosition) {
         return 1;
     }
 
@@ -117,8 +120,15 @@ public class WeatherListAdapter extends BaseExpandableListAdapter {
         return rowView;
 
     }
+
+//    @Override
+//    public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+//        return null;
+//    }
+
+
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
+    public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild,
                              View convertView, ViewGroup parent) {
         View childView = convertView;
 		if (childView == null) {

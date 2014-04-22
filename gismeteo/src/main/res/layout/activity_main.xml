@@ -10,7 +10,7 @@
     tools:context=".MainActivity">
 
 
-    <ExpandableListView
+    <com.example.gismeteo.widget.AnimatedExpandableListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/exListView"
